@@ -1,0 +1,14 @@
+{
+    "web": {
+        "domain": "localhost",
+        "host": "0.0.0.0",
+        "listen": 9000
+    },
+    "logger": {
+        "path": "logs/",
+        "src": false,
+        "level": "info",
+        "period": "1d",
+        "count": 10
+    }
+}
