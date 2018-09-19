@@ -2,7 +2,7 @@
     "web": {
         "domain": "localhost",
         "host": "0.0.0.0",
-        "listen": 9000
+        "listen": 8080
     },
     "logger": {
         "path": "logs/",
