@@ -1,31 +1,39 @@
 {
-  "name": "optimusdeploy",
-  "version": "1.0.0",
-  "description": "",
-  "main": "src/index.js",
-  "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "node src/index.js"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/hariaakash/optimusDeploy.git"
-  },
-  "author": "",
-  "license": "ISC",
-  "bugs": {
-    "url": "https://github.com/hariaakash/optimusDeploy/issues"
-  },
-  "homepage": "https://github.com/hariaakash/optimusDeploy#readme",
-  "dependencies": {
-    "async": "^2.6.1",
-    "body-parser": "^1.18.3",
-    "bunyan": "^1.8.12",
-    "dockerode": "^2.5.6",
-    "express": "^4.16.3",
-    "lodash": "^4.17.10",
-    "mongoose": "^5.2.9",
-    "rfr": "^1.2.3",
-    "socket.io": "^2.1.1"
-  }
+    "name": "optimusdeploy",
+    "version": "1.0.0",
+    "description": "Optimus Deploy Master",
+    "main": "src/index.js",
+    "scripts": {
+        "test": "./node_modules/.bin/eslint --quiet --config .eslintrc src config.js",
+        "start": "node src/index | node_modules/bunyan/bin/bunyan -o short"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/hariaakash/optimusDeploy.git"
+    },
+    "author": "",
+    "license": "ISC",
+    "bugs": {
+        "url": "https://github.com/hariaakash/optimusDeploy/issues"
+    },
+    "homepage": "https://github.com/hariaakash/optimusDeploy#readme",
+    "devDependencies": {
+        "eslint": "^5.6.0",
+        "eslint-config-airbnb": "^17.1.0",
+        "eslint-plugin-import": "^2.14.0",
+        "eslint-plugin-jsx-a11y": "^6.1.1",
+        "eslint-plugin-lodash": "^3.1.0",
+        "eslint-plugin-react": "^7.11.1"
+    },
+    "dependencies": {
+        "async": "^2.6.1",
+        "body-parser": "^1.18.3",
+        "bunyan": "^1.8.12",
+        "dockerode": "^2.5.6",
+        "express": "^4.16.3",
+        "lodash": "^4.17.10",
+        "mongoose": "^5.2.9",
+        "rfr": "^1.2.3",
+        "socket.io": "^2.1.1"
+    }
 }
