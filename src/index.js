@@ -12,7 +12,6 @@ Log.info('|          Optimus Deploy              |');
 Log.info('+ ------------------------------------ +');
 Log.info('Loading modules, this could take a few seconds.');
 
-
 server.listen(config.web.port, config.web.ip);
 Log.info(`Express running on ${config.web.ip}:${config.web.port}`);
 DBConnection();
