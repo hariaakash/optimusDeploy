@@ -9,14 +9,14 @@
     "rules": {
         "eol-last": 0,
         "quote-props": 0,
-        "indent": ["error", "tab"],
+        "indent": ["warn", "tab"],
         "no-tabs": 0,
-        "comma-dangle": ["error", {
-            "arrays": "always-multiline",
-            "objects": "always-multiline",
-            "imports": "always-multiline",
-            "exports": "always-multiline",
-            "functions": "never"
+        "comma-dangle": 0,
+        "prefer-destructuring": ["error", {
+            "AssignmentExpression": {
+                "array": false,
+                "object": false
+            }
         }]
     }
 }

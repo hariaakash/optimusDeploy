@@ -2,11 +2,14 @@ const rfr = require('rfr');
 const async = require('async');
 const app = require('express')();
 const server = require('http').createServer(app);
+const cors = require('cors');
+const bodyParser = require('body-parser');
 // const io = require('socket.io').listen(server);
 
 const config = rfr('config');
 const Log = rfr('src/helpers/logger');
 const DBConnection = rfr('src/helpers/mongoose');
+const Routes = rfr('src/routes');
 
 async.auto({
 	pretty_init: (callback) => {
@@ -14,6 +17,12 @@ async.auto({
 		Log.info('|          Optimus Deploy              |');
 		Log.info('+ ------------------------------------ +');
 		callback(null, 'Starting modules, this could take a few seconds.');
+		app.use(cors());
+		app.use(bodyParser.urlencoded({
+			extended: false
+		}));
+		app.use(bodyParser.json());
+		app.use(Routes);
 	},
 	connect_mongodb: ['pretty_init', (result, callback) => {
 		Log.info(result.pretty_init);

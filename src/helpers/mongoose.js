@@ -2,9 +2,10 @@ const rfr = require('rfr');
 const mongoose = require('mongoose');
 
 const config = rfr('config');
+const dbURI = `mongodb://${config.mongoose.ip}:${config.mongoose.port}/${config.mongoose.db}`;
 
 const DBConnection = (next) => {
-	mongoose.connect(`mongodb://${config.mongoose.ip}:${config.mongoose.port}/${config.mongoose.db}`, {
+	mongoose.connect(dbURI, {
 			useNewUrlParser: true,
 		})
 		.then(() => {
