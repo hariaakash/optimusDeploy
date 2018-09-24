@@ -1,8 +1,15 @@
 const rfr = require('rfr');
+const fs = require('fs');
 const bunyan = require('bunyan');
 const path = require('path');
 
 const config = rfr('config');
+
+// Check if Directory exists else create the logs dir
+const dir = './logs';
+if (!fs.existsSync(dir)) {
+	fs.mkdirSync(dir);
+}
 
 const Log = bunyan.createLogger({
 	name: 'master',
