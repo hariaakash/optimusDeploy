@@ -35,10 +35,8 @@ async.auto({
 	}],
 }, (err, result) => {
 	if (err) {
-		Log.error({
-			msg: 'A fatal error caused the daemon to abort the startup.',
-			err,
-		});
+		Log.error(err);
+		Log.error('A fatal error caused the daemon to abort the startup.');
 	} else {
 		Log.info(result.start_express);
 		Log.info('Daemon started successfully.');
