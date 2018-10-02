@@ -15,7 +15,7 @@ const createDns = (uri, next) => {
             data: {
                 type: 'A',
                 name: `${uri}.${config.cloudflare.domain}`,
-                content: '52.43.8.9',
+                content: config.cloudflare.ip,
                 proxied: true,
             },
         })
