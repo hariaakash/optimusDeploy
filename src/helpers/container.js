@@ -19,12 +19,29 @@ const createContainer = (data, next) => {
             next(null, data.name);
         })
         .catch((error) => {
-            next(error);
+            next(error, 'DNS creation failed.');
+        });
+};
+
+// Incomplete - data = containerId
+const deleteContainer = (data, next) => {
+    docker.getContainer(data).remove({
+            id: data,
+            v: true,
+            force: true,
+            link: true
+        })
+        .then((response) => {
+            console.log(response);
+        })
+        .catch((error) => {
+            console.log(error);
         });
 };
 
 const container = {
     createContainer,
+    deleteContainer,
 };
 
 module.exports = container;
