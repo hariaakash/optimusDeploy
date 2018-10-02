@@ -3,7 +3,8 @@
     "version": "1.0.0",
     "description": "Optimus Deploy Master",
     "scripts": {
-        "test": "./node_modules/.bin/eslint --quiet --config .eslintrc src config.js",
+        "test": "./node_modules/.bin/eslint --config .eslintrc src config.js",
+        "qtest": "./node_modules/.bin/eslint --quiet --config .eslintrc src config.js",
         "start": "node src/index | node_modules/bunyan/bin/bunyan -o short"
     },
     "repository": {
@@ -33,6 +34,7 @@
         "express": "^4.16.3",
         "lodash": "^4.17.10",
         "mongoose": "^5.2.9",
+        "morgan": "^1.9.1",
         "rfr": "^1.2.3",
         "socket.io": "^2.1.1"
     }

@@ -1,7 +1,10 @@
 const rfr = require('rfr');
+const fs = require('fs');
+const path = require('path');
 const async = require('async');
 const app = require('express')();
 const server = require('http').createServer(app);
+const morgan = require('morgan');
 const cors = require('cors');
 const bodyParser = require('body-parser');
 // const io = require('socket.io').listen(server);
@@ -17,6 +20,12 @@ async.auto({
 		Log.info('|          Optimus Deploy              |');
 		Log.info('+ ------------------------------------ +');
 		callback(null, 'Starting modules, this could take a few seconds.');
+		app.use(morgan('common', {
+			stream: fs.createWriteStream(path.join(config.logger.path, 'access.log'), {
+				flags: 'a'
+			})
+		}));
+		app.use(morgan('dev'));
 		app.use(cors());
 		app.use(bodyParser.urlencoded({
 			extended: false
