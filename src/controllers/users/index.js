@@ -1,8 +1,8 @@
 const rfr = require('rfr');
 
-const users = {
+const methods = {
     main: rfr('src/controllers/users/main'),
     newUser: rfr('src/controllers/users/newUser')
 };
 
-module.exports = users;
+module.exports = methods;
