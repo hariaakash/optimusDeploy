@@ -14,8 +14,8 @@ async function getFile() {
     return await readFile(path.resolve('./static/nginx.conf'));
 }
 
-async function outFile(data) {
-    return await writeFile(path.resolve('./static/nginx2.conf'), data);
+async function outFile(name, data) {
+    return await writeFile(path.resolve(`/etc/nginx/sites-available/${name}.conf`), data);
 }
 
 const createFile = (data, next) => {
@@ -30,9 +30,17 @@ const createFile = (data, next) => {
             });
         })
         .then((response) => {
-            return outFile(response);
+            return outFile(data.name, response);
         })
-        .then((response) => next(null, 'Nginx file created.'))
+        .then((response) => {
+            Process.exec(`sudo ln -s /etc/nginx/sites-available/${data.name}.conf /etc/nginx/sites-enabled/${data.name}.conf`, (err) => {
+                if (err) {
+                    next(err, 'Unable to creat nginx sys link.');
+                } else {
+                    next(null, 'Nginx file created.');
+                }
+            });
+        })
 };
 
 const reload = (next) => {
