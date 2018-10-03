@@ -14,13 +14,14 @@ const request = (req, res) => {
                 Dns.checkDns(req.body, callback);
             }],
             checkContainer: ['retrieveContainer', (result, callback) => {
-                if (result.retrieveContainer) {
-                    callback({
-                        dnsId: result.retrieveContainer
-                    }, 'Existing DNS found');
-                } else {
-                    callback(null, 'DNS not found.');
-                }
+                // if (result.retrieveContainer) {
+                //     callback({
+                //         dnsId: result.retrieveContainer
+                //     }, 'Existing DNS found');
+                // } else {
+                //     callback(null, 'DNS not found.');
+                // }
+                callback(null, 'DNS not found.');
             }],
             createContainer: ['checkContainer', (result, callback) => {
                 Docker.createContainer(req.body, callback);
@@ -46,6 +47,7 @@ const request = (req, res) => {
         }, (err, result) => {
             if (err) {
                 Log.error(err);
+                console.log(result);
                 uniR(res, false, 'A fatal error caused the creation of container to abort.');
             } else {
                 Log.info(`Container created with name: ${result.createContainer}`);
