@@ -44,7 +44,7 @@ const createFile = (data, next) => {
 };
 
 const reload = (next) => {
-    Process.exec('ls', (err) => {
+    Process.exec('service nginx restart', (err) => {
         if (err) {
             next(err, 'Unable to restart nginx.');
         } else {
