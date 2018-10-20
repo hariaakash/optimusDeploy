@@ -35,8 +35,7 @@ async.auto({
 	},
 	connect_mongodb: ['pretty_init', (result, callback) => {
 		Log.info(result.pretty_init);
-		// DBConnection(callback);
-		callback(null, 'MongoDB closed.');
+		DBConnection(callback);
 	}],
 	start_express: ['connect_mongodb', (result, callback) => {
 		Log.info(result.connect_mongodb);

@@ -47,7 +47,6 @@ const request = (req, res) => {
         }, (err, result) => {
             if (err) {
                 Log.error(err);
-                console.log(result);
                 uniR(res, false, 'A fatal error caused the creation of container to abort.');
             } else {
                 Log.info(`Container created with name: ${result.createContainer}`);
