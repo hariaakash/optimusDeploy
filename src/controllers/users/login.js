@@ -1,22 +1,26 @@
 const rfr = require('rfr');
+const bcrypt = require('bcryptjs');
+const mongoose = require('mongoose');
+const hat = require('hat');
 
 const User = rfr('src/models/users');
 
 const uniR = rfr('src/helpers/uniR');
 
 const request = (req, res) => {
-    if (req.query.authKey) {
+    if (req.body.email && req.body.password) {
         User.findOne({
-                authKey: req.query.authKey
+                email: req.body.email.toLowerCase()
             })
             .then((user) => {
-                if (user) {
+                if (!user) {
+                    uniR(res, false, 'User not registered.');
+                } else {
                     res.json({
                         status: true,
-                        data: user.email
+                        msg: 'Logged in successfully',
+                        authKey: user.authKey
                     });
-                } else {
-                    uniR(res, true, 'Session expired, login to continue.');
                 }
             })
             .catch((err) => {
@@ -24,7 +28,7 @@ const request = (req, res) => {
                 uniR(res, false, 'Some error occurred.');
             });
     } else {
-        uniR(res, false, 'Login to continue.');
+        uniR(res, false, 'Empty input.');
     }
 };
 

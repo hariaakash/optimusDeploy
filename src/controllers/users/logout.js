@@ -1,4 +1,5 @@
 const rfr = require('rfr');
+const hat = require('hat');
 
 const User = rfr('src/models/users');
 
@@ -11,9 +12,11 @@ const request = (req, res) => {
             })
             .then((user) => {
                 if (user) {
+                    user.authKey = hat();
+                    user.save();
                     res.json({
                         status: true,
-                        data: user.email
+                        msg: 'Logged out successfully.'
                     });
                 } else {
                     uniR(res, true, 'Session expired, login to continue.');

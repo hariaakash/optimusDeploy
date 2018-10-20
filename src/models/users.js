@@ -6,16 +6,13 @@ const userSchema = new Schema({
     email: String,
     password: String,
     conf: {
-        verfied: String,
+        verified: String,
         block: {
             type: Boolean,
             default: false
         }
     },
-    authKey: [{
-        type: Schema.Types.ObjectId,
-        ref: 'AuthKey'
-    }]
+    authKey: String
 });
 
 module.exports = mongoose.model('Users', userSchema);

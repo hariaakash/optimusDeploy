@@ -28,15 +28,19 @@
     "dependencies": {
         "async": "^2.6.1",
         "axios": "^0.18.0",
+        "bcryptjs": "^2.4.3",
         "body-parser": "^1.18.3",
         "bunyan": "^1.8.12",
+        "cookie-parser": "^1.4.3",
         "cors": "^2.8.4",
         "dockerode": "^2.5.6",
         "express": "^4.16.3",
+        "hat": "0.0.3",
         "lodash": "^4.17.10",
-        "mongoose": "^5.2.9",
+        "mongoose": "^5.2.8",
         "morgan": "^1.9.1",
         "mustache": "^3.0.0",
+        "node-cron": "^2.0.3",
         "rfr": "^1.2.3",
         "socket.io": "^2.1.1"
     }

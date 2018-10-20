@@ -5,6 +5,10 @@ const users = rfr('src/controllers/users');
 
 router.get('/', users.main);
 
-router.post('/newUser', users.newUser);
+router.post('/register', users.register);
+
+router.post('/login', users.login);
+
+router.get('/logout', users.logout);
 
 module.exports = router;

@@ -7,6 +7,7 @@ const server = require('http').createServer(app);
 const morgan = require('morgan');
 const cors = require('cors');
 const bodyParser = require('body-parser');
+const cookieParser = require('cookie-parser')
 // const io = require('socket.io').listen(server);
 
 const config = rfr('config');
@@ -31,6 +32,7 @@ async.auto({
 			extended: false
 		}));
 		app.use(bodyParser.json());
+		app.use(cookieParser());
 		app.use(Routes);
 	},
 	connect_mongodb: ['pretty_init', (result, callback) => {
