@@ -13,7 +13,10 @@ const request = (req, res) => {
                 if (user) {
                     res.json({
                         status: true,
-                        data: user.email
+                        data: {
+                            email: user.email,
+                            conf: user.conf,
+                        }
                     });
                 } else {
                     uniR(res, true, 'Session expired, login to continue.');

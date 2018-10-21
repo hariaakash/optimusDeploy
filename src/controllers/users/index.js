@@ -5,6 +5,7 @@ const methods = {
     register: rfr('src/controllers/users/register'),
     login: rfr('src/controllers/users/login'),
     logout: rfr('src/controllers/users/logout'),
+    verifyEmail: rfr('src/controllers/users/verifyEmail'),
 };
 
 module.exports = methods;

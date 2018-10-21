@@ -16,11 +16,22 @@ const request = (req, res) => {
                 if (!user) {
                     uniR(res, false, 'User not registered.');
                 } else {
-                    res.json({
-                        status: true,
-                        msg: 'Logged in successfully',
-                        authKey: user.authKey
-                    });
+                    bcrypt.compare(req.body.password, user.password)
+                        .then((status) => {
+                            if (status) {
+                                if (user.conf.verified == 'true') {
+                                    res.json({
+                                        status: true,
+                                        msg: 'Logged in successfully',
+                                        authKey: user.authKey
+                                    });
+                                } else {
+                                    uniR(res, false, 'Verify your account to login !!');
+                                }
+                            } else {
+                                uniR(res, false, 'Password is wrong.');
+                            }
+                        });
                 }
             })
             .catch((err) => {
