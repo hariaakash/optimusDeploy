@@ -2,10 +2,10 @@ const rfr = require('rfr');
 const router = require('express').Router();
 
 const users = rfr('src/routes/users');
-const container = rfr('src/routes/container');
+const containers = rfr('src/routes/containers');
 
 router.use('/webapi/users', users);
-router.use('/webapi/container', container);
+router.use('/webapi/containers', containers);
 
 router.use('/*', (req, res) => res.json({
     status: false,

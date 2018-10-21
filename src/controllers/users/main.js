@@ -23,7 +23,6 @@ const request = (req, res) => {
                 }
             })
             .catch((err) => {
-                console.log(err)
                 uniR(res, false, 'Some error occurred.');
             });
     } else {

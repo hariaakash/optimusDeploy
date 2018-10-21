@@ -12,7 +12,11 @@ const userSchema = new Schema({
             default: false
         }
     },
-    authKey: String
+    authKey: String,
+    containers: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Containers'
+    }]
 });
 
 module.exports = mongoose.model('Users', userSchema);
