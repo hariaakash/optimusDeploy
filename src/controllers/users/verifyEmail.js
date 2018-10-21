@@ -40,7 +40,7 @@ const request = (req, res) => {
                     });
                     sg.API(request);
                 } else {
-                    uniR(res, true, 'Session expired, login to continue.');
+                    uniR(res, true, 'User not found.');
                 }
             })
             .catch((err) => {

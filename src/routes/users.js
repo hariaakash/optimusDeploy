@@ -13,4 +13,6 @@ router.get('/logout', users.logout);
 
 router.post('/verifyEmail', users.verifyEmail);
 
+router.post('/sendEmailVerification', users.sendEmailVerification);
+
 module.exports = router;
