@@ -3,7 +3,11 @@ const Dockerode = require('dockerode');
 const docker = new Dockerode();
 
 const createContainer = (data, next) => {
-    data.repo = data.git.replace('https://', '').replace('http://', '').split('/')[2];
+    if (data.git.containers('@')) {
+        data.repo = data.git.replace('git@github.com:', '').replace('.git', '').split('/')[1];
+    } else {
+        data.repo = data.git.replace('https://', '').replace('http://', '').split('/')[2].split(':')[0];
+    }
     docker.createContainer({
             name: data.name,
             Image: `hariaakash/op-${data.stack}`,
