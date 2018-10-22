@@ -9,6 +9,7 @@ const request = (req, res) => {
         User.findOne({
                 authKey: req.query.authKey
             })
+            .populate('containers')
             .then((user) => {
                 if (user) {
                     res.json({
@@ -16,6 +17,7 @@ const request = (req, res) => {
                         data: {
                             email: user.email,
                             conf: user.conf,
+                            containers: user.containers,
                         }
                     });
                 } else {

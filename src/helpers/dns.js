@@ -21,7 +21,7 @@ const createDns = (uri, next) => {
         })
         .then((response) => {
             if (response.data.success) {
-                next(null, 'DNS created successfully.');
+                next(null, response.data.result.id);
             } else {
                 next(response.data.errors, 'DNS creation failed.');
             }
@@ -47,9 +47,13 @@ const checkDns = (uri, next) => {
         })
         .then((response) => {
             if (response.data.result.length > 0) {
-                next(null, response.data.result[0].id);
+                if (!response.data.result.some(x => x.name.split('.')[0] == uri)) {
+                    next(null, 'DNS not found.');
+                } else {
+                    next('checkDns', 'Container name already taken.');
+                }
             } else {
-                next(null, false);
+                next('checkDns', 'Dns creation failed.');
             }
         })
         .catch((error) => {
@@ -71,7 +75,7 @@ const deleteDns = (uri, next) => {
             if (response.data.success) {
                 next(null, 'DNS removed.');
             } else {
-                next(null, false);
+                next(null, 'DNS unable to remove / not found.');
             }
         })
         .catch((error) => {

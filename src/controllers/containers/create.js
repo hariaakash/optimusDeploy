@@ -34,7 +34,10 @@ const request = (req, res) => {
                                     callback(err, 'Some error occurred when trying to check existing container.');
                                 });
                         }],
-                        createContainer: ['checkContainer', (result, callback) => {
+                        checkDns: ['checkContainer', (result, callback) => {
+                            Dns.checkDns(req.body.name, callback);
+                        }],
+                        createContainer: ['checkDns', (result, callback) => {
                             Docker.createContainer({
                                 git: req.body.git,
                                 name: req.body.name,
@@ -42,7 +45,8 @@ const request = (req, res) => {
                             }, callback);
                         }],
                         startContainer: ['createContainer', (result, callback) => {
-                            Docker.startContainer(req.body.cid = result.createContainer, callback);
+                            req.body.containerId = result.createContainer;
+                            Docker.startContainer(result.createContainer, callback);
                         }],
                         inspectPort: ['startContainer', (result, callback) => {
                             Docker.inspectPort(result.startContainer, callback);
@@ -53,36 +57,39 @@ const request = (req, res) => {
                                 port: result.inspectPort
                             }, callback);
                         }],
-                        createDNS: ['createNginx', (result, callback) => {
+                        createDns: ['createNginx', (result, callback) => {
                             Dns.createDns(req.body.name, callback);
                         }],
-                        reloadNginx: ['createDNS', (result, callback) => {
+                        reloadNginx: ['createDns', (result, callback) => {
+                            req.body.dnsId = result.createDns;
                             Nginx.reload(callback);
                         }],
                         saveData: ['reloadNginx', (result, callback) => {
                             var container = new Container();
                             container._id = mongoose.Types.ObjectId();
+                            req.body.containerDbId = container._id;
                             container.name = req.body.name;
                             container.image = req.body.stack;
                             container.git = req.body.git;
-                            container.cid = req.body.cid;
+                            container.containerId = req.body.containerId;
+                            container.dnsId = req.body.dnsId;
                             container.save();
                             user.containers.push(container._id);
                             user.save();
-                            callbac(null);
+                            callback(null);
                         }],
                     }, (err, result) => {
                         if (err) {
                             if (err == 'checkContainer') {
                                 uniR(res, false, result.checkContainer);
-                            } else if (err == 'qq') {
-                                uniR(res, false, result.checkContainer);
+                            } else if (err == 'checkDns') {
+                                uniR(res, false, result.checkDns);
                             } else {
                                 Log.error(err);
                                 uniR(res, false, 'A fatal error caused the creation of container to abort.');
                             }
                         } else {
-                            Log.info(`Container created with name: ${result.createContainer}`);
+                            Log.info(`Container created with id: ${req.body.containerDbId}`);
                             uniR(res, true, 'Container Created successfully.');
                         }
                     });

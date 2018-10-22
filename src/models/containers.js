@@ -6,7 +6,8 @@ const containersSchema = new Schema({
     name: String,
     image: String,
     git: String,
-    cid: String,
+    containerId: String, // Docker ID
+    dnsId: String,
     created_at: {
         type: Date,
         default: Date.now

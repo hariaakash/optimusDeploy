@@ -9,6 +9,7 @@ const config = rfr('config');
 
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
+const unlink = promisify(fs.unlink);
 
 async function getFile() {
     return await readFile(path.resolve('./static/nginx.conf'));
@@ -16,6 +17,10 @@ async function getFile() {
 
 async function outFile(name, data) {
     return await writeFile(path.resolve(`/etc/nginx/sites-available/${name}.conf`), data);
+}
+
+async function removeFile(name) {
+    return await unlink(path.resolve(`/etc/nginx/sites-available/${name}.conf`));
 }
 
 const createFile = (data, next) => {
@@ -40,7 +45,16 @@ const createFile = (data, next) => {
                     next(null, 'Nginx file created.');
                 }
             });
-        })
+        });
+};
+
+const deleteFile = (data, next) => {
+    removeFile(data)
+        .then(() => {
+            Process.exec(`rm /etc/nginx/sites-enabled/${data}.conf`, (err) => {
+                next(null, 'Nginx file removed.');
+            });
+        });
 };
 
 const reload = (next) => {
@@ -55,6 +69,7 @@ const reload = (next) => {
 
 const nginx = {
     createFile,
+    deleteFile,
     reload,
 };
 
