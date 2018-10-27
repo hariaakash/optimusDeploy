@@ -37,6 +37,7 @@
         "express": "^4.16.3",
         "hat": "0.0.3",
         "lodash": "^4.17.10",
+        "mkdirp": "^0.5.1",
         "mongoose": "^5.2.8",
         "morgan": "^1.9.1",
         "mustache": "^3.0.0",

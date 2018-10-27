@@ -13,10 +13,11 @@ const cookieParser = require('cookie-parser')
 const config = rfr('config');
 const Log = rfr('src/helpers/logger');
 const DBConnection = rfr('src/helpers/mongoose');
+const EnsureDir = rfr('src/helpers/ensureDir');
 const Routes = rfr('src/routes');
 
 async.auto({
-	pretty_init: (callback) => {
+	pretty_init: [(callback) => {
 		Log.info('+ ------------------------------------ +');
 		Log.info('|          Optimus Deploy              |');
 		Log.info('+ ------------------------------------ +');
@@ -34,12 +35,16 @@ async.auto({
 		app.use(bodyParser.json());
 		app.use(cookieParser());
 		app.use(Routes);
-	},
-	connect_mongodb: ['pretty_init', (result, callback) => {
-		Log.info(result.pretty_init);
+	}],
+	ensure_directories: [(callback) => {
+		EnsureDir(callback);
+	}],
+	connect_mongodb: [(callback) => {
 		DBConnection(callback);
 	}],
-	start_express: ['connect_mongodb', (result, callback) => {
+	start_express: ['pretty_init', 'ensure_directories', 'connect_mongodb', (result, callback) => {
+		Log.info(result.pretty_init);
+		Log.info(result.ensure_directories);
 		Log.info(result.connect_mongodb);
 		server.listen(config.web.port, config.web.ip);
 		callback(null, `Express running on ${config.web.ip}:${config.web.port}`);
