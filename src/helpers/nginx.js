@@ -9,8 +9,8 @@ const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 const unlink = promisify(fs.unlink);
 
-async function getFile() {
-    return await readFile(path.resolve('./static/nginx.conf'));
+async function getFile(uri) {
+    return await readFile(path.resolve(uri));
 }
 
 async function outFile(name, data) {
@@ -22,7 +22,7 @@ async function removeFile(name) {
 }
 
 const createFile = (data, next) => {
-    getFile()
+    getFile('./static/nginx.conf')
         .then((response) => {
             return response.toString();
         })
@@ -65,10 +65,28 @@ const reload = (next) => {
     });
 };
 
+const changePort = (data, next) => {
+    getFile(`/etc/nginx/sites-available/${data.id}.conf`)
+        .then((response) => {
+            return response.toString();
+        })
+        .then((response) => {
+            let n = response.lastIndexOf(data.oldPort);
+            return response.slice(0, n) + response.slice(n).replace(data.oldPort, data.newPort);
+        })
+        .then((response) => {
+            return outFile(data.id, response);
+        })
+        .then((response) => {
+            next(null, 'Nginx Configuration changed.');
+        });
+};
+
 const nginx = {
     createFile,
     deleteFile,
     reload,
+    changePort,
 };
 
 module.exports = nginx;
