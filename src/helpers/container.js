@@ -42,17 +42,19 @@ const startContainer = (data, next) => {
             next(null, data);
         })
         .catch((err) => {
-            next(err, 'Container unable to start.');
+            if (err.statusCode == 304) next(null, 'Container is already running.')
+            else next(err, 'Container unable to start.');
         });
 };
 
 const stopContainer = (data, next) => {
     docker.getContainer(data).stop()
         .then(() => {
-            next(null, data);
+            next(null, 'Container stopped successfully.');
         })
         .catch((err) => {
-            next(err, 'Container unable to stop.');
+            if (err.statusCode == 304) next(null, 'Container already in stopped state.')
+            else next(err, 'Container unable to stop.');
         });
 };
 

@@ -3,10 +3,10 @@ const router = require('express').Router();
 
 const containers = rfr('src/controllers/containers');
 
-router.get('/', containers.list);
-
 router.post('/create', containers.create);
 
 router.post('/delete', containers.delete);
+
+router.post('/stop', containers.stop);
 
 module.exports = router;
