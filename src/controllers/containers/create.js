@@ -8,6 +8,7 @@ const Container = rfr('src/models/containers');
 const config = rfr('config');
 
 const Docker = rfr('src/helpers/container');
+const Volume = rfr('src/helpers/volume');
 const Git = rfr('src/helpers/git');
 const Dns = rfr('src/helpers/dns');
 const Nginx = rfr('src/helpers/nginx');
@@ -47,7 +48,7 @@ const request = (req, res) => {
                         }],
                         createVolume: ['checkContainer', 'checkDns', (result, callback) => {
                             req.body.containerDbId = mongoose.Types.ObjectId();
-                            Docker.createVolume(req.body.containerDbId, callback);
+                            Volume.create(req.body.containerDbId, callback);
                         }],
                         gitClone: ['createVolume', (result, callback) => {
                             Git.clone({

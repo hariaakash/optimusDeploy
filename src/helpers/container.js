@@ -1,5 +1,4 @@
 const Dockerode = require('dockerode');
-const mkdirp = require('mkdirp');
 
 const docker = new Dockerode();
 
@@ -67,20 +66,12 @@ const inspectPort = (data, next) => {
         });
 };
 
-const createVolume = (data, next) => {
-    mkdirp(`/srv/daemon-data/${data}`, function (err) {
-        if (err) next(err, 'Unable to create volume.');
-        else next(null, 'Directories exists/created.');
-    });
-};
-
 const container = {
     createContainer,
     deleteContainer,
     startContainer,
     stopContainer,
     inspectPort,
-    createVolume,
 };
 
 module.exports = container;

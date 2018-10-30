@@ -6,6 +6,7 @@ const User = rfr('src/models/users');
 const Container = rfr('src/models/containers');
 
 const Docker = rfr('src/helpers/container');
+const Volume = rfr('src/helpers/volume');
 const Dns = rfr('src/helpers/dns');
 const Nginx = rfr('src/helpers/nginx');
 const Log = rfr('src/helpers/logger');
@@ -30,7 +31,6 @@ const request = (req, res) => {
                                                 return x != container._id;
                                             });
                                             user.save();
-                                            req.body.name = container.name;
                                             req.body.dockerId = container.containerId;
                                             req.body.dnsId = container.dnsId;
                                             container.remove();
@@ -43,28 +43,33 @@ const request = (req, res) => {
                                     }
                                 })
                                 .catch((err) => {
+                                    console.log(err)
                                     callback(err, 'Some error occurred when trying to check existing container.');
                                 });
+                        }],
+                        deleteContainer: ['checkContainer', (result, callback) => {
+                            Docker.deleteContainer(req.body.dockerId, callback);
                         }],
                         deleteDns: ['checkContainer', (result, callback) => {
                             Dns.deleteDns(req.body.dnsId, callback);
                         }],
-                        deleteNginx: ['deleteDns', (result, callback) => {
-                            Nginx.deleteFile(req.body.name, callback);
+                        removeVolume: ['checkContainer', (result, callback) => {
+                            Volume.remove(req.body.containerId, callback);
                         }],
-                        deleteContainer: ['deleteNginx', (result, callback) => {
-                            Docker.deleteContainer(req.body.dockerId, callback);
+                        deleteNginx: ['checkContainer', (result, callback) => {
+                            Nginx.deleteFile(req.body.containerId, callback);
                         }],
-                        reloadNginx: ['deleteContainer', (result, callback) => {
+                        reloadNginx: ['deleteNginx', (result, callback) => {
                             Nginx.reload(callback);
                         }],
                     }, (err, result) => {
                         if (err) {
+                            console.log(err)
                             if (err == 'checkContainer') {
                                 uniR(res, false, result.checkContainer);
                             } else {
                                 Log.error(err);
-                                uniR(res, false, 'A fatal error caused the creation of container to abort.');
+                                uniR(res, false, 'A fatal error caused the deletion of container to abort.');
                             }
                         } else {
                             Log.info(`Container removed with id: ${req.body.containerId}`);
