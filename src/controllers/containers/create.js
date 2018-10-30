@@ -5,14 +5,17 @@ const mongoose = require('mongoose');
 const User = rfr('src/models/users');
 const Container = rfr('src/models/containers');
 
+const config = rfr('config');
+
 const Docker = rfr('src/helpers/container');
+const Git = rfr('src/helpers/git');
 const Dns = rfr('src/helpers/dns');
 const Nginx = rfr('src/helpers/nginx');
 const Log = rfr('src/helpers/logger');
 const uniR = rfr('src/helpers/uniR');
 
 const request = (req, res) => {
-    if (req.body.authKey && req.body.name && req.body.stack && req.body.git) {
+    if (req.body.authKey && req.body.name && typeof req.body.nameCustom == "boolean" && req.body.stack && req.body.git) {
         User.findOne({
                 authKey: req.body.authKey
             })
@@ -24,6 +27,7 @@ const request = (req, res) => {
                                     name: req.body.name.toLowerCase()
                                 })
                                 .then((container) => {
+                                    req.body.name = req.body.name.toLowerCase();
                                     if (container) {
                                         callback('checkContainer', 'Container name already taken.');
                                     } else {
@@ -34,43 +38,63 @@ const request = (req, res) => {
                                     callback(err, 'Some error occurred when trying to check existing container.');
                                 });
                         }],
-                        checkDns: ['checkContainer', (result, callback) => {
-                            Dns.checkDns(req.body.name, callback);
+                        checkDns: [(callback) => {
+                            if (req.body.nameCustom) {
+                                next(null, 'Check DNS aborted due to custom domain.')
+                            } else {
+                                Dns.checkDns(req.body.name, callback);
+                            }
                         }],
-                        createContainer: ['checkDns', (result, callback) => {
+                        createVolume: ['checkContainer', 'checkDns', (result, callback) => {
+                            req.body.containerDbId = mongoose.Types.ObjectId();
+                            Docker.createVolume(req.body.containerDbId, callback);
+                        }],
+                        gitClone: ['createVolume', (result, callback) => {
+                            Git.clone({
+                                name: req.body.containerDbId,
+                                git: req.body.git
+                            }, callback);
+                        }],
+                        createContainer: ['createVolume', (result, callback) => {
                             Docker.createContainer({
-                                git: req.body.git,
-                                name: req.body.name,
+                                name: String(req.body.containerDbId),
                                 stack: req.body.stack
                             }, callback);
                         }],
                         startContainer: ['createContainer', (result, callback) => {
                             req.body.containerId = result.createContainer;
-                            Docker.startContainer(result.createContainer, callback);
+                            Docker.startContainer(req.body.containerId, callback);
                         }],
                         inspectPort: ['startContainer', (result, callback) => {
-                            Docker.inspectPort(result.startContainer, callback);
+                            Docker.inspectPort(req.body.containerId, callback);
+                        }],
+                        createDns: ['inspectPort', (result, callback) => {
+                            if (req.body.nameCustom) {
+                                next(null, 'DNS creation aborted due to custom domain.')
+                            } else {
+                                Dns.createDns(req.body.name, callback);
+                            }
                         }],
                         createNginx: ['inspectPort', (result, callback) => {
+                            req.body.containerPort = result.inspectPort;
                             Nginx.createFile({
-                                name: req.body.name,
+                                id: req.body.containerDbId,
+                                name: req.body.nameCustom ? req.body.name : `${req.body.name}.${config.cloudflare.domain}`,
                                 port: result.inspectPort
                             }, callback);
                         }],
-                        createDns: ['createNginx', (result, callback) => {
-                            Dns.createDns(req.body.name, callback);
-                        }],
-                        reloadNginx: ['createDns', (result, callback) => {
-                            req.body.dnsId = result.createDns;
+                        reloadNginx: ['createNginx', (result, callback) => {
                             Nginx.reload(callback);
                         }],
-                        saveData: ['reloadNginx', (result, callback) => {
+                        saveData: ['reloadNginx', 'createDns', (result, callback) => {
+                            req.body.dnsId = result.createDns;
                             var container = new Container();
-                            container._id = mongoose.Types.ObjectId();
-                            req.body.containerDbId = container._id;
+                            container._id = req.body.containerDbId;
                             container.name = req.body.name;
+                            container.nameCustom = req.body.nameCustom;
                             container.image = req.body.stack;
                             container.git = req.body.git;
+                            container.port = req.body.containerPort;
                             container.containerId = req.body.containerId;
                             container.dnsId = req.body.dnsId;
                             container.save();

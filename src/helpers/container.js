@@ -1,21 +1,20 @@
 const Dockerode = require('dockerode');
+const mkdirp = require('mkdirp');
 
 const docker = new Dockerode();
 
 const createContainer = (data, next) => {
-    if (data.git.containers('@')) {
-        data.repo = data.git.replace('git@github.com:', '').replace('.git', '').split('/')[1];
-    } else {
-        data.repo = data.git.replace('https://', '').replace('http://', '').split('/')[2].split(':')[0];
-    }
     docker.createContainer({
             name: data.name,
             Image: `hariaakash/op-${data.stack}`,
-            Env: [`GIT_URL=${data.git}`, `GIT_REPO=${data.repo}`],
-            PortBindings: {
-                '8080/tcp': [{
-                    HostPort: ''
-                }]
+            Env: [],
+            HostConfig: {
+                Binds: [`/srv/daemon-data/${data.name}:/app`],
+                PortBindings: {
+                    '8080/tcp': [{
+                        HostPort: ''
+                    }]
+                },
             },
         })
         .then((container) => {
@@ -68,12 +67,20 @@ const inspectPort = (data, next) => {
         });
 };
 
+const createVolume = (data, next) => {
+    mkdirp(`/srv/daemon-data/${data}`, function (err) {
+        if (err) next(err, 'Unable to create volume.');
+        else next(null, 'Directories exists/created.');
+    });
+};
+
 const container = {
     createContainer,
     deleteContainer,
     startContainer,
     stopContainer,
     inspectPort,
+    createVolume,
 };
 
 module.exports = container;

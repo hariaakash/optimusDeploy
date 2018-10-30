@@ -8,6 +8,8 @@ const containersSchema = new Schema({
     git: String,
     containerId: String, // Docker ID
     dnsId: String,
+    port: String,
+    nameCustom: Boolean,
     created_at: {
         type: Date,
         default: Date.now

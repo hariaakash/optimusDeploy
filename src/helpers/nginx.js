@@ -5,8 +5,6 @@ const promisify = require('util').promisify;
 const mustache = require('mustache');
 const Process = require('child_process');
 
-const config = rfr('config');
-
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 const unlink = promisify(fs.unlink);
@@ -30,15 +28,15 @@ const createFile = (data, next) => {
         })
         .then((response) => {
             return mustache.render(response, {
-                domain: `${data.name}.${config.cloudflare.domain}`,
+                domain: data.name,
                 port: data.port
             });
         })
         .then((response) => {
-            return outFile(data.name, response);
+            return outFile(data.id, response);
         })
         .then((response) => {
-            Process.exec(`sudo ln -s /etc/nginx/sites-available/${data.name}.conf /etc/nginx/sites-enabled/${data.name}.conf`, (err) => {
+            Process.exec(`sudo ln -s /etc/nginx/sites-available/${data.id}.conf /etc/nginx/sites-enabled/${data.id}.conf`, (err) => {
                 if (err) {
                     next(err, 'Unable to creat nginx sys link.');
                 } else {
@@ -58,7 +56,7 @@ const deleteFile = (data, next) => {
 };
 
 const reload = (next) => {
-    Process.exec('service nginx restart', (err) => {
+    Process.exec('service nginx reload', (err) => {
         if (err) {
             next(err, 'Unable to restart nginx.');
         } else {
