@@ -7,6 +7,8 @@ router.post('/create', containers.create);
 
 router.post('/delete', containers.delete);
 
+router.post('/restart', containers.restart);
+
 router.post('/start', containers.start);
 
 router.post('/stop', containers.stop);

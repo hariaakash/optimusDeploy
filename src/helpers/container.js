@@ -36,9 +36,19 @@ const deleteContainer = (data, next) => {
         });
 };
 
+const restartContainer = (data, next) => {
+    docker.getContainer(data).restart()
+        .then((container) => {
+            next(null, data);
+        })
+        .catch((err) => {
+            next(err, 'Container unable to restart.');
+        });
+};
+
 const startContainer = (data, next) => {
     docker.getContainer(data).start()
-        .then(() => {
+        .then((container) => {
             next(null, data);
         })
         .catch((err) => {
@@ -49,7 +59,7 @@ const startContainer = (data, next) => {
 
 const stopContainer = (data, next) => {
     docker.getContainer(data).stop()
-        .then(() => {
+        .then((container) => {
             next(null, 'Container stopped successfully.');
         })
         .catch((err) => {
@@ -60,8 +70,8 @@ const stopContainer = (data, next) => {
 
 const inspectPort = (data, next) => {
     docker.getContainer(data).inspect()
-        .then((response) => {
-            next(null, response.NetworkSettings.Ports['8080/tcp'][0].HostPort);
+        .then((container) => {
+            next(null, container.NetworkSettings.Ports['8080/tcp'][0].HostPort);
         })
         .catch((err) => {
             next(err, 'Unable to retrieve port.');
@@ -71,6 +81,7 @@ const inspectPort = (data, next) => {
 const container = {
     createContainer,
     deleteContainer,
+    restartContainer,
     startContainer,
     stopContainer,
     inspectPort,
