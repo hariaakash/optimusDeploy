@@ -25,7 +25,7 @@ const request = (req, res) => {
                     async.auto({
                         validateName: [(callback) => {
                             if (req.body.nameCustom) {
-                                if (/^([a-zA-Z0-9][a-zA-Z0-9-_]*\.)*[a-zA-Z0-9]*[a-zA-Z0-9-_]*[[a-zA-Z0-9]+$/.test(req.body.name)) {
+                                if (/[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+/.test(req.body.name)) {
                                     callback(null, 'Domain looks good.');
                                 } else {
                                     callback('validateName', 'Domain not valid');
@@ -33,7 +33,7 @@ const request = (req, res) => {
                             } else {
                                 if (req.body.name.length >= 6) {
                                     if (/^[a-z-]+$/.test(req.body.name)) {
-                                        callback(null, 'Domain looks good haha.');
+                                        callback(null, 'Domain looks good.');
                                     } else {
                                         callback('validateName', 'Domain should be lowercase and alphabetic.');
                                     }

@@ -3,7 +3,9 @@ const path = require('path');
 const fs = require('fs');
 
 const writeKey = (data, next) => {
-    fs.writeFile(path.resolve(`/srv/keys/${data.name}`), data.key, (err) => {
+    fs.writeFile(path.resolve(`/srv/keys/${data.name}`), data.key, {
+        mode: '400'
+    }, (err) => {
         if (err) next(err, 'Unable to write SSH Keys.');
         else next(null, 'SSH Keys written.');
     })
@@ -18,6 +20,7 @@ const removeKey = (data, next) => {
 
 const clone = (data, next) => {
     Process.exec(`cd /srv/daemon-data/${data.name}; GIT_SSH_COMMAND="ssh -i /srv/keys/${data.name}" git clone ${data.git} .`, (err) => {
+        console.log(err);
         if (err) next('gitClone', 'Unable to clone git, repo not found or invalid ssh key permissions.');
         else next(null, 'Git cloned.');
     });

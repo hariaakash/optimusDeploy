@@ -57,6 +57,7 @@ const checkDns = (uri, next) => {
             }
         })
         .catch((error) => {
+            console.log(error);
             next(error);
         });
 };
