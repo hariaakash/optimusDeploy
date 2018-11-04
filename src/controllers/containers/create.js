@@ -23,12 +23,30 @@ const request = (req, res) => {
             .then((user) => {
                 if (user) {
                     async.auto({
-                        checkContainer: [(callback) => {
+                        validateName: [(callback) => {
+                            if (req.body.nameCustom) {
+                                if (/^([a-zA-Z0-9][a-zA-Z0-9-_]*\.)*[a-zA-Z0-9]*[a-zA-Z0-9-_]*[[a-zA-Z0-9]+$/.test(req.body.name)) {
+                                    callback(null, 'Domain looks good.');
+                                } else {
+                                    callback('validateName', 'Domain not valid');
+                                }
+                            } else {
+                                if (req.body.name.length >= 6) {
+                                    if (/^[a-z]+$/.test(req.body.name)) {
+                                        callback(null, 'Domain looks good.');
+                                    } else {
+                                        callback('validateName', 'Domain should be lowercase and alphabetic.');
+                                    }
+                                } else {
+                                    callback('validateName', 'Custom domain should atleast be of 6 characters.');
+                                }
+                            }
+                        }],
+                        checkContainer: ['validateName', (result, callback) => {
                             Container.findOne({
-                                    name: req.body.name.toLowerCase()
+                                    name: req.body.name
                                 })
                                 .then((container) => {
-                                    req.body.name = req.body.name.toLowerCase();
                                     req.body.domain = req.body.nameCustom ? req.body.name : `${req.body.name}.${config.cloudflare.domain}`;
                                     if (container) {
                                         callback('checkContainer', 'Container name already taken.');
@@ -40,7 +58,7 @@ const request = (req, res) => {
                                     callback(err, 'Some error occurred when trying to check existing container.');
                                 });
                         }],
-                        checkDns: [(callback) => {
+                        checkDns: ['validateName', (result, callback) => {
                             if (req.body.nameCustom) {
                                 callback(null, 'Check DNS aborted due to custom domain.')
                             } else {
@@ -116,7 +134,9 @@ const request = (req, res) => {
                         }],
                     }, (err, result) => {
                         if (err) {
-                            if (err == 'checkContainer') {
+                            if (err == 'validateName') {
+                                uniR(res, false, result.validateName);
+                            } else if (err == 'checkContainer') {
                                 uniR(res, false, result.checkContainer);
                             } else if (err == 'checkDns') {
                                 uniR(res, false, result.checkDns);
