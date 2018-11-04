@@ -8,7 +8,7 @@ const create = (data, next) => {
 };
 
 const remove = (data, next) => {
-    fs.remove(`rm -rf /srv/daemon-data/${data}`, (err) => {
+    fs.remove(`/srv/daemon-data/${data}`, (err) => {
         if (err) {
             next(err, 'Unable to delete volume.');
         } else {

@@ -21,6 +21,7 @@ const Config = {
 		'zoneId': '8a755526d007650c44da46dfd2926709',
 		'apiKey': 'aec14d0f6ac75c489d4ad3eea00135fb6f56a',
 	},
+	'directories': ['/srv/daemon-data/', '/srv/keys'],
 };
 
 module.exports = Config;

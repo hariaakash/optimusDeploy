@@ -16,7 +16,7 @@ const Log = rfr('src/helpers/logger');
 const uniR = rfr('src/helpers/uniR');
 
 const request = (req, res) => {
-    if (req.body.authKey && req.body.name && typeof req.body.nameCustom == "boolean" && req.body.stack && req.body.git) {
+    if (req.body.authKey && req.body.name && typeof req.body.nameCustom == "boolean" && req.body.stack && req.body.git && req.body.deployKeys) {
         User.findOne({
                 authKey: req.body.authKey
             })
@@ -51,7 +51,13 @@ const request = (req, res) => {
                             req.body.containerDbId = mongoose.Types.ObjectId();
                             Volume.create(req.body.containerDbId, callback);
                         }],
-                        gitClone: ['createVolume', (result, callback) => {
+                        createKey: ['checkContainer', 'checkDns', (result, callback) => {
+                            Git.writeKey({
+                                name: req.body.containerDbId,
+                                key: req.body.deployKeys
+                            }, callback);
+                        }],
+                        gitClone: ['createVolume', 'createKey', (result, callback) => {
                             Git.clone({
                                 name: req.body.containerDbId,
                                 git: req.body.git

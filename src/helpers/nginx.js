@@ -1,4 +1,3 @@
-const rfr = require('rfr');
 const path = require('path');
 const fs = require('fs');
 const promisify = require('util').promisify;

@@ -8,6 +8,7 @@ const Docker = rfr('src/helpers/container');
 const Volume = rfr('src/helpers/volume');
 const Dns = rfr('src/helpers/dns');
 const Nginx = rfr('src/helpers/nginx');
+const Git = rfr('src/helpers/git');
 const Log = rfr('src/helpers/logger');
 const uniR = rfr('src/helpers/uniR');
 
@@ -26,17 +27,17 @@ const request = (req, res) => {
                                 .then((container) => {
                                     if (container) {
                                         if (user.containers.indexOf(container._id) > -1) {
-                                            user.containers = user.containers.filter(x => {
-                                                return x != container._id;
+                                            req.body.dockerId = container.containerId;
+                                            req.body.dnsId = container.dnsId;
+                                            container.remove();
+                                            user.containers = user.containers.filter((x) => {
+                                                return x != req.body.containerId;
                                             });
                                             user.logs.push({
                                                 ip: req.clientIp,
                                                 msg: `Container deleted with id: ${container._id} and name: ${container.name}`
                                             });
                                             user.save();
-                                            req.body.dockerId = container.containerId;
-                                            req.body.dnsId = container.dnsId;
-                                            container.remove();
                                             callback(null, 'Data removed from DB');
                                         } else {
                                             callback('checkContainer', 'Container not found.');
@@ -58,10 +59,13 @@ const request = (req, res) => {
                         removeVolume: ['checkContainer', (result, callback) => {
                             Volume.remove(req.body.containerId, callback);
                         }],
+                        removeKey: ['checkContainer', (result, callback) => {
+                            Git.removeKey(req.body.containerId, callback);
+                        }],
                         deleteNginx: ['checkContainer', (result, callback) => {
                             Nginx.deleteFile(req.body.containerId, callback);
                         }],
-                        reloadNginx: ['deleteNginx', (result, callback) => {
+                        reloadNginx: ['deleteNginx', 'removeKey', 'removeVolume', 'deleteDns', 'deleteContainer', (result, callback) => {
                             Nginx.reload(callback);
                         }],
                     }, (err, result) => {
