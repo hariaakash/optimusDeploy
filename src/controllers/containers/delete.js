@@ -29,6 +29,7 @@ const request = (req, res) => {
                                         if (user.containers.indexOf(container._id) > -1) {
                                             req.body.dockerId = container.containerId;
                                             req.body.dnsId = container.dnsId;
+                                            req.body.nameCustom = container.nameCustom;
                                             container.remove();
                                             user.containers = user.containers.filter((x) => {
                                                 return x != req.body.containerId;
@@ -54,7 +55,11 @@ const request = (req, res) => {
                             Docker.deleteContainer(req.body.dockerId, callback);
                         }],
                         deleteDns: ['checkContainer', (result, callback) => {
-                            Dns.deleteDns(req.body.dnsId, callback);
+                            if (req.body.nameCustom) {
+                                callback(null, 'DNS removal aborted due to custom domain.')
+                            } else {
+                                Dns.deleteDns(req.body.dnsId, callback);
+                            }
                         }],
                         removeVolume: ['checkContainer', (result, callback) => {
                             Volume.remove(req.body.containerId, callback);

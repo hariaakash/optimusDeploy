@@ -10,6 +10,16 @@ const containersSchema = new Schema({
     dnsId: String,
     port: String,
     nameCustom: Boolean,
+    conf: {
+        plan: {
+            type: Schema.Types.ObjectId,
+            ref: 'Plans'
+        },
+        blocked: {
+            type: Boolean,
+            default: false
+        },
+    },
     created_at: {
         type: Date,
         default: Date.now

@@ -5,7 +5,7 @@ const logsSchema = rfr('src/models/logs');
 
 const Schema = mongoose.Schema;
 
-const userSchema = new Schema({
+const usersSchema = new Schema({
     email: String,
     password: String,
     conf: {
@@ -27,4 +27,4 @@ const userSchema = new Schema({
     },
 });
 
-module.exports = mongoose.model('Users', userSchema);
+module.exports = mongoose.model('Users', usersSchema);

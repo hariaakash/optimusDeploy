@@ -14,6 +14,7 @@ const createContainer = (data, next) => {
                         HostPort: ''
                     }]
                 },
+                Memory: (256 * 1000 * 1000),
             },
         })
         .then((container) => {

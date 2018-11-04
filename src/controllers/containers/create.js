@@ -42,7 +42,7 @@ const request = (req, res) => {
                         }],
                         checkDns: [(callback) => {
                             if (req.body.nameCustom) {
-                                next(null, 'Check DNS aborted due to custom domain.')
+                                callback(null, 'Check DNS aborted due to custom domain.')
                             } else {
                                 Dns.checkDns(req.body.name, callback);
                             }
@@ -78,7 +78,7 @@ const request = (req, res) => {
                         }],
                         createDns: ['inspectPort', (result, callback) => {
                             if (req.body.nameCustom) {
-                                next(null, 'DNS creation aborted due to custom domain.')
+                                callback(null, '');
                             } else {
                                 Dns.createDns(req.body.name, callback);
                             }
@@ -134,6 +134,7 @@ const request = (req, res) => {
                 }
             })
             .catch((err) => {
+                Log.error(err);
                 uniR(res, false, 'Some error occurred.');
             });
     } else {
