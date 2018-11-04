@@ -32,8 +32,8 @@ const request = (req, res) => {
                                 }
                             } else {
                                 if (req.body.name.length >= 6) {
-                                    if (/^[a-z]+$/.test(req.body.name)) {
-                                        callback(null, 'Domain looks good.');
+                                    if (/^[a-z-]+$/.test(req.body.name)) {
+                                        callback(null, 'Domain looks good haha.');
                                     } else {
                                         callback('validateName', 'Domain should be lowercase and alphabetic.');
                                     }
@@ -81,7 +81,7 @@ const request = (req, res) => {
                                 git: req.body.git
                             }, callback);
                         }],
-                        createContainer: ['createVolume', (result, callback) => {
+                        createContainer: ['gitClone', (result, callback) => {
                             Docker.createContainer({
                                 name: String(req.body.containerDbId),
                                 stack: req.body.stack
@@ -140,6 +140,18 @@ const request = (req, res) => {
                                 uniR(res, false, result.checkContainer);
                             } else if (err == 'checkDns') {
                                 uniR(res, false, result.checkDns);
+                            } else if (err == 'gitClone') {
+                                async.parallel({
+                                    removeVolume: (callback) => {
+                                        Volume.remove(req.body.containerDbId, callback);
+                                    },
+                                    removeKeys: (callback) => {
+                                        Git.removeKey(req.body.containerDbId, callback);
+                                    },
+                                }, (err) => {
+                                    if (err) Log.error(err);
+                                    uniR(res, false, result.gitClone);
+                                });
                             } else {
                                 Log.error(err);
                                 uniR(res, false, 'A fatal error caused the creation of container to abort.');
