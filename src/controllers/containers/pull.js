@@ -47,7 +47,7 @@ const request = (req, res) => {
                                 uniR(res, false, 'Unable to stop the container, try kill.');
                             }
                         } else {
-                            uniR(res, true, result.stopContainer);
+                            uniR(res, true, result.gitPull);
                         }
                     });
                 } else {
