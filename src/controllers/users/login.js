@@ -20,6 +20,10 @@ const request = (req, res) => {
                         .then((status) => {
                             if (status) {
                                 if (user.conf.verified == 'true') {
+                                    user.logs.push({
+                                        ip: req.clientIp,
+                                        msg: 'Logged in.'
+                                    });
                                     res.json({
                                         status: true,
                                         msg: 'Logged in successfully',

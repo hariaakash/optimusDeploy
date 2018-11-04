@@ -14,6 +14,10 @@ const request = (req, res) => {
             .then((user) => {
                 if (user) {
                     user.conf.verified = 'true';
+                    user.logs.push({
+                        ip: req.clientIp,
+                        msg: 'Email verificcation completed.'
+                    });
                     user.save();
                     uniR(res, true, 'Successfully verified, login to continue!');
                     var request = sg.emptyRequest({

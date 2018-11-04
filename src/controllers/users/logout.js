@@ -13,6 +13,10 @@ const request = (req, res) => {
             .then((user) => {
                 if (user) {
                     user.authKey = hat();
+                    user.logs.push({
+                        ip: req.clientIp,
+                        msg: 'Logged out.'
+                    });
                     user.save();
                     res.json({
                         status: true,

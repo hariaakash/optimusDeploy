@@ -29,6 +29,10 @@ const request = (req, res) => {
                                             user.containers = user.containers.filter(x => {
                                                 return x != container._id;
                                             });
+                                            user.logs.push({
+                                                ip: req.clientIp,
+                                                msg: `Container deleted with id: ${container._id} and name: ${container.name}`
+                                            });
                                             user.save();
                                             req.body.dockerId = container.containerId;
                                             req.body.dnsId = container.dnsId;

@@ -23,6 +23,10 @@ const request = (req, res) => {
                             user.password = hash;
                             user.conf.verified = hat();
                             user.authKey = hat();
+                            user.logs.push({
+                                ip: req.clientIp,
+                                msg: 'Registerd.'
+                            });
                             user.save()
                                 .then((user) => {
                                     uniR(res, true, 'Registration successfull, check email for verification.');

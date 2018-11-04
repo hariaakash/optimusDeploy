@@ -29,6 +29,7 @@ const request = (req, res) => {
                                 })
                                 .then((container) => {
                                     req.body.name = req.body.name.toLowerCase();
+                                    req.body.domain = req.body.nameCustom ? req.body.name : `${req.body.name}.${config.cloudflare.domain}`;
                                     if (container) {
                                         callback('checkContainer', 'Container name already taken.');
                                     } else {
@@ -80,7 +81,7 @@ const request = (req, res) => {
                             req.body.containerPort = result.inspectPort;
                             Nginx.createFile({
                                 id: req.body.containerDbId,
-                                name: req.body.nameCustom ? req.body.name : `${req.body.name}.${config.cloudflare.domain}`,
+                                name: req.body.domain,
                                 port: result.inspectPort
                             }, callback);
                         }],
@@ -100,6 +101,10 @@ const request = (req, res) => {
                             container.dnsId = req.body.dnsId;
                             container.save();
                             user.containers.push(container._id);
+                            user.logs.push({
+                                ip: req.clientIp,
+                                msg: `Container created with id: ${container._id} and name: ${req.body.domain}`
+                            });
                             user.save();
                             callback(null);
                         }],

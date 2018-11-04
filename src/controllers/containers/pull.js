@@ -23,6 +23,11 @@ const request = (req, res) => {
                                 .then((container) => {
                                     if (container) {
                                         if (user.containers.indexOf(container._id) > -1) {
+                                            user.logs.push({
+                                                ip: req.clientIp,
+                                                msg: `Container git pulled with id: ${container._id} and name: ${container.name}`
+                                            });
+                                            user.save();
                                             callback(null, 'Container found.');
                                         } else {
                                             callback('checkContainer', 'Container not found.');

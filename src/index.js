@@ -7,7 +7,8 @@ const server = require('http').createServer(app);
 const morgan = require('morgan');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-const cookieParser = require('cookie-parser')
+const cookieParser = require('cookie-parser');
+const requestIp = require('request-ip');
 // const io = require('socket.io').listen(server);
 
 const config = rfr('config');
@@ -34,6 +35,7 @@ async.auto({
 		}));
 		app.use(bodyParser.json());
 		app.use(cookieParser());
+		app.use(requestIp.mw());
 		app.use(Routes);
 	}],
 	ensure_directories: [(callback) => {
