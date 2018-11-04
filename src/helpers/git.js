@@ -9,9 +9,19 @@ const clone = (data, next) => {
         }
     });
 };
+const pull = (data, next) => {
+    Process.exec(`cd /srv/daemon-data/${data}; git pull`, (err) => {
+        if (err) {
+            next(err, 'Unable to git pull.');
+        } else {
+            next(null, 'Git pull completed.');
+        }
+    });
+};
 
 const git = {
     clone,
+    pull,
 };
 
 module.exports = git;

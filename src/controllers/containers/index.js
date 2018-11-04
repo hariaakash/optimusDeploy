@@ -6,6 +6,7 @@ const methods = {
     restart: rfr('src/controllers/containers/restart'),
     start: rfr('src/controllers/containers/start'),
     stop: rfr('src/controllers/containers/stop'),
+    pull: rfr('src/controllers/containers/pull'),
 };
 
 module.exports = methods;
