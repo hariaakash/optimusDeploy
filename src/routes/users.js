@@ -5,6 +5,8 @@ const users = rfr('src/controllers/users');
 
 router.get('/', users.main);
 
+router.get('/containers', users.containers);
+
 router.post('/register', users.register);
 
 router.post('/login', users.login);

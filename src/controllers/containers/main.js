@@ -9,20 +9,20 @@ const Log = rfr('src/helpers/logger');
 const uniR = rfr('src/helpers/uniR');
 
 const request = (req, res) => {
-    if (req.body.authKey && req.body.containerId) {
+    if (req.query.authKey && req.query.containerId) {
         User.findOne({
-                authKey: req.body.authKey
+                authKey: req.query.authKey
             })
             .populate('containers')
             .then((user) => {
                 if (user) {
-                    if ((x = user.containers.findIndex(y => y._id == req.body.containerId)) > -1) {
+                    if ((x = user.containers.findIndex(y => y._id == req.query.containerId)) > -1) {
                         async.parallel({
                             containerStats: (callback) => {
-                                Docker.containerStats(req.body.containerId, callback);
+                                Docker.containerStats(req.query.containerId, callback);
                             },
                             volumeStats: (callback) => {
-                                Volume.stats(req.body.containerId, callback);
+                                Volume.stats(req.query.containerId, callback);
                             },
                         }, (err, result) => {
                             if (err) {
@@ -30,11 +30,11 @@ const request = (req, res) => {
                                 uniR(res, false, 'Error occurred when trying to retireve stats.');
                             } else {
                                 let data = {
-                                    _id: req.body.containerId,
+                                    _id: req.query.containerId,
                                     stats: {
                                         rom: result.volumeStats,
-                                        ram: result.containerStats.ram,
-                                        cpu: result.containerStats.cpu,
+                                        ram: result.containerStats.ram || -1,
+                                        cpu: result.containerStats.cpu || -1,
                                     },
                                 };
                                 res.json({
