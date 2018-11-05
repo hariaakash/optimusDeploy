@@ -3,6 +3,8 @@ const router = require('express').Router();
 
 const containers = rfr('src/controllers/containers');
 
+router.post('/', containers.main);
+
 router.post('/create', containers.create);
 
 router.post('/delete', containers.delete);

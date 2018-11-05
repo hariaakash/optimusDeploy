@@ -1,6 +1,7 @@
 const rfr = require('rfr');
 
 const methods = {
+    main: rfr('src/controllers/containers/main'),
     create: rfr('src/controllers/containers/create'),
     delete: rfr('src/controllers/containers/delete'),
     restart: rfr('src/controllers/containers/restart'),

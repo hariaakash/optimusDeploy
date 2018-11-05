@@ -79,6 +79,26 @@ const inspectPort = (data, next) => {
         });
 };
 
+const containerStats = (data, next) => {
+    docker.getContainer(data).stats({
+            stream: false
+        })
+        .then((container) => {
+            let cpuDelta = container.cpu_stats.cpu_usage.total_usage - container.precpu_stats.cpu_usage.total_usage,
+                systemDelta = container.cpu_stats.system_cpu_usage - container.precpu_stats.system_cpu_usage,
+                cpu = (cpuDelta / systemDelta * 100) / container.cpu_stats.online_cpus,
+                ram = container.memory_stats.usage / container.memory_stats.limit * 100,
+                data = {
+                    ram: ram,
+                    cpu: cpu,
+                };
+            next(null, data);
+        })
+        .catch((err) => {
+            next(err, 'Unable to retrieve stats.');
+        });
+};
+
 const container = {
     createContainer,
     deleteContainer,
@@ -86,6 +106,7 @@ const container = {
     startContainer,
     stopContainer,
     inspectPort,
+    containerStats,
 };
 
 module.exports = container;

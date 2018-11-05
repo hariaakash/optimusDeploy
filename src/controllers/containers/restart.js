@@ -36,6 +36,7 @@ const request = (req, res) => {
                                     }
                                 })
                                 .catch((err) => {
+                                    Log.error(err);
                                     callback(err, 'Some error occurred when trying to check existing container.');
                                 });
                         }],

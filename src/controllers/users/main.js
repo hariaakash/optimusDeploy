@@ -12,12 +12,26 @@ const request = (req, res) => {
             .populate('containers')
             .then((user) => {
                 if (user) {
+                    let containers = user.containers.map((x, i) => {
+                        return {
+                            no: i,
+                            _id: x._id,
+                            image: x.image,
+                            name: x.name,
+                            nameCustom: x.nameCustom,
+                            stats: {
+                                cpu: -1,
+                                ram: -1,
+                                rom: -1,
+                            },
+                        };
+                    });
                     res.json({
                         status: true,
                         data: {
                             email: user.email,
                             conf: user.conf,
-                            containers: user.containers,
+                            containers: containers,
                         }
                     });
                 } else {
