@@ -20,7 +20,6 @@ const removeKey = (data, next) => {
 
 const clone = (data, next) => {
     Process.exec(`cd /srv/daemon-data/${data.name}; GIT_SSH_COMMAND="ssh -i /srv/keys/${data.name}" git clone ${data.git} .`, (err) => {
-        console.log(err);
         if (err) next('gitClone', 'Unable to clone git, repo not found or invalid ssh key permissions.');
         else next(null, 'Git cloned.');
     });
