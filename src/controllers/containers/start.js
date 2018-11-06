@@ -70,7 +70,11 @@ const request = (req, res) => {
                                 uniR(res, false, 'Unable to start the container.');
                             }
                         } else {
-                            uniR(res, true, result.startContainer);
+                            if (result.startContainer.includes('is')) {
+                                uniR(res, true, result.startContainer);
+                            } else {
+                                uniR(res, true, 'Container started.');
+                            }
                         }
                     });
                 } else {
