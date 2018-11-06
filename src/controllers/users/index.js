@@ -9,6 +9,8 @@ const methods = {
     verifyEmail: rfr('src/controllers/users/verifyEmail'),
     sendEmailVerification: rfr('src/controllers/users/sendEmailVerification'),
     changePasswordAccount: rfr('src/controllers/users/changePasswordAccount'),
+    forgotPassword: rfr('src/controllers/users/forgotPassword'),
+    setPassword: rfr('src/controllers/users/setPassword'),
     activity: rfr('src/controllers/users/activity'),
 };
 

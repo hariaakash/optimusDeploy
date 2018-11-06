@@ -23,6 +23,10 @@ const Config = {
 	},
 	'sendgrid': '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',
 	'directories': ['/srv/daemon-data/', '/srv/keys'],
+	'dashboard': {
+		'user': 'https://optimuscp.io/dashboard/#!/',
+		'admin': 'https://optimuscp.io/admin/#!/',
+	},
 };
 
 module.exports = Config;

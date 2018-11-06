@@ -13,7 +13,8 @@ const usersSchema = new Schema({
         block: {
             type: Boolean,
             default: false
-        }
+        },
+        pToken: String,
     },
     authKey: String,
     containers: [{

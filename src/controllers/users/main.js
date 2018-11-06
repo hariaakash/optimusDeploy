@@ -26,7 +26,7 @@ const request = (req, res) => {
                 uniR(res, false, 'Some error occurred.');
             });
     } else {
-        uniR(res, false, 'Login to continue.');
+        uniR(res, false, 'Empty input.');
     }
 };
 

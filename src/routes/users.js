@@ -19,6 +19,10 @@ router.post('/sendEmailVerification', users.sendEmailVerification);
 
 router.post('/changePasswordAccount', users.changePasswordAccount);
 
+router.post('/forgotPassword', users.forgotPassword);
+
+router.post('/setPassword', users.setPassword);
+
 router.get('/activity', users.activity);
 
 module.exports = router;
