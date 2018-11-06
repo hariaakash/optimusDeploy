@@ -21,6 +21,7 @@ const request = (req, res) => {
                                     ip: req.clientIp,
                                     msg: 'Logged in.'
                                 });
+                                admin.save();
                                 res.json({
                                     status: true,
                                     msg: 'Logged in successfully',

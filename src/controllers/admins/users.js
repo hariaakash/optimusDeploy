@@ -14,20 +14,28 @@ const request = (req, res) => {
                 if (admin) {
                     User.find()
                         .then((users) => {
-                            let data = users.map((x) => {
-                                return {
-                                    _id: x._id,
-                                    email: x.email,
-                                    conf: {
-                                        verified: x.conf.verified,
-                                        block: x.conf.block,
-                                    },
-                                    containers: x.containers.length,
-                                };
-                            });
+                            let verified = 0,
+                                containers = 0,
+                                data = users.map((x) => {
+                                    if (x.conf.verified) verified++;
+                                    containers += x.containers.length;
+                                    return {
+                                        _id: x._id,
+                                        email: x.email,
+                                        conf: {
+                                            verified: x.conf.verified,
+                                            block: x.conf.block,
+                                        },
+                                        containers: x.containers.length,
+                                    };
+                                });
                             res.json({
                                 status: true,
-                                data: data,
+                                data: {
+                                    verified,
+                                    containers,
+                                    users: data,
+                                },
                             });
                         })
                         .catch((err) => {

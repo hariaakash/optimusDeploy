@@ -5,7 +5,7 @@ const Admin = rfr('src/models/admins');
 const uniR = rfr('src/helpers/uniR');
 
 const request = (req, res) => {
-    if (req.query.authKey) {
+    if (req.query.adminKey) {
         Admin.findOne({
                 adminKey: req.query.adminKey
             })

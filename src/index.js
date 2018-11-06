@@ -15,10 +15,11 @@ const config = rfr('config');
 const Log = rfr('src/helpers/logger');
 const DBConnection = rfr('src/helpers/mongoose');
 const EnsureDir = rfr('src/helpers/ensureDir');
+const Init = rfr('src/helpers/init');
 const Routes = rfr('src/routes');
 
 async.auto({
-	pretty_init: [(callback) => {
+	middleware: [(callback) => {
 		Log.info('+ ------------------------------------ +');
 		Log.info('|          Optimus Deploy              |');
 		Log.info('+ ------------------------------------ +');
@@ -44,10 +45,14 @@ async.auto({
 	connect_mongodb: [(callback) => {
 		DBConnection(callback);
 	}],
-	start_express: ['pretty_init', 'ensure_directories', 'connect_mongodb', (result, callback) => {
-		Log.info(result.pretty_init);
+	init: [(callback) => {
+		Init(callback);
+	}],
+	start_express: ['middleware', 'ensure_directories', 'connect_mongodb', 'init', (result, callback) => {
+		Log.info(result.middleware);
 		Log.info(result.ensure_directories);
 		Log.info(result.connect_mongodb);
+		Log.info(result.init);
 		server.listen(config.web.port, config.web.ip);
 		callback(null, `Express running on ${config.web.ip}:${config.web.port}`);
 	}],

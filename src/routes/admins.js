@@ -21,4 +21,8 @@ router.get('/users', admins.users);
 
 router.get('/user/:userId', admins.user);
 
+router.post('/blockUser', admins.blockUser);
+
+router.post('/unblockUser', admins.unblockUser);
+
 module.exports = router;
