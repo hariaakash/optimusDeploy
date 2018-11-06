@@ -1,7 +1,10 @@
 const rfr = require('rfr');
 const bcrypt = require('bcryptjs');
 const hat = require('hat');
-const sg = require('sendgrid')('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');
+
+const config = rfr('config');
+
+const sg = require('sendgrid')(config.sendgrid);
 
 const User = rfr('src/models/users');
 
