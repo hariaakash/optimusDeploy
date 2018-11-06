@@ -17,31 +17,17 @@ const request = (req, res) => {
             .then((user) => {
                 if (user) {
                     if ((x = user.containers.findIndex(y => y._id == req.query.containerId)) > -1) {
-                        async.parallel({
-                            containerStats: (callback) => {
-                                Docker.containerStats(req.query.containerId, callback);
-                            },
-                            volumeStats: (callback) => {
-                                Volume.stats(req.query.containerId, callback);
-                            },
-                        }, (err, result) => {
-                            if (err) {
-                                Log.error(err);
-                                uniR(res, false, 'Error occurred when trying to retireve stats.');
-                            } else {
-                                let data = {
-                                    _id: req.query.containerId,
-                                    stats: {
-                                        rom: result.volumeStats,
-                                        ram: result.containerStats.ram || -1,
-                                        cpu: result.containerStats.cpu || -1,
-                                    },
-                                };
-                                res.json({
-                                    status: true,
-                                    data,
-                                });
-                            }
+                        let data = {
+                            _id: user.containers[x]._id,
+                            name: user.containers[x].name,
+                            nameCustom: user.containers[x].nameCustom,
+                            image: user.containers[x].image,
+                            git: user.containers[x].git,
+                            blocked: user.containers[x].conf.blocked,
+                        };
+                        res.json({
+                            status: true,
+                            data: data,
                         });
                     } else {
                         uniR(res, false, 'Container not found.');

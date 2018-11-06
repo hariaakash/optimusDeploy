@@ -5,6 +5,8 @@ const containers = rfr('src/controllers/containers');
 
 router.get('/', containers.main);
 
+router.get('/stats', containers.stats);
+
 router.post('/create', containers.create);
 
 router.post('/delete', containers.delete);

@@ -8,6 +8,7 @@ const methods = {
     logout: rfr('src/controllers/users/logout'),
     verifyEmail: rfr('src/controllers/users/verifyEmail'),
     sendEmailVerification: rfr('src/controllers/users/sendEmailVerification'),
+    activity: rfr('src/controllers/users/activity'),
 };
 
 module.exports = methods;
