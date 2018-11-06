@@ -15,6 +15,7 @@ const request = (req, res) => {
                     User.findOne({
                             _id: req.params.userId
                         })
+                        .populate('containers')
                         .then((user) => {
                             if (user) {
                                 let containers = user.containers.map((x, i) => {
@@ -25,11 +26,6 @@ const request = (req, res) => {
                                         image: x.image,
                                         name: x.name,
                                         nameCustom: x.nameCustom,
-                                        stats: {
-                                            cpu: -1,
-                                            ram: -1,
-                                            rom: -1,
-                                        },
                                     };
                                 });
                                 res.json({

@@ -19,11 +19,6 @@ const request = (req, res) => {
                             image: x.image,
                             name: x.name,
                             nameCustom: x.nameCustom,
-                            stats: {
-                                cpu: -1,
-                                ram: -1,
-                                rom: -1,
-                            },
                         };
                     });
                     res.json({

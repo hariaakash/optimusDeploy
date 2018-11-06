@@ -10,6 +10,7 @@ const methods = {
     activity: rfr('src/controllers/admins/activity'),
     users: rfr('src/controllers/admins/users'),
     user: rfr('src/controllers/admins/user'),
+    userContainerStats: rfr('src/controllers/admins/userContainerStats'),
     blockUser: rfr('src/controllers/admins/blockUser'),
     unblockUser: rfr('src/controllers/admins/unblockUser'),
 };

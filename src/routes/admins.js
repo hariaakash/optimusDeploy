@@ -21,6 +21,8 @@ router.get('/users', admins.users);
 
 router.get('/user/:userId', admins.user);
 
+router.post('/userContainerStats', admins.userContainerStats);
+
 router.post('/blockUser', admins.blockUser);
 
 router.post('/unblockUser', admins.unblockUser);
