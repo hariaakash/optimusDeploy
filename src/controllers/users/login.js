@@ -1,7 +1,5 @@
 const rfr = require('rfr');
 const bcrypt = require('bcryptjs');
-const mongoose = require('mongoose');
-const hat = require('hat');
 
 const User = rfr('src/models/users');
 

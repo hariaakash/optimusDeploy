@@ -1,25 +1,26 @@
 const rfr = require('rfr');
+const hat = require('hat');
 
-const User = rfr('src/models/users');
+const Admin = rfr('src/models/admins');
 
 const uniR = rfr('src/helpers/uniR');
 
 const request = (req, res) => {
-    if (req.query.authKey) {
-        User.findOne({
-                authKey: req.query.authKey
+    if (req.query.adminKey) {
+        Admin.findOne({
+                adminKey: req.query.adminKey
             })
-            .then((user) => {
-                if (user) {
+            .then((admin) => {
+                if (admin) {
+                    admin.adminKey = hat();
+                    admin.logs.push({
+                        ip: req.clientIp,
+                        msg: 'Logged out.'
+                    });
+                    admin.save();
                     res.json({
                         status: true,
-                        data: {
-                            email: user.email,
-                            conf: {
-                                verified: user.conf.verified,
-                                block: user.conf.block,
-                            },
-                        }
+                        msg: 'Logged out successfully.'
                     });
                 } else {
                     uniR(res, true, 'Session expired, login to continue.');
