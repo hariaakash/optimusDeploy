@@ -90,7 +90,7 @@ const containerStats = (data, next) => {
                 cpu = (cpuDelta / systemDelta * 100) / container.cpu_stats.online_cpus,
                 ram = container.memory_stats.usage / container.memory_stats.limit * 100,
                 data = {
-                    ram: ram.toFixed(2) || -1,
+                    ram: ram >= 0 ? ram.toFixed(2) : -1,
                     cpu: cpu >= 0 ? cpu.toFixed(2) : -1,
                 };
             next(null, data);
