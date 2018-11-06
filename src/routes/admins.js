@@ -11,6 +11,8 @@ router.post('/login', admins.login);
 
 router.get('/logout', admins.logout);
 
+router.post('/changePasswordAccount', admins.changePasswordAccount);
+
 router.post('/setPassword', admins.setPassword);
 
 router.get('/activity', admins.activity);
