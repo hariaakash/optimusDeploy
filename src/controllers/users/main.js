@@ -23,7 +23,7 @@ const request = (req, res) => {
                         }
                     });
                 } else {
-                    uniR(res, true, 'Session expired, login to continue.');
+                    uniR(res, false, 'Session expired, login to continue.');
                 }
             })
             .catch((err) => {
