@@ -10,9 +10,11 @@ const methods = {
     activity: rfr('src/controllers/admins/activity'),
     users: rfr('src/controllers/admins/users'),
     user: rfr('src/controllers/admins/user'),
+    userActivity: rfr('src/controllers/admins/userActivity'),
     userContainerStats: rfr('src/controllers/admins/userContainerStats'),
     blockUser: rfr('src/controllers/admins/blockUser'),
     unblockUser: rfr('src/controllers/admins/unblockUser'),
+    changeLimitUser: rfr('src/controllers/admins/changeLimitUser'),
 };
 
 module.exports = methods;

@@ -15,17 +15,13 @@ const request = (req, res) => {
                     User.findOne({
                             _id: req.params.userId
                         })
-                        .populate('containers')
                         .then((user) => {
                             if (user) {
-                                let containers = user.containers.map((x, i) => {
+                                let logs = user.logs.reverse().slice(0, 30).map((x, i) => {
                                     return {
                                         no: i,
-                                        _id: x._id,
-                                        conf: x.conf,
-                                        image: x.image,
-                                        name: x.name,
-                                        nameCustom: x.nameCustom,
+                                        msg: x.msg,
+                                        date: x.created_at,
                                     };
                                 });
                                 res.json({
@@ -38,7 +34,8 @@ const request = (req, res) => {
                                             block: user.conf.block,
                                             limit: user.conf.limit,
                                         },
-                                        containers: containers,
+                                        containers: user.containers.length,
+                                        logs: logs,
                                     }
                                 });
                             } else {

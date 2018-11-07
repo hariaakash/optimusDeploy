@@ -21,10 +21,14 @@ router.get('/users', admins.users);
 
 router.get('/user/:userId', admins.user);
 
+router.get('/userActivity/:userId', admins.userActivity);
+
 router.post('/userContainerStats', admins.userContainerStats);
 
 router.post('/blockUser', admins.blockUser);
 
 router.post('/unblockUser', admins.unblockUser);
+
+router.post('/changeLimitUser', admins.changeLimitUser);
 
 module.exports = router;

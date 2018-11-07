@@ -15,6 +15,10 @@ const usersSchema = new Schema({
             default: false
         },
         pToken: String,
+        limit: {
+            type: Number,
+            default: 1,
+        }
     },
     authKey: String,
     containers: [{

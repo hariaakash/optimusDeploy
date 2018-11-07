@@ -24,21 +24,29 @@ const request = (req, res) => {
                 if (user) {
                     async.auto({
                         validateName: [(callback) => {
-                            if (req.body.nameCustom) {
-                                if (/[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+/.test(req.body.name)) {
-                                    callback(null, 'Domain looks good.');
-                                } else {
-                                    callback('validateName', 'Domain not valid');
-                                }
+                            if (user.conf.block) {
+                                callback('accountBlocked', 'Account blocked from access.');
                             } else {
-                                if (req.body.name.length >= 6) {
-                                    if (/^[a-z-]+$/.test(req.body.name)) {
-                                        callback(null, 'Domain looks good.');
+                                if (user.containers.length > user.conf.limit) {
+                                    if (req.body.nameCustom) {
+                                        if (/[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+/.test(req.body.name)) {
+                                            callback(null, 'Domain looks good.');
+                                        } else {
+                                            callback('validateName', 'Domain not valid');
+                                        }
                                     } else {
-                                        callback('validateName', 'Domain should be lowercase and alphabetic.');
+                                        if (req.body.name.length >= 6) {
+                                            if (/^[a-z-]+$/.test(req.body.name)) {
+                                                callback(null, 'Domain looks good.');
+                                            } else {
+                                                callback('validateName', 'Domain should be lowercase and alphabetic.');
+                                            }
+                                        } else {
+                                            callback('validateName', 'Custom domain should atleast be of 6 characters.');
+                                        }
                                     }
                                 } else {
-                                    callback('validateName', 'Custom domain should atleast be of 6 characters.');
+                                    callback('containerLimit', 'You have reached the limit.');
                                 }
                             }
                         }],
@@ -152,6 +160,12 @@ const request = (req, res) => {
                                     if (err) Log.error(err);
                                     uniR(res, false, result.gitClone);
                                 });
+                            } else if (err == 'accountBlocked') {
+                                Log.error(`Account accessed using api: ${user.email}`);
+                                uniR(res, false, result.accountBlocked);
+                            } else if (err == 'containerLimit') {
+                                Log.error(`Container limit accessed using api: ${user.email}`);
+                                uniR(res, false, result.containerLimit);
                             } else {
                                 Log.error(err);
                                 uniR(res, false, 'A fatal error caused the creation of container to abort.');

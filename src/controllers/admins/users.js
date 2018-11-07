@@ -25,6 +25,7 @@ const request = (req, res) => {
                                         conf: {
                                             verified: x.conf.verified,
                                             block: x.conf.block,
+                                            limit: x.conf.limit,
                                         },
                                         containers: x.containers.length,
                                     };
