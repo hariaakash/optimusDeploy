@@ -12,7 +12,7 @@ const usersSchema = new Schema({
         verified: String,
         block: {
             type: Boolean,
-            default: false
+            default: true
         },
         pToken: String,
         limit: {
