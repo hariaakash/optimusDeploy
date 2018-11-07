@@ -17,7 +17,7 @@ const Config = {
 	'cloudflare': {
 		'email': 'smgdark@gmail.com',
 		'domain': 'gameservers.ooo',
-		'ip': '13.233.94.34',
+		'ip': '78.46.21.224',
 		'zoneId': '8a755526d007650c44da46dfd2926709',
 		'apiKey': 'aec14d0f6ac75c489d4ad3eea00135fb6f56a',
 	},
