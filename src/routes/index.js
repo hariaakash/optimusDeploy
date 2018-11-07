@@ -5,9 +5,9 @@ const users = rfr('src/routes/users');
 const admins = rfr('src/routes/admins');
 const containers = rfr('src/routes/containers');
 
-router.use('/webapi/users', users);
-router.use('/webapi/admins', admins);
-router.use('/webapi/containers', containers);
+router.use('/users', users);
+router.use('/admins', admins);
+router.use('/containers', containers);
 
 router.use('/*', (req, res) => res.json({
     status: false,
