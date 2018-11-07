@@ -2,6 +2,7 @@ const rfr = require('rfr');
 
 const methods = {
     main: rfr('src/controllers/admins/main'),
+    staffs: rfr('src/controllers/admins/staffs'),
     create: rfr('src/controllers/admins/create'),
     login: rfr('src/controllers/admins/login'),
     logout: rfr('src/controllers/admins/logout'),

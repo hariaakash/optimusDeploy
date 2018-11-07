@@ -26,7 +26,7 @@ const request = (req, res) => {
                                 var newAdmin = new Admin();
                                 newAdmin.email = req.body.email.toLowerCase();
                                 newAdmin.adminKey = hat();
-                                newAdmin.pToken = hat();
+                                newAdmin.conf.pToken = hat();
                                 newAdmin.logs.push({
                                     ip: '::1',
                                     msg: 'Registerd.'
@@ -45,13 +45,13 @@ const request = (req, res) => {
                                         template_id: 'd-f9b46d8401b34de09cf4eccd6ac1af91',
                                         personalizations: [{
                                             to: [{
-                                                email: admin.email
+                                                email: newAdmin.email
                                             }],
                                             dynamic_template_data: {
                                                 subject: 'Set Password Request for Admin - Optimus Deploy',
-                                                body: 'Forgot Password Request - Admin',
-                                                email: admin.email,
-                                                url: `${config.dashboard.admin}setPassword?email=${encodeURIComponent(admin.email)}&key=${admin.conf.pToken}`
+                                                body: 'Set Password Request - Admin',
+                                                email: newAdmin.email,
+                                                url: `${config.dashboard.admin}setPassword?email=${encodeURIComponent(newAdmin.email)}&key=${newAdmin.conf.pToken}`
                                             }
                                         }],
                                         from: {

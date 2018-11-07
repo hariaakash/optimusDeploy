@@ -5,6 +5,8 @@ const admins = rfr('src/controllers/admins');
 
 router.get('/', admins.main);
 
+router.get('/staffs', admins.staffs);
+
 router.post('/create', admins.create);
 
 router.post('/login', admins.login);
