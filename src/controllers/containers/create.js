@@ -16,7 +16,7 @@ const Log = rfr('src/helpers/logger');
 const uniR = rfr('src/helpers/uniR');
 
 const request = (req, res) => {
-    if (req.body.authKey && req.body.name && typeof req.body.nameCustom == "boolean" && req.body.stack && req.body.git && req.body.deployKeys) {
+    if (req.body.authKey && req.body.name && req.body.stack) {
         User.findOne({
                 authKey: req.body.authKey
             })
@@ -28,22 +28,14 @@ const request = (req, res) => {
                                 callback('accountBlocked', 'Account blocked from access.');
                             } else {
                                 if (user.containers.length < user.conf.limit) {
-                                    if (req.body.nameCustom) {
-                                        if (/[a-zA-Z0-9][a-zA-Z0-9-]{1,61}[a-zA-Z0-9](?:\.[a-zA-Z]{2,})+/.test(req.body.name)) {
+                                    if (req.body.name.length >= 6) {
+                                        if (/^[a-z-]+$/.test(req.body.name)) {
                                             callback(null, 'Domain looks good.');
                                         } else {
-                                            callback('validateName', 'Domain not valid');
+                                            callback('validateName', 'Domain should be lowercase and alphabetic.');
                                         }
                                     } else {
-                                        if (req.body.name.length >= 6) {
-                                            if (/^[a-z-]+$/.test(req.body.name)) {
-                                                callback(null, 'Domain looks good.');
-                                            } else {
-                                                callback('validateName', 'Domain should be lowercase and alphabetic.');
-                                            }
-                                        } else {
-                                            callback('validateName', 'Custom domain should atleast be of 6 characters.');
-                                        }
+                                        callback('validateName', 'Domain name should atleast be of 6 characters.');
                                     }
                                 } else {
                                     callback('containerLimit', 'You have reached the limit.');
@@ -55,7 +47,7 @@ const request = (req, res) => {
                                     name: req.body.name
                                 })
                                 .then((container) => {
-                                    req.body.domain = req.body.nameCustom ? req.body.name : `${req.body.name}.${config.cloudflare.domain}`;
+                                    req.body.domain = `${req.body.name}.${config.cloudflare.domain}`;
                                     if (container) {
                                         callback('checkContainer', 'Container name already taken.');
                                     } else {
@@ -67,35 +59,25 @@ const request = (req, res) => {
                                 });
                         }],
                         checkDns: ['validateName', (result, callback) => {
-                            if (req.body.nameCustom) {
-                                callback(null, 'Check DNS aborted due to custom domain.')
-                            } else {
-                                Dns.checkDns(req.body.name, callback);
-                            }
+                            Dns.checkDns(req.body.name, callback);
                         }],
                         createVolume: ['checkContainer', 'checkDns', (result, callback) => {
                             req.body.containerDbId = mongoose.Types.ObjectId();
                             Volume.create(req.body.containerDbId, callback);
                         }],
-                        createKey: ['checkContainer', 'checkDns', (result, callback) => {
-                            Git.writeKey({
+                        gitClone: ['createVolume', (result, callback) => {
+                            Git.cloneInit({
                                 name: req.body.containerDbId,
-                                key: req.body.deployKeys
+                                stack: req.body.stack
                             }, callback);
                         }],
-                        gitClone: ['createVolume', 'createKey', (result, callback) => {
-                            Git.clone({
-                                name: req.body.containerDbId,
-                                git: req.body.git
-                            }, callback);
-                        }],
-                        createContainer: ['gitClone', (result, callback) => {
+                        createContainer: ['createVolume', (result, callback) => {
                             Docker.createContainer({
                                 name: String(req.body.containerDbId),
                                 stack: req.body.stack
                             }, callback);
                         }],
-                        startContainer: ['createContainer', (result, callback) => {
+                        startContainer: ['createContainer', 'gitClone', (result, callback) => {
                             req.body.containerId = result.createContainer;
                             Docker.startContainer(req.body.containerId, callback);
                         }],
@@ -103,11 +85,7 @@ const request = (req, res) => {
                             Docker.inspectPort(req.body.containerId, callback);
                         }],
                         createDns: ['inspectPort', (result, callback) => {
-                            if (req.body.nameCustom) {
-                                callback(null, '');
-                            } else {
-                                Dns.createDns(req.body.name, callback);
-                            }
+                            Dns.createDns(req.body.name, callback);
                         }],
                         createNginx: ['inspectPort', (result, callback) => {
                             req.body.containerPort = result.inspectPort;
@@ -125,9 +103,7 @@ const request = (req, res) => {
                             var container = new Container();
                             container._id = req.body.containerDbId;
                             container.name = req.body.name;
-                            container.nameCustom = req.body.nameCustom;
                             container.image = req.body.stack;
-                            container.git = req.body.git;
                             container.port = req.body.containerPort;
                             container.containerId = req.body.containerId;
                             container.dnsId = req.body.dnsId;
@@ -152,9 +128,6 @@ const request = (req, res) => {
                                 async.parallel({
                                     removeVolume: (callback) => {
                                         Volume.remove(req.body.containerDbId, callback);
-                                    },
-                                    removeKeys: (callback) => {
-                                        Git.removeKey(req.body.containerDbId, callback);
                                     },
                                 }, (err) => {
                                     if (err) Log.error(err);

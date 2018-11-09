@@ -8,7 +8,6 @@ const Docker = rfr('src/helpers/container');
 const Volume = rfr('src/helpers/volume');
 const Dns = rfr('src/helpers/dns');
 const Nginx = rfr('src/helpers/nginx');
-const Git = rfr('src/helpers/git');
 const Log = rfr('src/helpers/logger');
 const uniR = rfr('src/helpers/uniR');
 
@@ -29,7 +28,6 @@ const request = (req, res) => {
                                         if (user.containers.indexOf(container._id) > -1) {
                                             req.body.dockerId = container.containerId;
                                             req.body.dnsId = container.dnsId;
-                                            req.body.nameCustom = container.nameCustom;
                                             container.remove();
                                             user.containers = user.containers.filter((x) => {
                                                 return x != req.body.containerId;
@@ -55,22 +53,15 @@ const request = (req, res) => {
                             Docker.deleteContainer(req.body.dockerId, callback);
                         }],
                         deleteDns: ['checkContainer', (result, callback) => {
-                            if (req.body.nameCustom) {
-                                callback(null, 'DNS removal aborted due to custom domain.')
-                            } else {
-                                Dns.deleteDns(req.body.dnsId, callback);
-                            }
+                            Dns.deleteDns(req.body.dnsId, callback);
                         }],
                         removeVolume: ['checkContainer', (result, callback) => {
                             Volume.remove(req.body.containerId, callback);
                         }],
-                        removeKey: ['checkContainer', (result, callback) => {
-                            Git.removeKey(req.body.containerId, callback);
-                        }],
                         deleteNginx: ['checkContainer', (result, callback) => {
                             Nginx.deleteFile(req.body.containerId, callback);
                         }],
-                        reloadNginx: ['deleteNginx', 'removeKey', 'removeVolume', 'deleteDns', 'deleteContainer', (result, callback) => {
+                        reloadNginx: ['deleteNginx', (result, callback) => {
                             Nginx.reload(callback);
                         }],
                     }, (err, result) => {

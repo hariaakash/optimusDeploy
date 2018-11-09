@@ -18,6 +18,14 @@ const removeKey = (data, next) => {
     });
 };
 
+const cloneInit = (data, next) => {
+    const repo = `https://github.com/hariaakash/op-${data.stack}-starter`;
+    Process.exec(`cd /srv/daemon-data/${data.name} && git clone ${repo} .`, (err) => {
+        if (err) next('gitClone', 'Unable to clone git, repo not found or invalid ssh key permissions.');
+        else next(null, 'Git init cloned.');
+    });
+};
+
 const clone = (data, next) => {
     Process.exec(`cd /srv/daemon-data/${data.name}; GIT_SSH_COMMAND="ssh -i /srv/keys/${data.name}" git clone ${data.git} .`, (err) => {
         if (err) next('gitClone', 'Unable to clone git, repo not found or invalid ssh key permissions.');
@@ -34,6 +42,7 @@ const pull = (data, next) => {
 const git = {
     writeKey,
     removeKey,
+    cloneInit,
     clone,
     pull,
 };

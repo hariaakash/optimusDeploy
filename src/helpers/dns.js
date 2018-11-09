@@ -46,7 +46,7 @@ const checkDns = (uri, next) => {
             },
         })
         .then((response) => {
-            if (response.data.result.length > 0) {
+            if (response.data.result.length >= 0) {
                 if (!response.data.result.some(x => x.name.split('.')[0] == uri)) {
                     next(null, 'DNS not found.');
                 } else {

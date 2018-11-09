@@ -8,7 +8,7 @@ const createContainer = (data, next) => {
             Image: `hariaakash/op-${data.stack}`,
             Env: [],
             HostConfig: {
-                Binds: [`/srv/daemon-data/${data.name}:/app`],
+                Binds: [`/srv/daemon-data/${data.name}/app:/app`],
                 PortBindings: {
                     '8080/tcp': [{
                         HostPort: ''
