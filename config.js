@@ -44,7 +44,7 @@ const Config = {
 						chmod 751 /srv/daemon-data/{{name}} && \
 						mkdir -p /srv/daemon-data/{{name}}/app && \
 						chown {{name}}:sftp /srv/daemon-data/{{name}}/app && \
-						chmod 751 /srv/daemon-data/{{name}}/app',
+						chmod 755 /srv/daemon-data/{{name}}/app',
 	}
 };
 
