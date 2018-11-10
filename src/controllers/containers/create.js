@@ -81,7 +81,7 @@ const request = (req, res) => {
                                 stack: req.body.stack
                             }, callback);
                         }],
-                        createContainer: ['createVolume', (result, callback) => {
+                        createContainer: ['createVolume', 'createSftp', (result, callback) => {
                             Docker.createContainer({
                                 name: String(req.body.containerDbId),
                                 stack: req.body.stack
