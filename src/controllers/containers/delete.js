@@ -6,6 +6,7 @@ const Container = rfr('src/models/containers');
 
 const Docker = rfr('src/helpers/container');
 const Volume = rfr('src/helpers/volume');
+const Sftp = rfr('src/helpers/sftp');
 const Dns = rfr('src/helpers/dns');
 const Nginx = rfr('src/helpers/nginx');
 const Log = rfr('src/helpers/logger');
@@ -55,8 +56,11 @@ const request = (req, res) => {
                         deleteDns: ['checkContainer', (result, callback) => {
                             Dns.deleteDns(req.body.dnsId, callback);
                         }],
-                        removeVolume: ['checkContainer', (result, callback) => {
+                        deleteVolume: ['checkContainer', (result, callback) => {
                             Volume.remove(req.body.containerId, callback);
+                        }],
+                        deleteSftp: ['checkContainer', (result, callback) => {
+                            Sftp.delUser(req.body.containerId, callback);
                         }],
                         deleteNginx: ['checkContainer', (result, callback) => {
                             Nginx.deleteFile(req.body.containerId, callback);

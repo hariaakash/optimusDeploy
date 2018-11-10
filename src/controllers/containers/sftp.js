@@ -1,29 +1,22 @@
 const rfr = require('rfr');
 
 const User = rfr('src/models/users');
+
 const Log = rfr('src/helpers/logger');
 const uniR = rfr('src/helpers/uniR');
 
 const request = (req, res) => {
-    if (req.query.authKey && req.query.containerId) {
+    if (req.body.authKey && req.body.containerId) {
         User.findOne({
-                authKey: req.query.authKey
+                authKey: req.body.authKey
             })
             .populate('containers')
             .then((user) => {
                 if (user) {
-                    if ((x = user.containers.findIndex(y => y._id == req.query.containerId)) > -1) {
-                        let data = {
-                            _id: user.containers[x]._id,
-                            name: user.containers[x].name,
-                            nameCustom: user.containers[x].nameCustom,
-                            image: user.containers[x].image,
-                            git: user.containers[x].git,
-                            blocked: user.containers[x].conf.blocked,
-                        };
+                    if ((x = user.containers.findIndex(y => y._id == req.body.containerId)) > -1) {
                         res.json({
                             status: true,
-                            data: data,
+                            data: user.containers[x].conf.sftp,
                         });
                     } else {
                         uniR(res, false, 'Container not found.');

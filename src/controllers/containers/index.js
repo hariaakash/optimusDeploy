@@ -9,6 +9,8 @@ const methods = {
     start: rfr('src/controllers/containers/start'),
     stop: rfr('src/controllers/containers/stop'),
     pull: rfr('src/controllers/containers/pull'),
+    sftp: rfr('src/controllers/containers/sftp'),
+    sftpReset: rfr('src/controllers/containers/sftpReset'),
 };
 
 module.exports = methods;

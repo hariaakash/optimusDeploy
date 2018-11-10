@@ -1,15 +1,21 @@
+const rfr = require('rfr');
+const fse = require('fs-extra');
+const mustache = require('mustache');
 const Process = require('child_process');
-const fs = require('fs-extra');
+
+const config = rfr('config');
 
 const create = (data, next) => {
-    fs.ensureDir(`/srv/daemon-data/${data}`, (err) => {
+    Process.exec(mustache.render(config.sftp.createVolume, {
+        name: data,
+    }), (err) => {
         if (err) next(err, 'Unable to create volume.');
         else next(null, 'Directories exists/created.');
     });
 };
 
 const remove = (data, next) => {
-    fs.remove(`/srv/daemon-data/${data}`, (err) => {
+    fse.remove(`/srv/daemon-data/${data}`, (err) => {
         if (err) next(err, 'Unable to delete volume.');
         else next(null, 'Volume Deleted.');
     });

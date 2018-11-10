@@ -22,11 +22,30 @@ const Config = {
 		'apiKey': 'aec14d0f6ac75c489d4ad3eea00135fb6f56a',
 	},
 	'sendgrid': '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',
-	'directories': ['/srv/daemon-data/', '/srv/keys'],
+	'directories': ['/srv/daemon-data/'],
 	'dashboard': {
 		'user': 'https://optimuscp.io/dashboard/#!/',
 		'admin': 'https://optimuscp.io/admin/#!/',
 	},
+	'sftp': {
+		'permitRoot': 'chown root:root /srv/daemon-data && chmod 751 /srv/daemon-data',
+		'enableGroup': 'echo "Match Group sftp \n\
+						ChrootDirectory /srv/daemon-data/%u \n\
+						ForceCommand internal-sftp \n\
+						PermitTunnel no \n\
+						AllowAgentForwarding no \n\
+						AllowTcpForwarding no \n\
+						X11Forwarding no" > /etc/ssh/sshd_config && \
+						service sshd restart',
+		'addUser': 'useradd {{name}} -M -g sftp -p $(openssl passwd -1 {{pass}}) -d /srv/daemon-data/{{name}} -s /bin/false',
+		'resetUserPass': 'usermod {{name}} -p $(openssl passwd -1 {{pass}})',
+		'createVolume': 'mkdir -p /srv/daemon-data/{{name}} && \
+						chown root:sftp /srv/daemon-data/{{name}} && \
+						chmod 751 /srv/daemon-data/{{name}} && \
+						mkdir -p /srv/daemon-data/{{name}}/app && \
+						chown {{name}}:sftp /srv/daemon-data/{{name}}/app && \
+						chmod 751 /srv/daemon-data/{{name}}/app',
+	}
 };
 
 module.exports = Config;

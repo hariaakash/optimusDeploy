@@ -20,20 +20,20 @@ const removeKey = (data, next) => {
 
 const cloneInit = (data, next) => {
     const repo = `https://github.com/hariaakash/op-${data.stack}-starter`;
-    Process.exec(`cd /srv/daemon-data/${data.name} && git clone ${repo} .`, (err) => {
-        if (err) next('gitClone', 'Unable to clone git, repo not found or invalid ssh key permissions.');
+    Process.exec(`cd /srv/daemon-data/${data.name}/app/ && git clone ${repo} .`, (err) => {
+        if (err) next('gitClone', 'Unable to clone git init.');
         else next(null, 'Git init cloned.');
     });
 };
 
 const clone = (data, next) => {
-    Process.exec(`cd /srv/daemon-data/${data.name}; GIT_SSH_COMMAND="ssh -i /srv/keys/${data.name}" git clone ${data.git} .`, (err) => {
+    Process.exec(`cd /srv/daemon-data/${data.name}/app/; GIT_SSH_COMMAND="ssh -i /srv/keys/${data.name}" git clone ${data.git} .`, (err) => {
         if (err) next('gitClone', 'Unable to clone git, repo not found or invalid ssh key permissions.');
         else next(null, 'Git cloned.');
     });
 };
 const pull = (data, next) => {
-    Process.exec(`cd /srv/daemon-data/${data}; GIT_SSH_COMMAND="ssh -i /srv/keys/${data}" git pull`, (err) => {
+    Process.exec(`cd /srv/daemon-data/${data}/app/; GIT_SSH_COMMAND="ssh -i /srv/keys/${data}" git pull`, (err) => {
         if (err) next(err, 'Unable to git pull.');
         else next(null, 'Git pull completed.');
     });

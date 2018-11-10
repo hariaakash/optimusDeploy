@@ -14,6 +14,7 @@ const requestIp = require('request-ip');
 const config = rfr('config');
 const Log = rfr('src/helpers/logger');
 const DBConnection = rfr('src/helpers/mongoose');
+const Sftp = rfr('src/helpers/sftp');
 const EnsureDir = rfr('src/helpers/ensureDir');
 const Init = rfr('src/helpers/init');
 const Routes = rfr('src/routes');
@@ -45,13 +46,17 @@ async.auto({
 	connect_mongodb: [(callback) => {
 		DBConnection(callback);
 	}],
+	ensureSftp: [(callback) => {
+		Sftp.ensureGroup(callback);
+	}],
 	init: [(callback) => {
 		Init(callback);
 	}],
-	start_express: ['middleware', 'ensure_directories', 'connect_mongodb', 'init', (result, callback) => {
+	start_express: ['middleware', 'ensure_directories', 'connect_mongodb', 'ensureSftp', 'init', (result, callback) => {
 		Log.info(result.middleware);
 		Log.info(result.ensure_directories);
 		Log.info(result.connect_mongodb);
+		Log.info(result.ensureSftp);
 		Log.info(result.init);
 		server.listen(config.web.port, config.web.ip);
 		callback(null, `Express running on ${config.web.ip}:${config.web.port}`);

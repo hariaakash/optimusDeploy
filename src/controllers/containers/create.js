@@ -1,6 +1,7 @@
 const rfr = require('rfr');
 const async = require('async');
 const mongoose = require('mongoose');
+const randomatic = require('randomatic');
 
 const User = rfr('src/models/users');
 const Container = rfr('src/models/containers');
@@ -9,11 +10,14 @@ const config = rfr('config');
 
 const Docker = rfr('src/helpers/container');
 const Volume = rfr('src/helpers/volume');
+const Sftp = rfr('src/helpers/sftp');
 const Git = rfr('src/helpers/git');
 const Dns = rfr('src/helpers/dns');
 const Nginx = rfr('src/helpers/nginx');
 const Log = rfr('src/helpers/logger');
 const uniR = rfr('src/helpers/uniR');
+
+randomatic.isCrypto;
 
 const request = (req, res) => {
     if (req.body.authKey && req.body.name && req.body.stack) {
@@ -47,7 +51,6 @@ const request = (req, res) => {
                                     name: req.body.name
                                 })
                                 .then((container) => {
-                                    req.body.domain = `${req.body.name}.${config.cloudflare.domain}`;
                                     if (container) {
                                         callback('checkContainer', 'Container name already taken.');
                                     } else {
@@ -61,8 +64,15 @@ const request = (req, res) => {
                         checkDns: ['validateName', (result, callback) => {
                             Dns.checkDns(req.body.name, callback);
                         }],
-                        createVolume: ['checkContainer', 'checkDns', (result, callback) => {
+                        createSftp: ['validateName', (result, callback) => {
                             req.body.containerDbId = mongoose.Types.ObjectId();
+                            req.body.sftpPass = randomatic('Aa0', 12);
+                            Sftp.addUser({
+                                name: req.body.containerDbId,
+                                pass: req.body.sftpPass,
+                            }, callback);
+                        }],
+                        createVolume: ['checkContainer', 'checkDns', 'createSftp', (result, callback) => {
                             Volume.create(req.body.containerDbId, callback);
                         }],
                         gitClone: ['createVolume', (result, callback) => {
@@ -89,6 +99,7 @@ const request = (req, res) => {
                         }],
                         createNginx: ['inspectPort', (result, callback) => {
                             req.body.containerPort = result.inspectPort;
+                            req.body.domain = `${req.body.name}.${config.cloudflare.domain}`;
                             Nginx.createFile({
                                 id: req.body.containerDbId,
                                 name: req.body.domain,
@@ -107,6 +118,7 @@ const request = (req, res) => {
                             container.port = req.body.containerPort;
                             container.containerId = req.body.containerId;
                             container.dnsId = req.body.dnsId;
+                            container.conf.sftp = req.body.sftpPass;
                             container.save();
                             user.containers.push(container._id);
                             user.logs.push({
@@ -129,8 +141,11 @@ const request = (req, res) => {
                                     removeVolume: (callback) => {
                                         Volume.remove(req.body.containerDbId, callback);
                                     },
-                                }, (err) => {
-                                    if (err) Log.error(err);
+                                    removeSftp: (callback) => {
+                                        Sftp.delUser(req.body.containerDbId, callback);
+                                    },
+                                }, () => {
+                                    Log.error(err);
                                     uniR(res, false, result.gitClone);
                                 });
                             } else if (err == 'accountBlocked') {

@@ -19,4 +19,8 @@ router.post('/stop', containers.stop);
 
 router.post('/pull', containers.pull);
 
+router.post('/sftp', containers.sftp);
+
+router.post('/sftpReset', containers.sftpReset);
+
 module.exports = router;
