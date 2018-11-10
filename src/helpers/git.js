@@ -20,7 +20,8 @@ const removeKey = (data, next) => {
 
 const cloneInit = (data, next) => {
     const repo = `https://github.com/hariaakash/op-${data.stack}-starter`;
-    Process.exec(`cd /srv/daemon-data/${data.name}/app/ && git clone ${repo} .`, (err) => {
+    const dir = `/srv/daemon-data/${data.name}/app/`;
+    Process.exec(`cd ${dir} && git clone ${repo} . && rm -rf .git && chown -R ${data.name}:sftp ${dir} && chmod -R 751 ${dir}`, (err) => {
         if (err) next('gitClone', 'Unable to clone git init.');
         else next(null, 'Git init cloned.');
     });
