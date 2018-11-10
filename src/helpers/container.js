@@ -6,6 +6,7 @@ const createContainer = (data, next) => {
     docker.createContainer({
             name: data.name,
             Image: `hariaakash/op-${data.stack}`,
+            User: data.name,
             Env: ["DEPLOY_PORT=8080", "DEPLOY_IP=0.0.0.0"],
             HostConfig: {
                 Binds: [`/srv/daemon-data/${data.name}/app:/app`],
