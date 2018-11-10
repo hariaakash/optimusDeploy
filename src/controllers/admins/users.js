@@ -16,10 +16,11 @@ const request = (req, res) => {
                         .then((users) => {
                             let verified = 0,
                                 containers = 0,
-                                data = users.map((x) => {
+                                data = users.map((x, i) => {
                                     if (x.conf.verified) verified++;
                                     containers += x.containers.length;
                                     return {
+                                        no: i,
                                         _id: x._id,
                                         email: x.email,
                                         conf: {

@@ -30,12 +30,12 @@ const Config = {
 	'sftp': {
 		'permitRoot': 'chown root:root /srv/daemon-data && chmod 751 /srv/daemon-data',
 		'enableGroup': 'echo "Match Group sftp \n\
-						ChrootDirectory /srv/daemon-data/%u \n\
-						ForceCommand internal-sftp \n\
-						PermitTunnel no \n\
-						AllowAgentForwarding no \n\
-						AllowTcpForwarding no \n\
-						X11Forwarding no" >> /etc/ssh/sshd_config && \
+		ChrootDirectory /srv/daemon-data/%u \n\
+		ForceCommand internal-sftp \n\
+		PermitTunnel no \n\
+		AllowAgentForwarding no \n\
+		AllowTcpForwarding no \n\
+		X11Forwarding no" >> /etc/ssh/sshd_config && \
 						service sshd restart',
 		'addUser': 'useradd {{name}} -M -g sftp -p $(openssl passwd -1 {{pass}}) -d /srv/daemon-data/{{name}} -s /bin/false',
 		'resetUserPass': 'usermod {{name}} -p $(openssl passwd -1 {{pass}})',
