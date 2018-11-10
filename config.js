@@ -35,7 +35,7 @@ const Config = {
 						PermitTunnel no \n\
 						AllowAgentForwarding no \n\
 						AllowTcpForwarding no \n\
-						X11Forwarding no" > /etc/ssh/sshd_config && \
+						X11Forwarding no" >> /etc/ssh/sshd_config && \
 						service sshd restart',
 		'addUser': 'useradd {{name}} -M -g sftp -p $(openssl passwd -1 {{pass}}) -d /srv/daemon-data/{{name}} -s /bin/false',
 		'resetUserPass': 'usermod {{name}} -p $(openssl passwd -1 {{pass}})',

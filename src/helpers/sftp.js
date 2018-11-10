@@ -7,7 +7,7 @@ const config = rfr('config');
 const ensureGroup = (next) => {
     Process.exec(`grep -q sftp /etc/group`, (err) => {
         if (err) {
-            Process.exec(`groupadd sftp && ${config.permitRoot} && ${config.enableGroup}`, (err) => {
+            Process.exec(`groupadd sftp && ${config.sftp.permitRoot} && ${config.sftp.enableGroup}`, (err) => {
                 if (err) next(err, 'Error adding SFTP group.');
                 else next(null, 'SFTP group created.');
             });
