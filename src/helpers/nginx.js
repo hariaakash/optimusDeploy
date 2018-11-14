@@ -28,7 +28,7 @@ async function symbolicLink(name) {
 const createFile = (data, next) => {
     let nginxCustom = data.nginxCustomPre ? 'nginxCustomPre' : 'nginxCustomPost',
         nginxFile = data.custom ? nginxCustom : 'nginxDefault',
-        nginxPath = `./static/${nginxFile}.conf`;
+        nginxPath = `./static/nginx/${nginxFile}.conf`;
     getFile(nginxPath)
         .then((response) => {
             return response.toString();
