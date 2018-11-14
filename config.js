@@ -47,7 +47,7 @@ const Config = {
 						chmod 755 /srv/daemon-data/{{name}}/app',
 	},
 	'certbot': {
-		'create': 'certbot certonly -a webroot --webroot-path=/srv/daemon-data/{{id}}/tmp -d {{domain}} --cert-name {{id}} --staging --email {{email}} -n --agree-tos',
+		'create': 'certbot certonly -a webroot --webroot-path=/srv/daemon-data/{{id}}/tmp -d {{domain}} --cert-name {{id}} --email {{email}} -n --agree-tos',
 	}
 };
 
