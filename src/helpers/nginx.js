@@ -53,7 +53,7 @@ const createFile = (data, next) => {
 };
 
 const deleteFile = (data, next) => {
-    removeFile(data, 'linked')
+    removeFile(data, 'enabled')
         .then(() => {
             return removeFile(data, 'available')
         })
