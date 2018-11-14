@@ -38,6 +38,7 @@ const createFile = (data, next) => {
                 domain: data.name,
                 port: data.port,
                 containerId: data.id,
+                customDomain: data.customDomain,
             });
         })
         .then((response) => {

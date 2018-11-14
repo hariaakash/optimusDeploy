@@ -54,6 +54,7 @@ const request = (req, res) => {
                             Nginx.createFile({
                                 id: req.body.containerId,
                                 name: domain,
+                                customDomain: req.body.domain,
                                 custom: true,
                                 port: req.body.container.port,
                                 symlink: false,
@@ -75,6 +76,7 @@ const request = (req, res) => {
                             Nginx.createFile({
                                 id: req.body.containerId,
                                 name: domain,
+                                customDomain: req.body.domain,
                                 custom: true,
                                 port: req.body.container.port,
                                 symlink: false,
