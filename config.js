@@ -42,9 +42,12 @@ const Config = {
 		'createVolume': 'mkdir -p /srv/daemon-data/{{name}} && \
 						chown root:sftp /srv/daemon-data/{{name}} && \
 						chmod 751 /srv/daemon-data/{{name}} && \
-						mkdir -p /srv/daemon-data/{{name}}/app && \
+						mkdir -p /srv/daemon-data/{{name}}/app /srv/daemon-data/{{name}}/tmp && \
 						chown {{name}}:sftp /srv/daemon-data/{{name}}/app && \
 						chmod 755 /srv/daemon-data/{{name}}/app',
+	},
+	'certbot': {
+		'create': 'certbot certonly -a webroot --webroot-path=/srv/daemon-data/{{id}}/tmp -d {{domain}} --cert-name {{id}} --staging --email {{email}} -n --agree-tos',
 	}
 };
 

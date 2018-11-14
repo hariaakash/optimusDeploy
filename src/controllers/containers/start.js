@@ -50,7 +50,8 @@ const request = (req, res) => {
                             Nginx.changePort({
                                 id: req.body.containerId,
                                 oldPort: req.body.container.port,
-                                newPort: req.body.containerPort
+                                newPort: req.body.containerPort,
+                                symlink: true,
                             }, callback);
                         }],
                         reloadNginx: ['changePortNginx', (result, callback) => {

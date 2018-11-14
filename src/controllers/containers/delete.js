@@ -54,7 +54,7 @@ const request = (req, res) => {
                             Docker.deleteContainer(req.body.dockerId, callback);
                         }],
                         deleteDns: ['checkContainer', (result, callback) => {
-                            Dns.deleteDns(req.body.dnsId, callback);
+                            Dns.deleteRecord(req.body.dnsId, callback);
                         }],
                         deleteVolume: ['checkContainer', (result, callback) => {
                             Volume.remove(req.body.containerId, callback);

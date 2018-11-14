@@ -8,6 +8,13 @@ const containersSchema = new Schema({
     containerId: String, // Docker ID
     dnsId: String,
     port: String,
+    dns: {
+        name: String,
+        custom: {
+            type: Boolean,
+            default: false
+        },
+    },
     conf: {
         plan: {
             type: Schema.Types.ObjectId,

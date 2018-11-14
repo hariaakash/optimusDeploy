@@ -7,6 +7,7 @@ const Process = require('child_process');
 const readFile = promisify(fs.readFile);
 const writeFile = promisify(fs.writeFile);
 const unlink = promisify(fs.unlink);
+const symlink = promisify(fs.symlink);
 
 async function getFile(uri) {
     return await readFile(path.resolve(uri));
@@ -16,41 +17,47 @@ async function outFile(name, data) {
     return await writeFile(path.resolve(`/etc/nginx/sites-available/${name}.conf`), data);
 }
 
-async function removeFile(name) {
-    return await unlink(path.resolve(`/etc/nginx/sites-available/${name}.conf`));
+async function removeFile(name, link) {
+    return await unlink(path.resolve(`/etc/nginx/sites-${link}/${name}.conf`));
+}
+
+async function symbolicLink(name) {
+    return await symlink(`/etc/nginx/sites-available/${name}.conf`, `/etc/nginx/sites-enabled/${name}.conf`);
 }
 
 const createFile = (data, next) => {
-    getFile('./static/nginx.conf')
+    let nginxCustom = data.nginxCustomPre ? 'nginxCustomPre' : 'nginxCustomPost',
+        nginxFile = data.custom ? nginxCustom : 'nginxDefault',
+        nginxPath = `./static/${nginxFile}.conf`;
+    getFile(nginxPath)
         .then((response) => {
             return response.toString();
         })
         .then((response) => {
             return mustache.render(response, {
                 domain: data.name,
-                port: data.port
+                port: data.port,
+                containerId: data.id,
             });
         })
         .then((response) => {
             return outFile(data.id, response);
         })
-        .then((response) => {
-            Process.exec(`sudo ln -s /etc/nginx/sites-available/${data.id}.conf /etc/nginx/sites-enabled/${data.id}.conf`, (err) => {
-                if (err) {
-                    next(err, 'Unable to creat nginx sys link.');
-                } else {
-                    next(null, 'Nginx file created.');
-                }
-            });
+        .then(() => {
+            return data.symlink ? symbolicLink(data.id) : null;
+        })
+        .then(() => {
+            next(null, 'Nginx file created.');
         });
 };
 
 const deleteFile = (data, next) => {
-    removeFile(data)
+    removeFile(data, 'linked')
         .then(() => {
-            Process.exec(`rm /etc/nginx/sites-enabled/${data}.conf`, (err) => {
-                next(null, 'Nginx file removed.');
-            });
+            return removeFile(data, 'available')
+        })
+        .then(() => {
+            next(null, 'Nginx file removed.');
         });
 };
 

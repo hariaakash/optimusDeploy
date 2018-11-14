@@ -23,4 +23,6 @@ router.post('/sftp', containers.sftp);
 
 router.post('/sftpReset', containers.sftpReset);
 
+router.post('/setDns', containers.setDns);
+
 module.exports = router;

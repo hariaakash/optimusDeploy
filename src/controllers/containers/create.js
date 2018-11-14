@@ -62,7 +62,7 @@ const request = (req, res) => {
                                 });
                         }],
                         checkDns: ['validateName', (result, callback) => {
-                            Dns.checkDns(req.body.name, callback);
+                            Dns.checkRecord(req.body.name, callback);
                         }],
                         createSftp: ['validateName', (result, callback) => {
                             req.body.containerDbId = mongoose.Types.ObjectId();
@@ -95,7 +95,7 @@ const request = (req, res) => {
                             Docker.inspectPort(req.body.containerId, callback);
                         }],
                         createDns: ['inspectPort', (result, callback) => {
-                            Dns.createDns(req.body.name, callback);
+                            Dns.createRecord(req.body.name, callback);
                         }],
                         createNginx: ['inspectPort', (result, callback) => {
                             req.body.containerPort = result.inspectPort;
@@ -103,7 +103,9 @@ const request = (req, res) => {
                             Nginx.createFile({
                                 id: req.body.containerDbId,
                                 name: req.body.domain,
-                                port: result.inspectPort
+                                custom: false,
+                                port: result.inspectPort,
+                                symlink: true,
                             }, callback);
                         }],
                         reloadNginx: ['createNginx', (result, callback) => {

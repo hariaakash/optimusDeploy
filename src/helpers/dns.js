@@ -1,9 +1,10 @@
 const rfr = require('rfr');
 const axios = require('axios');
+const Process = require('child_process');
 
 const config = rfr('config');
 
-const createDns = (uri, next) => {
+const createRecord = (uri, next) => {
     axios({
             url: `https://api.cloudflare.com/client/v4/zones/${config.cloudflare.zoneId}/dns_records`,
             method: 'POST',
@@ -31,7 +32,7 @@ const createDns = (uri, next) => {
         });
 };
 
-const checkDns = (uri, next) => {
+const checkRecord = (uri, next) => {
     axios({
             url: `https://api.cloudflare.com/client/v4/zones/${config.cloudflare.zoneId}/dns_records`,
             method: 'GET',
@@ -61,7 +62,7 @@ const checkDns = (uri, next) => {
         });
 };
 
-const deleteDns = (uri, next) => {
+const deleteRecord = (uri, next) => {
     axios({
             url: `https://api.cloudflare.com/client/v4/zones/${config.cloudflare.zoneId}/dns_records/${uri}`,
             method: 'DELETE',
@@ -83,10 +84,22 @@ const deleteDns = (uri, next) => {
         });
 };
 
-const cloudflare = {
-    checkDns,
-    createDns,
-    deleteDns,
+const lookup = (data, next) => {
+    Process.exec(`dig +short ${data.domain}`, (err, data) => {
+        if (err) {
+            next(err, 'Lookup failed');
+        } else {
+            if (data.indexOf(config.cloudflare.ip) >= 0) next(null, 'DNS lookup successful.');
+            else next('dnsLookup', 'DNS lookup failed.');
+        }
+    });
 };
 
-module.exports = cloudflare;
+const dns = {
+    checkRecord,
+    createRecord,
+    deleteRecord,
+    lookup,
+};
+
+module.exports = dns;

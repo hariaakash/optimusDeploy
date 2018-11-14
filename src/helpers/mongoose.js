@@ -4,17 +4,25 @@ const mongoose = require('mongoose');
 const cron = require('node-cron');
 
 const User = rfr('src/models/users');
+const Admin = rfr('src/models/admins');
 
 const config = rfr('config');
 const dbURI = `mongodb://${config.mongoose.ip}:${config.mongoose.port}/${config.mongoose.db}`;
 
 cron.schedule('0 4 * * *', () => {
 	User.find({})
-		.then( (users) => {
-			for(i=0;i<users.length;i++){
-				users[i].authKey = hat();
-				users[i].save();
-			}
+		.then((users) => {
+			users.forEach((user) => {
+				user.authKey = hat();
+				user.save();
+			});
+		});
+	Admin.find({})
+		.then((admins) => {
+			admins.forEach((admin) => {
+				admin.adminKey = hat();
+				admin.save();
+			});
 		});
 	console.log('Regenerated authkeys');
 });

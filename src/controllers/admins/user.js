@@ -22,10 +22,10 @@ const request = (req, res) => {
                                     return {
                                         no: i,
                                         _id: x._id,
-                                        conf: x.conf,
-                                        image: x.image,
                                         name: x.name,
-                                        nameCustom: x.nameCustom,
+                                        image: x.image,
+                                        dns: x.dns,
+                                        conf: x.conf,
                                     };
                                 });
                                 res.json({

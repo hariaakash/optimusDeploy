@@ -16,9 +16,8 @@ const request = (req, res) => {
                         let data = {
                             _id: user.containers[x]._id,
                             name: user.containers[x].name,
-                            nameCustom: user.containers[x].nameCustom,
                             image: user.containers[x].image,
-                            git: user.containers[x].git,
+                            dns: user.containers[x].dns,
                             blocked: user.containers[x].conf.blocked,
                         };
                         res.json({
