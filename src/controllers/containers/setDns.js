@@ -49,7 +49,7 @@ const request = (req, res) => {
                         dnsLookup: ['checkContainer', (result, callback) => {
                             Dns.lookup(req.body.domain, callback);
                         }],
-                        createNginxPre: ['validateName', 'checkContainer', 'dnsLookup', (result, callback) => {
+                        createNginxPre: ['checkContainer', 'dnsLookup', (result, callback) => {
                             let domain = `${req.body.container.name}.${config.cloudflare.domain} ${req.body.domain}`;
                             Nginx.createFile({
                                 id: req.body.containerId,
