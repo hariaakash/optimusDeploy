@@ -85,11 +85,11 @@ const deleteRecord = (uri, next) => {
 };
 
 const lookup = (data, next) => {
-    Process.exec(`dig +short ${data.domain}`, (err, data) => {
+    Process.exec(`dig +short ${data}`, (err, res) => {
         if (err) {
             next(err, 'Lookup failed');
         } else {
-            if (data.indexOf(config.cloudflare.ip) >= 0) next(null, 'DNS lookup successful.');
+            if (res.indexOf(config.cloudflare.ip) >= 0) next(null, 'DNS lookup successful.');
             else next('dnsLookup', 'DNS lookup failed.');
         }
     });
