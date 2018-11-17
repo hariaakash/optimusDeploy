@@ -8,6 +8,12 @@ const Config = {
 		'port': 27017,
 		'db': 'opdptest',
 	},
+	'mysql': {
+		'host': '127.0.0.1',
+		'user': 'root',
+		'password': '12345678',
+		'connectionLimit': 100,
+	},
 	'logger': {
 		'path': 'logs/',
 		'src': false,
@@ -27,9 +33,13 @@ const Config = {
 		'user': 'https://optimuscp.io/dashboard/#!/',
 		'admin': 'https://optimuscp.io/admin/#!/',
 	},
-	'sftp': {
-		'permitRoot': 'chown root:root /srv/daemon-data && chmod 751 /srv/daemon-data',
-		'enableGroup': 'echo "Match Group sftp \n\
+	'cmd': {
+		'certbot': {
+			'create': 'certbot certonly -a webroot --webroot-path=/srv/daemon-data/{{id}}/tmp -d {{domain}} --cert-name {{id}} --email {{email}} -n --agree-tos',
+		},
+		'sftp': {
+			'permitRoot': 'chown root:root /srv/daemon-data && chmod 751 /srv/daemon-data',
+			'enableGroup': 'echo "Match Group sftp \n\
 		ChrootDirectory /srv/daemon-data/%u \n\
 		ForceCommand internal-sftp \n\
 		PermitTunnel no \n\
@@ -37,18 +47,16 @@ const Config = {
 		AllowTcpForwarding no \n\
 		X11Forwarding no" >> /etc/ssh/sshd_config && \
 						service sshd restart',
-		'addUser': 'useradd {{name}} -M -g sftp -p $(openssl passwd -1 {{pass}}) -d /srv/daemon-data/{{name}} -s /bin/false',
-		'resetUserPass': 'usermod {{name}} -p $(openssl passwd -1 {{pass}})',
-		'createVolume': 'mkdir -p /srv/daemon-data/{{name}} && \
+			'addUser': 'useradd {{name}} -M -g sftp -p $(openssl passwd -1 {{pass}}) -d /srv/daemon-data/{{name}} -s /bin/false',
+			'resetUserPass': 'usermod {{name}} -p $(openssl passwd -1 {{pass}})',
+			'createVolume': 'mkdir -p /srv/daemon-data/{{name}} && \
 						chown root:sftp /srv/daemon-data/{{name}} && \
 						chmod 751 /srv/daemon-data/{{name}} && \
 						mkdir -p /srv/daemon-data/{{name}}/app /srv/daemon-data/{{name}}/tmp && \
 						chown {{name}}:sftp /srv/daemon-data/{{name}}/app && \
 						chmod 755 /srv/daemon-data/{{name}}/app',
+		},
 	},
-	'certbot': {
-		'create': 'certbot certonly -a webroot --webroot-path=/srv/daemon-data/{{id}}/tmp -d {{domain}} --cert-name {{id}} --email {{email}} -n --agree-tos',
-	}
 };
 
 module.exports = Config;

@@ -7,7 +7,7 @@ const config = rfr('config');
 const ensureGroup = (next) => {
     Process.exec(`grep -q sftp /etc/group`, (err) => {
         if (err) {
-            Process.exec(`groupadd sftp && ${config.sftp.permitRoot} && ${config.sftp.enableGroup}`, (err) => {
+            Process.exec(`groupadd sftp && ${config.cmd.sftp.permitRoot} && ${config.cmd.sftp.enableGroup}`, (err) => {
                 if (err) next(err, 'Error adding SFTP group.');
                 else next(null, 'SFTP group created.');
             });
@@ -18,7 +18,7 @@ const ensureGroup = (next) => {
 };
 
 const addUser = (data, next) => {
-    Process.exec(mustache.render(config.sftp.addUser, {
+    Process.exec(mustache.render(config.cmd.sftp.addUser, {
         name: data.name,
         pass: data.pass,
     }), (err) => {
@@ -35,7 +35,7 @@ const delUser = (data, next) => {
 };
 
 const resetUserPass = (data, next) => {
-    Process.exec(mustache.render(config.sftp.resetUserPass, {
+    Process.exec(mustache.render(config.cmd.sftp.resetUserPass, {
         name: data.name,
         pass: data.pass,
     }), (err) => {

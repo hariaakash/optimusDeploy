@@ -5,7 +5,7 @@ const mustache = require('mustache');
 const config = rfr('config');
 
 const create = (data, next) => {
-    Process.exec(mustache.render(config.certbot.create, data), (err) => {
+    Process.exec(mustache.render(config.cmd.certbot.create, data), (err) => {
         if (err) {
             next(err, 'Unable to create SSL.');
         } else {

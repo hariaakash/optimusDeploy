@@ -6,7 +6,7 @@ const Process = require('child_process');
 const config = rfr('config');
 
 const create = (data, next) => {
-    Process.exec(mustache.render(config.sftp.createVolume, {
+    Process.exec(mustache.render(config.cmd.sftp.createVolume, {
         name: data,
     }), (err) => {
         if (err) next(err, 'Unable to create volume.');
