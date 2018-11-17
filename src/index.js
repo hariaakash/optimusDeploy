@@ -13,7 +13,7 @@ const requestIp = require('request-ip');
 
 const config = rfr('config');
 const Log = rfr('src/helpers/logger');
-const DBConnection = rfr('src/helpers/mongoose');
+const DBConnection = rfr('src/helpers/dbconnection');
 const Sftp = rfr('src/helpers/sftp');
 const EnsureDir = rfr('src/helpers/ensureDir');
 const Init = rfr('src/helpers/init');
@@ -43,7 +43,7 @@ async.auto({
 	ensure_directories: [(callback) => {
 		EnsureDir(callback);
 	}],
-	connect_mongodb: [(callback) => {
+	dbconnection: [(callback) => {
 		DBConnection(callback);
 	}],
 	ensureSftp: [(callback) => {
@@ -52,10 +52,10 @@ async.auto({
 	init: [(callback) => {
 		Init(callback);
 	}],
-	start_express: ['middleware', 'ensure_directories', 'connect_mongodb', 'ensureSftp', 'init', (result, callback) => {
+	start_express: ['middleware', 'ensure_directories', 'dbconnection', 'ensureSftp', 'init', (result, callback) => {
 		Log.info(result.middleware);
 		Log.info(result.ensure_directories);
-		Log.info(result.connect_mongodb);
+		Log.info(result.dbconnection);
 		Log.info(result.ensureSftp);
 		Log.info(result.init);
 		server.listen(config.web.port, config.web.ip);
