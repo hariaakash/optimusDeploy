@@ -16,14 +16,24 @@ const usersSchema = new Schema({
         },
         pToken: String,
         limit: {
-            type: Number,
-            default: 1,
-        }
+            containers: {
+                type: Number,
+                default: 1,
+            },
+            databases: {
+                type: Number,
+                default: 1,
+            },
+        },
     },
     authKey: String,
     containers: [{
         type: Schema.Types.ObjectId,
         ref: 'Containers'
+    }],
+    databases: [{
+        type: Schema.Types.ObjectId,
+        ref: 'Databases'
     }],
     logs: [logsSchema],
     created_at: {

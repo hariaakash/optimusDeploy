@@ -3,6 +3,7 @@ const rfr = require('rfr');
 const methods = {
     main: rfr('src/controllers/users/main'),
     containers: rfr('src/controllers/users/containers'),
+    databases: rfr('src/controllers/users/databases'),
     register: rfr('src/controllers/users/register'),
     login: rfr('src/controllers/users/login'),
     logout: rfr('src/controllers/users/logout'),

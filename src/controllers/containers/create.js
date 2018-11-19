@@ -31,7 +31,7 @@ const request = (req, res) => {
                             if (user.conf.block) {
                                 callback('accountBlocked', 'Account blocked from access.');
                             } else {
-                                if (user.containers.length < user.conf.limit) {
+                                if (user.containers.length < user.conf.limit.containers) {
                                     if (req.body.name.length >= 6) {
                                         if (/^[a-z-]+$/.test(req.body.name)) {
                                             callback(null, 'Domain looks good.');

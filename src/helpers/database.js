@@ -34,26 +34,26 @@ const deleteMysql = (data, next) => {
 };
 
 const create = (data, next) => {
-	if (data.db == 'mysql') {
+	if (data.dbType == 'mysql') {
 		createMysql(data, next);
 	} else {
-		next(null, 'DB not available.');
+		next('dbNotFound', 'DB not available.');
 	}
 };
 
 const remove = (data, next) => {
-	if (data.db == 'mysql') {
+	if (data.dbType == 'mysql') {
 		deleteMysql(data.user, next);
 	} else {
-		next(null, 'DB not available.');
+		next('dbNotFound', 'DB not available.');
 	}
 };
 
 const reset = (data, next) => {
-	if (data.db == 'mysql') {
+	if (data.dbType == 'mysql') {
 		Mysql.user.reset(data, next);
 	} else {
-		next(null, 'DB not available.');
+		next('dbNotFound', 'DB not available.');
 	}
 };
 

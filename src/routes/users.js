@@ -7,6 +7,8 @@ router.get('/', users.main);
 
 router.get('/containers', users.containers);
 
+router.get('/databases', users.databases);
+
 router.post('/register', users.register);
 
 router.post('/login', users.login);

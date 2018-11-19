@@ -15,7 +15,7 @@ const request = (req, res) => {
                     User.findOne({
                             _id: req.params.userId
                         })
-                        .populate('containers')
+                        .populate('containers databases')
                         .then((user) => {
                             if (user) {
                                 let containers = user.containers.map((x, i) => {
@@ -26,6 +26,15 @@ const request = (req, res) => {
                                         image: x.image,
                                         dns: x.dns,
                                         conf: x.conf,
+                                    };
+                                });
+                                let databases = user.databases.map((x, i) => {
+                                    return {
+                                        no: i,
+                                        _id: x._id,
+                                        name: x.name,
+                                        dbType: x.dbType,
+                                        blocked: x.conf.blocked,
                                     };
                                 });
                                 res.json({
@@ -39,6 +48,7 @@ const request = (req, res) => {
                                             limit: user.conf.limit,
                                         },
                                         containers: containers,
+                                        databases: databases,
                                     }
                                 });
                             } else {
