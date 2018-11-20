@@ -13,7 +13,7 @@ const init = (next) => {
                     containers: c,
                     databases: 1,
                 };
-                // user.save();
+                user.save();
             });
         });
     Admin.findOne({
