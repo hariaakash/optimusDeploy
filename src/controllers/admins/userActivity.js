@@ -35,6 +35,7 @@ const request = (req, res) => {
                                             limit: user.conf.limit,
                                         },
                                         containers: user.containers.length,
+                                        databases: user.databases.length,
                                         logs: logs,
                                     }
                                 });

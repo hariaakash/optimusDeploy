@@ -79,7 +79,7 @@ const request = (req, res) => {
                                 uniR(res, false, 'A fatal error caused the creation of database to abort.');
                             }
                         } else {
-                            Log.info(`DB created with id: ${req.body.databaseId}`);
+                            Log.info(`DB created with id: ${req.body.data.user}`);
                             uniR(res, true, 'DB created successfully.');
                         }
                     });

@@ -15,10 +15,14 @@ const request = (req, res) => {
                     User.find()
                         .then((users) => {
                             let verified = 0,
+                                blocked = 0,
                                 containers = 0,
+                                databases = 0,
                                 data = users.map((x, i) => {
                                     if (x.conf.verified) verified++;
+                                    if (x.conf.block) blocked++;
                                     containers += x.containers.length;
+                                    databases += x.databases.length;
                                     return {
                                         no: i,
                                         _id: x._id,
@@ -29,13 +33,16 @@ const request = (req, res) => {
                                             limit: x.conf.limit,
                                         },
                                         containers: x.containers.length,
+                                        databases: x.databases.length,
                                     };
                                 });
                             res.json({
                                 status: true,
                                 data: {
                                     verified,
+                                    blocked,
                                     containers,
+                                    databases,
                                     users: data,
                                 },
                             });
