@@ -3,19 +3,8 @@ const bcrypt = require('bcryptjs');
 const hat = require('hat');
 
 const Admin = rfr('src/models/admins');
-const User = rfr('src/models/users');
 
 const init = (next) => {
-    User.find({})
-        .then((users) => {
-            users.forEach((user) => {
-                user.conf.limit = {
-                    containers: c,
-                    databases: 1,
-                };
-                user.save();
-            });
-        });
     Admin.findOne({
             email: 'smgdark@gmail.com'
         })
