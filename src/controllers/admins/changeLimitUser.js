@@ -6,7 +6,7 @@ const User = rfr('src/models/users');
 const uniR = rfr('src/helpers/uniR');
 
 const request = (req, res) => {
-    if (req.body.adminKey && req.body.userId && req.body.id && req.body.limit) {
+    if (req.body.adminKey && req.body.userId && req.body.serviceId && req.body.limit) {
         Admin.findOne({
                 adminKey: req.body.adminKey
             })
@@ -18,7 +18,7 @@ const request = (req, res) => {
                         .then((user) => {
                             if (user) {
                                 if (req.body.limit >= 0) {
-                                    if (req.body.id == 1) {
+                                    if (req.body.serviceId == 1) {
                                         if (user.conf.limit.containers == req.body.limit) {
                                             uniR(res, false, 'User Container limit unable to change.');
                                         } else {
@@ -31,7 +31,7 @@ const request = (req, res) => {
                                             user.save();
                                             uniR(res, true, 'User Container limit changed.');
                                         }
-                                    } else if (req.body.id == 2) {
+                                    } else if (req.body.serviceId == 2) {
                                         if (user.conf.limit.databases == req.body.limit) {
                                             uniR(res, false, 'User DB limit unable to change.');
                                         } else {
