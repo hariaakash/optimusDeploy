@@ -22,7 +22,7 @@ const cloneInit = (data, next) => {
     if (data.stack.includes('php'))
         let repo = `https://github.com/hariaakash/op-php-starter`;
     else
-        let repo = `https://github.com/hariaakash/op-${data.stack}-starter`;
+        repo = `https://github.com/hariaakash/op-${data.stack}-starter`;
     const dir = `/srv/daemon-data/${data.name}/app/`;
     Process.exec(`cd ${dir} && git clone ${repo} . && rm -rf .git && chown -R ${data.name}:sftp ${dir} && chmod -R 755 ${dir}`, (err) => {
         if (err) next('gitClone', 'Unable to clone git init.');
