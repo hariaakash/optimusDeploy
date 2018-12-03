@@ -19,8 +19,9 @@ const removeKey = (data, next) => {
 };
 
 const cloneInit = (data, next) => {
+    let repo = '';
     if (data.stack.includes('php'))
-        let repo = `https://github.com/hariaakash/op-php-starter`;
+        repo = `https://github.com/hariaakash/op-php-starter`;
     else
         repo = `https://github.com/hariaakash/op-${data.stack}-starter`;
     const dir = `/srv/daemon-data/${data.name}/app/`;
