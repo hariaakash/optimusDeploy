@@ -7,7 +7,7 @@ const User = rfr('src/models/users');
 const Admin = rfr('src/models/admins');
 
 const config = rfr('config');
-const dbURI = `mongodb://${config.mongoose.ip}:${config.mongoose.port}/${config.mongoose.db}`;
+const dbURI = `mongodb://${config.mongoose.host}:${config.mongoose.port}/${config.mongoose.db}`;
 
 cron.schedule('0 4 * * *', () => {
 	User.find({})

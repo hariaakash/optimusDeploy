@@ -2,13 +2,14 @@ const rfr = require('rfr');
 const async = require('async');
 
 const Mysql = rfr('src/helpers/mysql');
+const Mongo = rfr('src/helpers/mongodb');
 const Log = rfr('src/helpers/logger');
 
-const createMysql = (data, next) => {
+const addMysql = (data, next) => {
 	async.auto({
-		createUser: [(callback) => Mysql.user.create(data, callback)],
-		createDB: [(callback) => Mysql.db.create(data.user, callback)],
-		assignToDB: ['createUser', 'createDB', (result, callback) => Mysql.user.assignToDB(data.user, callback)],
+		addUser: [(callback) => Mysql.user.add(data, callback)],
+		addDB: [(callback) => Mysql.db.add(data.user, callback)],
+		assignToDB: ['addUser', 'addDB', (result, callback) => Mysql.user.assignToDB(data.user, callback)],
 	}, (err) => {
 		if (err) {
 			async.parallel({
@@ -23,7 +24,7 @@ const createMysql = (data, next) => {
 	});
 };
 
-const deleteMysql = (data, next) => {
+const dropMysql = (data, next) => {
 	async.parallel({
 		dropUser: (callback) => Mysql.user.drop(data, callback),
 		dropDB: (callback) => Mysql.db.drop(data, callback),
@@ -33,17 +34,48 @@ const deleteMysql = (data, next) => {
 	});
 };
 
-const create = (data, next) => {
+const addMongo = (data, next) => {
+	Mongo.user.add(data, (err, data) => {
+		if (err) next(err, 'Mongo DB creation failed.');
+		else next(null, 'Mongo DB created.');
+	});
+};
+
+const dropMongo = (data, next) => {
+	async.parallel({
+		dropDB: (callback) => Mongo.db.drop(data, callback),
+		dropUser: (callback) => Mongo.user.drop(data, callback),
+	}, (err) => {
+		if (err) Log.error(err);
+		next(null, 'Mongo DB removed.');
+	});
+};
+
+const resetMongo = (data, next) => {
+	async.series({
+		dropUser: (callback) => Mongo.user.drop(data.user, callback),
+		addUser: (callback) => Mongo.user.add(data, callback),
+	}, (err) => {
+		if (err) next('resetUser', 'User password unable to reset.');
+		else next(null, 'User password reset.');
+	});
+};
+
+const add = (data, next) => {
 	if (data.dbType == 'mysql') {
-		createMysql(data, next);
+		addMysql(data, next);
+	} else if (data.dbType == 'mongo') {
+		addMongo(data, next);
 	} else {
 		next('dbNotFound', 'DB not available.');
 	}
 };
 
-const remove = (data, next) => {
+const drop = (data, next) => {
 	if (data.dbType == 'mysql') {
-		deleteMysql(data.user, next);
+		dropMysql(data.user, next);
+	} else if (data.dbType == 'mongo') {
+		dropMongo(data.user, next);
 	} else {
 		next('dbNotFound', 'DB not available.');
 	}
@@ -52,14 +84,16 @@ const remove = (data, next) => {
 const reset = (data, next) => {
 	if (data.dbType == 'mysql') {
 		Mysql.user.reset(data, next);
+	} else if (data.dbType == 'mongo') {
+		resetMongo(data, next);
 	} else {
 		next('dbNotFound', 'DB not available.');
 	}
 };
 
 const db = {
-	create,
-	remove,
+	add,
+	drop,
 	reset,
 };
 

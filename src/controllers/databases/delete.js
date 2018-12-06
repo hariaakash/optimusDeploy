@@ -46,7 +46,7 @@ const request = (req, res) => {
                                 });
                         },
                         deleteDB: (callback) => {
-                            DB.remove({
+                            DB.drop({
                                 dbType: req.body.dbType,
                                 user: req.body.databaseId,
                             }, callback);

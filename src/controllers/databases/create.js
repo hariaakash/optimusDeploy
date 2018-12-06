@@ -45,7 +45,7 @@ const request = (req, res) => {
                                 user: mongoose.Types.ObjectId(),
                                 pass: randomatic('Aa0', 12),
                             };
-                            DB.create(req.body.data, callback);
+                            DB.add(req.body.data, callback);
                         },
                         saveData: (callback) => {
                             var data = new Database();

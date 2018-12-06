@@ -1,10 +1,10 @@
 const Config = {
 	'web': {
-		'ip': '0.0.0.0',
+		'host': '0.0.0.0',
 		'port': 8080,
 	},
 	'mongoose': {
-		'ip': '127.0.0.1',
+		'host': '127.0.0.1',
 		'port': 27017,
 		'db': 'opdptest',
 	},
@@ -13,6 +13,12 @@ const Config = {
 		'user': 'root',
 		'password': '12345678',
 		'connectionLimit': 100,
+	},
+	'mongooseSlave': {
+		'host': '127.0.0.1',
+		'port': 37017,
+		'user': 'root',
+		'password': '12345678',
 	},
 	'logger': {
 		'path': 'logs/',

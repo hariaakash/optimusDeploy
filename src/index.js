@@ -58,8 +58,8 @@ async.auto({
 		Log.info(result.dbconnection);
 		Log.info(result.ensureSftp);
 		Log.info(result.init);
-		server.listen(config.web.port, config.web.ip);
-		callback(null, `Express running on ${config.web.ip}:${config.web.port}`);
+		server.listen(config.web.port, config.web.host);
+		callback(null, `Express running on ${config.web.host}:${config.web.port}`);
 	}],
 }, (err, result) => {
 	if (err) {

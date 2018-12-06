@@ -1,11 +1,10 @@
 const rfr = require('rfr');
-const mustache = require('mustache');
 
 const config = rfr('config');
 
 const pool = require('mysql').createPool(config.mysql);
 
-const createUser = (data, next) => {
+const addUser = (data, next) => {
     pool.query(`CREATE USER '${data.user}'@'%' IDENTIFIED BY '${data.pass}'`, (err) => {
         if (err) next('createUser', 'User creation failed.');
         else next(null, 'User created.');
@@ -33,7 +32,7 @@ const assignUserToDB = (data, next) => {
     });
 };
 
-const createDB = (data, next) => {
+const addDB = (data, next) => {
     pool.query(`CREATE DATABASE ${data}`, (err) => {
         if (err) next('createDB', 'DB creation failed.');
         else next(null, 'DB created.');
@@ -43,19 +42,19 @@ const createDB = (data, next) => {
 const dropDB = (data, next) => {
     pool.query(`DROP DATABASE IF EXISTS ${data}`, (err) => {
         if (err) next('dropDB', 'DB drop failed.');
-        else next(null, 'DB droped.');
+        else next(null, 'DB dropped.');
     });
 };
 
 const mysql = {
     user: {
-        create: createUser,
+        add: addUser,
         drop: dropUser,
         reset: resetUser,
         assignToDB: assignUserToDB,
     },
     db: {
-        create: createDB,
+        add: addDB,
         drop: dropDB,
     },
 };
