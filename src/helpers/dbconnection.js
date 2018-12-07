@@ -32,7 +32,7 @@ const DBConnection = (next) => {
 			useNewUrlParser: true,
 		})
 		.then(() => {
-			next(null, `MongoDB running on ${config.mongoose.ip}:${config.mongoose.port}`);
+			next(null, `MongoDB running on ${config.mongoose.host}:${config.mongoose.port}`);
 		})
 		.catch((err) => {
 			next(err);
