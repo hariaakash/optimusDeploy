@@ -42,7 +42,7 @@ const request = (req, res) => {
                         makeDB: (callback) => {
                             req.body.data = {
                                 dbType: req.body.dbType,
-                                user: mongoose.Types.ObjectId(),
+                                user: String(mongoose.Types.ObjectId()),
                                 pass: randomatic('Aa0', 12),
                             };
                             DB.add(req.body.data, callback);
