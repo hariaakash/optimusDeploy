@@ -1,12 +1,17 @@
 const rfr = require('rfr');
-const MongoClient = require('mongodb').MongoClient
+const MongoClient = require('mongodb').MongoClient;
 
+const Log = rfr('src/helpers/logger');
 const config = rfr('config');
+
 const dbURI = `mongodb://${config.mongooseSlave.user}:${config.mongooseSlave.password}@${config.mongooseSlave.host}:${config.mongooseSlave.port}`;
 
 const connection = MongoClient.connect(dbURI, {
-    useNewUrlParser: true
-});
+        useNewUrlParser: true
+    })
+    .catch((err) => {
+        Log.error(`Unable to connect to MongoDB Slave on ${config.mongooseSlave.port}`);
+    });
 
 const addUser = (data, next) => {
     connection.then((client) => {
