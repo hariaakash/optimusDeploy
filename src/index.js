@@ -9,7 +9,7 @@ const cors = require('cors');
 const bodyParser = require('body-parser');
 const cookieParser = require('cookie-parser');
 const requestIp = require('request-ip');
-// const io = require('socket.io').listen(server);
+const io = require('socket.io').listen(server);
 
 const config = rfr('config');
 const Log = rfr('src/helpers/logger');
@@ -18,6 +18,7 @@ const Sftp = rfr('src/helpers/sftp');
 const EnsureDir = rfr('src/helpers/ensureDir');
 const Init = rfr('src/helpers/init');
 const Routes = rfr('src/routes');
+const Socket = rfr('src/socket');
 
 async.auto({
 	middleware: [(callback) => {
@@ -58,8 +59,9 @@ async.auto({
 		Log.info(result.dbconnection);
 		Log.info(result.ensureSftp);
 		Log.info(result.init);
+		Socket(io);
 		server.listen(config.web.port, config.web.host);
-		callback(null, `Express running on ${config.web.host}:${config.web.port}`);
+		callback(null, `Express & Socket running on ${config.web.host}:${config.web.port}`);
 	}],
 }, (err, result) => {
 	if (err) {
@@ -70,10 +72,3 @@ async.auto({
 		Log.info('Daemon started successfully.');
 	}
 });
-
-// io.on('connection', function(client) {
-//     console.log('a user connected');
-//     client.on('disconnect', function() {
-//         console.log('user disconnected');
-//     });
-// });
