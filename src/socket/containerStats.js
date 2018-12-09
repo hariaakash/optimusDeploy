@@ -18,7 +18,6 @@ const containerStats = (data, client) => {
                     client.data.containerStatsStream = stream;
                     stream.setEncoding('utf8');
                     stream.on('data', (stats) => {
-                        console.log('stats');
                         stats = (_.isObject(stats)) ? stats : JSON.parse(stats);
                         client.emit('containerStats', formatStats(stats));
                     });
