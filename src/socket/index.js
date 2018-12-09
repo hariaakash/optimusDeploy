@@ -16,6 +16,7 @@ const Socket = (io) => {
         client.on('containerLogs', (data) => containerLogs(data, client));
 
         client.on('disconnect', () => {
+            if (client.data.containerStats) client.data.containerStatsStream.destroy();
             console.log(`User disconnected with authKey: ${client.data.user.email}`);
         });
     });

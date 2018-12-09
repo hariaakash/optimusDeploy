@@ -13,6 +13,8 @@ const containerStats = (data, client) => {
         }, (err, stream) => {
             if (err) console.log(err);
             else {
+                client.data.containerStats = true;
+                client.data.containerStatsStream = stream;
                 stream.setEncoding('utf8');
                 stream.on('data', (stats) => {
                     console.log('stats');
