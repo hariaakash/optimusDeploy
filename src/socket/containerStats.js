@@ -7,8 +7,8 @@ const docker = new Dockerode();
 const formatStats = rfr('src/helpers/formatStats');
 
 const containerStats = (data, client) => {
-    if (client.data.user.containers.findIndex(x => x._id == data) > -1) {
-        docker.getContainer(data).stats({
+    if ((x = client.data.user.containers.findIndex(y => y._id == data)) > -1) {
+        docker.getContainer(client.data.user.containers[x].containerId).stats({
             stream: true
         }, (err, stream) => {
             if (err) console.log(err);
