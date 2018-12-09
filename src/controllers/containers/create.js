@@ -92,7 +92,10 @@ const request = (req, res) => {
                             Docker.startContainer(req.body.containerId, callback);
                         }],
                         inspectPort: ['startContainer', (result, callback) => {
-                            Docker.inspectPort(req.body.containerId, callback);
+                            Docker.inspectPort({
+                                id: req.body.containerId,
+                                stack: req.body.stack
+                            }, callback);
                         }],
                         createDns: ['inspectPort', (result, callback) => {
                             Dns.createRecord(req.body.name, callback);

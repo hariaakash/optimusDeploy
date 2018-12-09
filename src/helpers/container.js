@@ -83,9 +83,18 @@ const stopContainer = (data, next) => {
 };
 
 const inspectPort = (data, next) => {
-    docker.getContainer(data).inspect()
+    docker.getContainer(data.id).inspect()
         .then((container) => {
-            next(null, container.NetworkSettings.Ports['8080/tcp'][0].HostPort);
+            const DEPLOY_PORT = 80;
+            switch (data.stack) {
+                case 'node':
+                case 'flask':
+                    DEPLOY_PORT = 8080;
+                    break;
+                default:
+                    break;
+            }
+            next(null, container.NetworkSettings.Ports[`${DEPLOY_PORT}/tcp`][0].HostPort);
         })
         .catch((err) => {
             next(err, 'Unable to retrieve port.');

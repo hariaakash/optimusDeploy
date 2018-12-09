@@ -43,7 +43,10 @@ const request = (req, res) => {
                             Docker.restartContainer(req.body.dockerId, callback);
                         }],
                         inspectPort: ['restartContainer', (result, callback) => {
-                            Docker.inspectPort(req.body.containerId, callback);
+                            Docker.inspectPort({
+                                id: req.body.containerId,
+                                stack: req.body.container.image
+                            }, callback);
                         }],
                         changePortNginx: ['inspectPort', (result, callback) => {
                             req.body.containerPort = result.inspectPort;
