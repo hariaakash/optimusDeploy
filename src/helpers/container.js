@@ -1,16 +1,28 @@
+const rfr = require('rfr');
 const Dockerode = require('dockerode');
 
 const docker = new Dockerode();
 
+const formatStats = rfr('src/helpers/formatStats');
+
 const createContainer = (data, next) => {
+    const DEPLOY_PORT = 80;
+    switch (data.stack) {
+        case 'node':
+        case 'flask':
+            DEPLOY_PORT = 8080;
+            break;
+        default:
+            break;
+    }
     docker.createContainer({
             name: data.name,
             Image: `hariaakash/op-${data.stack}`,
-            Env: ["DEPLOY_PORT=8080", "DEPLOY_IP=0.0.0.0"],
+            Env: [`DEPLOY_PORT=${DEPLOY_PORT}`, "DEPLOY_IP=0.0.0.0"],
             HostConfig: {
                 Binds: [`/srv/daemon-data/${data.name}/app:/app`],
                 PortBindings: {
-                    '8080/tcp': [{
+                    '80/tcp': [{
                         HostPort: ''
                     }]
                 },
@@ -85,15 +97,7 @@ const containerStats = (data, next) => {
             stream: false
         })
         .then((container) => {
-            let cpuDelta = container.cpu_stats.cpu_usage.total_usage - container.precpu_stats.cpu_usage.total_usage,
-                systemDelta = container.cpu_stats.system_cpu_usage - container.precpu_stats.system_cpu_usage,
-                cpu = (cpuDelta / systemDelta * 100) / container.cpu_stats.online_cpus,
-                ram = container.memory_stats.usage / container.memory_stats.limit * 100,
-                data = {
-                    ram: ram >= 0 ? ram.toFixed(2) : -1,
-                    cpu: cpu >= 0 ? cpu.toFixed(2) : -1,
-                };
-            next(null, data);
+            next(null, formatStats(container));
         })
         .catch((err) => {
             next(err, 'Unable to retrieve stats.');
