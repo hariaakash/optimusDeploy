@@ -9,7 +9,7 @@ const Socket = (io) => {
     io.use(auth);
 
     io.on('connection', (client) => {
-        console.log(`User connected with authKey: ${client.data.user.email}`);
+        // console.log(`User connected with authKey: ${client.data.user.email}`);
 
         client.on('containerStats', (data) => containerStats(data, client));
 
@@ -17,7 +17,7 @@ const Socket = (io) => {
 
         client.on('disconnect', () => {
             if (client.data.containerStats) client.data.containerStatsStream.destroy();
-            console.log(`User disconnected with authKey: ${client.data.user.email}`);
+            // console.log(`User disconnected with authKey: ${client.data.user.email}`);
         });
     });
 };
