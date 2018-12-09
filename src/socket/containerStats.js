@@ -4,6 +4,7 @@ const Dockerode = require('dockerode');
 
 const docker = new Dockerode();
 
+const Log = rfr('src/helpers/logger');
 const formatStats = rfr('src/helpers/formatStats');
 
 const containerStats = (data, client) => {
@@ -12,7 +13,7 @@ const containerStats = (data, client) => {
             docker.getContainer(client.data.user.containers[x].containerId).stats({
                 stream: true
             }, (err, stream) => {
-                if (err) console.log(err);
+                if (err) Log.error(err);
                 else {
                     client.data.containerStats = true;
                     client.data.containerStatsStream = stream;
