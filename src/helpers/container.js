@@ -85,7 +85,7 @@ const stopContainer = (data, next) => {
 const inspectPort = (data, next) => {
     docker.getContainer(data.id).inspect()
         .then((container) => {
-            const DEPLOY_PORT = 80;
+            let DEPLOY_PORT = 80;
             switch (data.stack) {
                 case 'node':
                 case 'flask':
