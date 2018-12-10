@@ -22,7 +22,7 @@ const createContainer = (data, next) => {
             HostConfig: {
                 Binds: [`/srv/daemon-data/${data.name}/app:/app`],
                 PortBindings: {
-                    '80/tcp': [{
+                    [`${DEPLOY_PORT}/tcp`]: [{
                         HostPort: ''
                     }]
                 },
