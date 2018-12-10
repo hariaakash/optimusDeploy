@@ -30,7 +30,7 @@ const containerLogs = (data, client) => {
             });
         }
     } else if (data.status == 'stop') {
-        if (client.data.containerStats) client.data.containerStatsStream.destroy();
+        if (client.data.containerLogs) client.data.containerLogsStream.destroy();
     }
 };
 
