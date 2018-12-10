@@ -26,6 +26,9 @@ const Config = {
 		'period': '1d',
 		'count': 10,
 	},
+	'morgan': {
+		'whitelist': ['https://webapi.evolveservers.com', 'http://127.0.0.1:8080', 'http://haxforlyf:8080']
+	},
 	'cloudflare': {
 		'email': 'smgdark@gmail.com',
 		'domain': 'gameservers.ooo',

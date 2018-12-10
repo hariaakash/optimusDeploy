@@ -32,7 +32,15 @@ async.auto({
 			})
 		}));
 		app.use(morgan('dev'));
-		app.use(cors());
+		app.use(cors({
+			origin: function (origin, callback) {
+				if (config.morgan.whitelist.indexOf(origin) !== -1) {
+					callback(null, true)
+				} else {
+					callback(new Error('Not allowed by CORS'))
+				}
+			}
+		}));
 		app.use(bodyParser.urlencoded({
 			extended: false
 		}));
