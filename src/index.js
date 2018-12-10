@@ -33,11 +33,11 @@ async.auto({
 		}));
 		app.use(morgan('dev'));
 		app.use(cors({
-			origin: function (origin, callback) {
+			origin: (origin, callback) => {
 				if (config.morgan.whitelist.indexOf(origin) !== -1) {
-					callback(null, true)
+					callback(null, true);
 				} else {
-					callback(new Error('Not allowed by CORS'))
+					callback(`Origin ${origin} not allowed by CORS`);
 				}
 			}
 		}));
