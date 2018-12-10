@@ -27,7 +27,7 @@ const Config = {
 		'count': 10,
 	},
 	'morgan': {
-		'whitelist': ['https://optimuscp.io', 'http://127.0.0.1:8000', 'http://hax4lyf:8000']
+		'whitelist': ['https://optimuscp.io', 'https://sftp.optimuscp.io', 'http://127.0.0.1:8000', 'http://hax4lyf:8000']
 	},
 	'cloudflare': {
 		'email': 'smgdark@gmail.com',
