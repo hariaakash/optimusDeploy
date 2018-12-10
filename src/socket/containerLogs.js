@@ -1,20 +1,36 @@
+const rfr = require('rfr');
 const Dockerode = require('dockerode');
+const stream = require('stream');
 
 const docker = new Dockerode();
 
+const Log = rfr('src/helpers/logger');
+
 const containerLogs = (data, client) => {
-    if ((x = client.data.user.containers.findIndex(y => y._id == data)) > -1) {
-        docker.getContainer(client.data.user.containers[x].containerId).logs({
-            follow: true
-        }, (err, stream) => {
-            if (err) console.log(err);
-            else {
-                stream.setEncoding('utf8');
-                stream.on('data', (log) => {
-                    client.emit('containerStats', log);
-                });
-            };
-        });
+
+    // create a single stream for stdin and stdout
+    const logStream = new stream.PassThrough();
+    logStream.on('data', function (log) {
+        client.data.containerLogs = true;
+        client.data.containerLogsStream = logStream;
+        client.emit('containerLogs', log.toString('utf8'));
+    });
+
+    if (data.status == 'start') {
+        if ((x = client.data.user.containers.findIndex(y => y._id == data.containerId)) > -1) {
+            docker.getContainer(client.data.user.containers[x].containerId).logs({
+                follow: true,
+                stdout: true,
+                stderr: true,
+            }, (err, stream) => {
+                if (err) Log.error(err);
+                else {
+                    docker.getContainer(data.containerId).modem.demuxStream(stream, logStream, logStream);
+                };
+            });
+        }
+    } else if (data.status == 'stop') {
+        if (client.data.containerStats) client.data.containerStatsStream.destroy();
     }
 };
 
