@@ -6,7 +6,7 @@ const docker = new Dockerode();
 const formatStats = rfr('src/helpers/formatStats');
 
 const createContainer = (data, next) => {
-    const DEPLOY_PORT = 80;
+    let DEPLOY_PORT = 80;
     switch (data.stack) {
         case 'node':
         case 'flask':
