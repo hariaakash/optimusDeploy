@@ -22,6 +22,7 @@ const containerLogs = (data, client) => {
                 follow: true,
                 stdout: true,
                 stderr: true,
+                tail: "20",
             }, (err, stream) => {
                 if (err) Log.error(err);
                 else {

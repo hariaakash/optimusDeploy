@@ -11,7 +11,7 @@ const containerStats = (data, client) => {
     if (data.status == 'start') {
         if ((x = client.data.user.containers.findIndex(y => y._id == data.containerId)) > -1) {
             docker.getContainer(client.data.user.containers[x].containerId).stats({
-                stream: true
+                stream: true,
             }, (err, stream) => {
                 if (err) Log.error(err);
                 else {
