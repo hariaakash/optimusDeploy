@@ -10,11 +10,12 @@ const containerLogs = (data, client) => {
 
     // create a single stream for stdin and stdout
     const logStream = new stream.PassThrough();
-    logStream.on('data', function (log) {
+    logStream.on('data', (log) => {
         client.data.containerLogs = true;
         client.data.containerLogsStream = logStream;
         client.emit('containerLogs', log.toString('utf8'));
     });
+    logStream.on('error', (error) => {});
 
     if (data.status == 'start') {
         if ((x = client.data.user.containers.findIndex(y => y._id == data.containerId)) > -1) {

@@ -22,6 +22,7 @@ const containerStats = (data, client) => {
                         stats = (_.isObject(stats)) ? stats : JSON.parse(stats);
                         client.emit('containerStats', formatStats(stats));
                     });
+                    stream.on('error', (error) => stream.distroy());
                 };
             });
         }
