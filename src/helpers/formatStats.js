@@ -6,6 +6,7 @@ const formatStats = (stats) => {
     return {
         ram: ram >= 0 ? ram.toFixed(2) : -1,
         cpu: cpu >= 0 ? cpu.toFixed(2) : -1,
+        read: stats.read,
     };
 };
 
