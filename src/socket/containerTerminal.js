@@ -18,9 +18,12 @@ const containerTerminal = (data, client) => {
             Cmd: ['sh', '-c', data.cmd],
             AttachStdout: true,
             AttachStderr: true,
-        }, (err, stream) => {
+        }, (err, exec) => {
             if (err) Log.error(err);
-            else docker.getContainer(data.containerId).modem.demuxStream(stream, logStream, logStream);
+            else exec.start((err, stream) => {
+                if (err) Log.error(err);
+                else docker.getContainer(data.containerId).modem.demuxStream(stream, logStream, logStream);
+            });
         });
     }
 };
