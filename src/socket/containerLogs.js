@@ -26,7 +26,9 @@ const containerLogs = (data, client) => {
                 tail: "20",
             }, (err, stream) => {
                 if (err) Log.error(err);
-                else docker.getContainer(data.containerId).modem.demuxStream(stream, logStream, logStream);
+                else {
+                    docker.getContainer(data.containerId).modem.demuxStream(stream, logStream, logStream);
+                };
             });
         }
     } else if (data.status == 'stop') {
