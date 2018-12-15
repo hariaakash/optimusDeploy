@@ -3,6 +3,7 @@ const rfr = require('rfr');
 const auth = rfr('src/socket/auth');
 const containerStats = rfr('src/socket/containerStats');
 const containerLogs = rfr('src/socket/containerLogs');
+const containerTerminal = rfr('src/socket/containerTerminal');
 
 const Socket = (io) => {
 
@@ -14,6 +15,8 @@ const Socket = (io) => {
         client.on('containerStats', (data) => containerStats(data, client));
 
         client.on('containerLogs', (data) => containerLogs(data, client));
+
+        client.on('containerTerminal', (data) => containerTerminal(data, client));
 
         client.on('disconnect', () => {
             if (client.data.containerStats) client.data.containerStatsStream.destroy();
