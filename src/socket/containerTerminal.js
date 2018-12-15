@@ -6,7 +6,7 @@ const docker = new Dockerode();
 
 const Log = rfr('src/helpers/logger');
 
-const containerLogs = (data, client) => {
+const containerTerminal = (data, client) => {
 
     // create a single stream for stdin and stdout
     const logStream = new stream.PassThrough();
@@ -24,3 +24,5 @@ const containerLogs = (data, client) => {
         });
     }
 };
+
+module.exports = containerTerminal;
