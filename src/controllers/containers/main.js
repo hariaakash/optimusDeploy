@@ -18,6 +18,7 @@ const request = (req, res) => {
                             name: user.containers[x].name,
                             image: user.containers[x].image,
                             dns: user.containers[x].dns,
+                            git: user.containers[x].git,
                             blocked: user.containers[x].conf.blocked,
                         };
                         res.json({
