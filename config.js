@@ -46,6 +46,10 @@ const Config = {
 		'certbot': {
 			'create': 'certbot certonly -a webroot --webroot-path=/srv/daemon-data/{{id}}/tmp -d {{domain}} --cert-name {{id}} --email {{email}} -n --agree-tos',
 		},
+		'git': {
+			'clone': 'cd /srv/daemon-data/{{name}}/app/; rm * && GIT_SSH_COMMAND="ssh -i /srv/daemon-data/tmp/key-{{name}}" git clone {{git}} . && chown -R {{name}}:sftp /srv/daemon-data/{{name}}/app',
+			'pull': 'cd /srv/daemon-data/{{data}}/app/; GIT_SSH_COMMAND="ssh -i /srv/daemon-data/tmp/key-{{data}}" git pull'
+		},
 		'sftp': {
 			'permitRoot': 'chown root:root /srv/daemon-data && chmod 751 /srv/daemon-data',
 			'enableGroup': 'echo "Match Group sftp \n\

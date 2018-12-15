@@ -1,9 +1,13 @@
+const rfr = require('rfr');
+const mustache = require('mustache');
 const Process = require('child_process');
 const path = require('path');
 const fs = require('fs');
 
+const config = rfr('config');
+
 const writeKey = (data, next) => {
-    fs.writeFile(path.resolve(`/srv/keys/${data.name}`), data.key, {
+    fs.writeFile(path.resolve(`/srv/daemon-data/tmp/key-${data.name}`), data.key, {
         mode: '400'
     }, (err) => {
         if (err) next(err, 'Unable to write SSH Keys.');
@@ -12,7 +16,7 @@ const writeKey = (data, next) => {
 };
 
 const removeKey = (data, next) => {
-    fs.unlink(path.resolve(`/srv/keys/${data}`), (err) => {
+    fs.unlink(path.resolve(`/srv/daemon-data/tmp/key-${data}`), (err) => {
         if (err) next(err, 'Unable to remove SSH Keys.');
         else next(null, 'SSH Keys removed.');
     });
@@ -32,13 +36,18 @@ const cloneInit = (data, next) => {
 };
 
 const clone = (data, next) => {
-    Process.exec(`cd /srv/daemon-data/${data.name}/app/; GIT_SSH_COMMAND="ssh -i /srv/keys/${data.name}" git clone ${data.git} .`, (err) => {
+    Process.exec(mustache.render(config.cmd.git.clone, {
+        name: data.name,
+        git: data.git,
+    }), (err) => {
         if (err) next('gitClone', 'Unable to clone git, repo not found or invalid ssh key permissions.');
         else next(null, 'Git cloned.');
     });
 };
 const pull = (data, next) => {
-    Process.exec(`cd /srv/daemon-data/${data}/app/; GIT_SSH_COMMAND="ssh -i /srv/keys/${data}" git pull`, (err) => {
+    Process.exec(mustache.render(config.cmd.git.clone, {
+        data,
+    }), (err) => {
         if (err) next(err, 'Unable to git pull.');
         else next(null, 'Git pull completed.');
     });

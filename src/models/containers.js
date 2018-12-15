@@ -15,6 +15,13 @@ const containersSchema = new Schema({
             default: false
         },
     },
+    git: {
+        repo: String,
+        enabled: {
+            type: Boolean,
+            default: false
+        }
+    },
     conf: {
         plan: {
             type: Schema.Types.ObjectId,
