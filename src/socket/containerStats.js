@@ -1,5 +1,6 @@
 const rfr = require('rfr');
 const _ = require('lodash');
+const Carrier = require('carrier');
 const Dockerode = require('dockerode');
 
 const docker = new Dockerode();
@@ -18,7 +19,7 @@ const containerStats = (data, client) => {
                     client.data.containerStats = true;
                     client.data.containerStatsStream = stream;
                     stream.setEncoding('utf8');
-                    stream.on('data', (stats) => {
+                    Carrier.carry(stream, (stats) => {
                         stats = (_.isObject(stats)) ? stats : JSON.parse(stats);
                         client.emit('containerStats', formatStats(stats));
                     });
