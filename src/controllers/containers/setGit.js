@@ -75,7 +75,7 @@ const request = (req, res) => {
                                 uniR(res, false, 'Unable to fetch the repo.');
                             }
                         } else {
-                            uniR(res, true, 'DNS Set.');
+                            uniR(res, true, 'Git Set.');
                         }
                     });
                 } else {

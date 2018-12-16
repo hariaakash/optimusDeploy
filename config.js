@@ -47,7 +47,7 @@ const Config = {
 			'create': 'certbot certonly -a webroot --webroot-path=/srv/daemon-data/{{id}}/tmp -d {{domain}} --cert-name {{id}} --email {{email}} -n --agree-tos',
 		},
 		'git': {
-			'clone': 'cd /srv/daemon-data/{{name}}/app/; rm -rf * && GIT_SSH_COMMAND="ssh -i /srv/daemon-data/tmp/key-{{name}}" git clone {{repo}} . && chown -R {{name}}:sftp /srv/daemon-data/{{name}}/app',
+			'clone': 'cd /srv/daemon-data/{{name}}/app/; rm -rf * && GIT_SSH_COMMAND="ssh -i /srv/daemon-data/{{name}}/tmp/key-{{name}}" git clone {{repo}} . && chown -R {{name}}:sftp /srv/daemon-data/{{name}}/app',
 			'pull': 'cd /srv/daemon-data/{{data}}/app/; GIT_SSH_COMMAND="ssh -i /srv/daemon-data/tmp/key-{{data}}" git pull'
 		},
 		'sftp': {
