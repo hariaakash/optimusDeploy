@@ -8,11 +8,11 @@ const methods = {
     restart: rfr('src/controllers/containers/restart'),
     start: rfr('src/controllers/containers/start'),
     stop: rfr('src/controllers/containers/stop'),
-    pull: rfr('src/controllers/containers/pull'),
     sftp: rfr('src/controllers/containers/sftp'),
     sftpReset: rfr('src/controllers/containers/sftpReset'),
     setDns: rfr('src/controllers/containers/setDns'),
     setGit: rfr('src/controllers/containers/setGit'),
+    gitPull: rfr('src/controllers/containers/gitPull'),
 };
 
 module.exports = methods;

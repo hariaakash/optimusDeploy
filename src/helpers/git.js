@@ -36,10 +36,6 @@ const cloneInit = (data, next) => {
 };
 
 const clone = (data, next) => {
-    console.log(mustache.render(config.cmd.git.clone, {
-        name: data.name,
-        repo: data.repo,
-    }));
     Process.exec(mustache.render(config.cmd.git.clone, {
         name: data.name,
         repo: data.repo,
@@ -49,7 +45,7 @@ const clone = (data, next) => {
     });
 };
 const pull = (data, next) => {
-    Process.exec(mustache.render(config.cmd.git.clone, {
+    Process.exec(mustache.render(config.cmd.git.pull, {
         data,
     }), (err) => {
         if (err) next(err, 'Unable to git pull.');
