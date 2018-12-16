@@ -72,7 +72,7 @@ const request = (req, res) => {
                                 uniR(res, false, result.gitClone);
                             } else {
                                 Log.error(err);
-                                uniR(res, false, 'Unable to set dns container.');
+                                uniR(res, false, 'Unable to fetch the repo.');
                             }
                         } else {
                             uniR(res, true, 'DNS Set.');

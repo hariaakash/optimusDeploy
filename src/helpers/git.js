@@ -7,7 +7,7 @@ const fs = require('fs');
 const config = rfr('config');
 
 const writeKey = (data, next) => {
-    fs.writeFile(path.resolve(`/srv/daemon-data/tmp/key-${data.name}`), data.key, {
+    fs.writeFile(path.resolve(`/srv/daemon-data/${data.name}/tmp/key-${data.name}`), data.key, {
         mode: '400'
     }, (err) => {
         if (err) next(err, 'Unable to write SSH Keys.');
@@ -16,7 +16,7 @@ const writeKey = (data, next) => {
 };
 
 const removeKey = (data, next) => {
-    fs.unlink(path.resolve(`/srv/daemon-data/tmp/key-${data}`), (err) => {
+    fs.unlink(path.resolve(`/srv/daemon-data/${data}/tmp/key-${data}`), (err) => {
         if (err) next(err, 'Unable to remove SSH Keys.');
         else next(null, 'SSH Keys removed.');
     });
