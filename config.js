@@ -48,7 +48,7 @@ const Config = {
 		},
 		'git': {
 			'clone': 'cd /srv/daemon-data/{{name}}/app/ && rm -rf * && GIT_SSH_COMMAND="ssh -i /srv/daemon-data/{{name}}/tmp/{{name}}" git clone {{{repo}}} . && chown -R {{name}}:sftp /srv/daemon-data/{{name}}/app',
-			'pull': 'cd /srv/daemon-data/{{data}}/app/ && GIT_SSH_COMMAND="ssh -i /srv/daemon-data/{{data}}/tmp/{{data}}" git pull'
+			'pull': 'cd /srv/daemon-data/{{data}}/app/ && git reset --hard && GIT_SSH_COMMAND="ssh -i /srv/daemon-data/{{data}}/tmp/{{data}}" git pull'
 		},
 		'sftp': {
 			'permitRoot': 'chown root:root /srv/daemon-data && chmod 751 /srv/daemon-data',
