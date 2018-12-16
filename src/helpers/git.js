@@ -38,7 +38,7 @@ const cloneInit = (data, next) => {
 const clone = (data, next) => {
     Process.exec(mustache.render(config.cmd.git.clone, {
         name: data.name,
-        git: data.git,
+        repo: data.repo,
     }), (err) => {
         if (err) next('gitClone', 'Unable to clone git, repo not found or invalid ssh key permissions.');
         else next(null, 'Git cloned.');

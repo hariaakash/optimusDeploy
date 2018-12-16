@@ -50,7 +50,7 @@ const request = (req, res) => {
                         gitClone: ['writeKey', (result, callback) => {
                             Git.clone({
                                 name: req.body.containerId,
-                                git: req.body.git,
+                                repo: req.body.repo,
                             }, callback);
                         }],
                         saveData: ['gitClone', (result, callback) => {
