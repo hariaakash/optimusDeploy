@@ -25,4 +25,6 @@ router.post('/sftpReset', containers.sftpReset);
 
 router.post('/setDns', containers.setDns);
 
+router.post('/setGit', containers.setGit);
+
 module.exports = router;

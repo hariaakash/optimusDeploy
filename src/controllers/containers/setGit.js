@@ -1,12 +1,9 @@
 const rfr = require('rfr');
 const async = require('async');
 
-const config = rfr('config');
-
 const User = rfr('src/models/users');
 const Container = rfr('src/models/containers');
 
-const Nginx = rfr('src/helpers/nginx');
 const Git = rfr('src/helpers/git');
 
 const Log = rfr('src/helpers/logger');

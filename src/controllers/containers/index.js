@@ -12,6 +12,7 @@ const methods = {
     sftp: rfr('src/controllers/containers/sftp'),
     sftpReset: rfr('src/controllers/containers/sftpReset'),
     setDns: rfr('src/controllers/containers/setDns'),
+    setGit: rfr('src/controllers/containers/setGit'),
 };
 
 module.exports = methods;
