@@ -36,6 +36,10 @@ const cloneInit = (data, next) => {
 };
 
 const clone = (data, next) => {
+    console.log(mustache.render(config.cmd.git.clone, {
+        name: data.name,
+        repo: data.repo,
+    }));
     Process.exec(mustache.render(config.cmd.git.clone, {
         name: data.name,
         repo: data.repo,
