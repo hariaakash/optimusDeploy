@@ -26,8 +26,24 @@ const Config = {
 		'period': '1d',
 		'count': 10,
 	},
-	'morgan': {
-		'whitelist': ['https://optimuscp.io', 'https://sftp.optimuscp.io', 'http://127.0.0.1:8000', 'http://hax4lyf:8000']
+	'cors': {
+		'whitelist': ['https://optimuscp.io', 'https://sftp.optimuscp.io', 'http://127.0.0.1:8000', 'http://localhost:8000', 'http://hax4lyf:8000']
+	},
+	'oauth': {
+		'google': {
+			'client_id': '666163516742-b89cg46pnk6o8p75b9btgp7o03gvv081.apps.googleusercontent.com',
+			'client_secret': 'OzxCxTGs8PJedpi4y1VeqdRH',
+			'redirect_uri': 'https://optimuscp.io/oauth.html',
+			'grant_type': 'authorization_code',
+			'tokenUrl': 'https://www.googleapis.com/oauth2/v4/token',
+			'userInfoUrl': 'https://www.googleapis.com/oauth2/v2/userinfo',
+		},
+		'github': {
+			'client_id': '129800c9747092aabe46',
+			'client_secret': '267225d33106584503b84551d493e77bbdd7b0b8',
+			'tokenUrl': 'https://github.com/login/oauth/access_token',
+			'userInfoUrl': 'https://api.github.com/user',
+		},
 	},
 	'cloudflare': {
 		'email': 'smgdark@gmail.com',

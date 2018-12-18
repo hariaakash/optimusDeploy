@@ -27,4 +27,6 @@ router.post('/setPassword', users.setPassword);
 
 router.get('/activity', users.activity);
 
+router.post('/oauth', users.oauth);
+
 module.exports = router;

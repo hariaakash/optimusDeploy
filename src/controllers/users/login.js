@@ -14,26 +14,30 @@ const request = (req, res) => {
                 if (!user) {
                     uniR(res, false, 'User not registered.');
                 } else {
-                    bcrypt.compare(req.body.password, user.password)
-                        .then((status) => {
-                            if (status) {
-                                if (user.conf.verified == 'true') {
-                                    user.logs.push({
-                                        ip: req.clientIp,
-                                        msg: 'Logged in.'
-                                    });
-                                    res.json({
-                                        status: true,
-                                        msg: 'Logged in successfully',
-                                        authKey: user.authKey
-                                    });
+                    if (!user.conf.setPassword) {
+                        uniR(res, false, 'You have registered using social login, hence set password using forgot password.');
+                    } else {
+                        bcrypt.compare(req.body.password, user.password)
+                            .then((status) => {
+                                if (status) {
+                                    if (user.conf.verified == 'true') {
+                                        user.logs.push({
+                                            ip: req.clientIp,
+                                            msg: 'Logged in.'
+                                        });
+                                        res.json({
+                                            status: true,
+                                            msg: 'Logged in successfully',
+                                            authKey: user.authKey
+                                        });
+                                    } else {
+                                        uniR(res, false, 'Verify your account to login !!');
+                                    }
                                 } else {
-                                    uniR(res, false, 'Verify your account to login !!');
+                                    uniR(res, false, 'Password is wrong.');
                                 }
-                            } else {
-                                uniR(res, false, 'Password is wrong.');
-                            }
-                        });
+                            });
+                    }
                 }
             })
             .catch((err) => {

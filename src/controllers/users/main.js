@@ -18,6 +18,7 @@ const request = (req, res) => {
                             conf: {
                                 verified: user.conf.verified,
                                 block: user.conf.block,
+                                setPassword: user.conf.setPassword,
                                 limit: user.conf.limit,
                             },
                         }

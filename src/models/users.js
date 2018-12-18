@@ -9,12 +9,16 @@ const usersSchema = new Schema({
     email: String,
     password: String,
     conf: {
-        verified: String,
+        verified: String, // 'true' or the token to verify email
         block: {
             type: Boolean,
             default: true
         },
-        pToken: String,
+        pToken: String, // Token used to change password
+        setPassword: { // If true password is set
+            type: Boolean,
+            default: true,
+        },
         limit: {
             containers: {
                 type: Number,
@@ -24,6 +28,24 @@ const usersSchema = new Schema({
                 type: Number,
                 default: 1,
             },
+        },
+    },
+    social: {
+        google: {
+            id: String,
+            refresh_token: String,
+            enabled: {
+                type: Boolean,
+                default: false,
+            }
+        },
+        github: {
+            id: String,
+            refresh_token: String,
+            enabled: {
+                type: Boolean,
+                default: false,
+            }
         },
     },
     authKey: String,

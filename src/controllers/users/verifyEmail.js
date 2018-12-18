@@ -19,7 +19,7 @@ const request = (req, res) => {
                     user.conf.verified = 'true';
                     user.logs.push({
                         ip: req.clientIp,
-                        msg: 'Email verificcation completed.'
+                        msg: 'Email verification completed.'
                     });
                     user.save();
                     uniR(res, true, 'Successfully verified, login to continue!');

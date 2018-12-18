@@ -13,6 +13,7 @@ const methods = {
     forgotPassword: rfr('src/controllers/users/forgotPassword'),
     setPassword: rfr('src/controllers/users/setPassword'),
     activity: rfr('src/controllers/users/activity'),
+    oauth: rfr('src/controllers/users/oauth'),
 };
 
 module.exports = methods;

@@ -34,7 +34,7 @@ async.auto({
 		app.use(morgan('dev'));
 		app.use(cors({
 			origin: (origin, callback) => {
-				if (config.morgan.whitelist.indexOf(origin) !== -1) {
+				if (config.cors.whitelist.indexOf(origin) !== -1) {
 					callback(null, true);
 				} else {
 					callback(`Origin ${origin} not allowed by CORS`);
