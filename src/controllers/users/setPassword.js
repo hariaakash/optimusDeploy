@@ -19,7 +19,7 @@ const request = (req, res) => {
                             .then((hash) => {
                                 user.password = hash;
                                 user.conf.pToken = hat();
-                                user.conf.setPassword = true;
+                                if (!user.conf.setPassword) user.conf.setPassword = true;
                                 user.logs.push({
                                     ip: req.clientIp,
                                     msg: 'Password changed.'
