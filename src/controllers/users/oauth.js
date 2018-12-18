@@ -17,10 +17,7 @@ const request = (req, res) => {
             case 'github':
                 Oauth.github(req.body.code, req.clientIp)
                     .then((response) => {
-                        res.json({
-                            status: true,
-                            msg: 'qq'
-                        });
+                        res.json(response);
                     })
                     .catch(() => uniR(res, false, 'Token expired or invalid request.'));
                 break;
