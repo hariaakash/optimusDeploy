@@ -45,7 +45,7 @@ const handleUser = (data, resolve, reject) => {
                 newUser.social[data.social].enabled = true;
                 newUser.social[data.social].id = data.userInfo.id;
                 newUser.social[data.social].refresh_token = data.userAuth.refresh_token;
-                newUser.conf.verified == 'true';
+                newUser.conf.verified = 'true';
                 newUser.conf.setPassword = false;
                 newUser.conf.pToken = hat();
                 newUser.authKey = hat();
@@ -57,7 +57,7 @@ const handleUser = (data, resolve, reject) => {
                 resolve({
                     status: true,
                     msg: `Registered using ${data.social}.`,
-                    authKey: user.authKey,
+                    authKey: newUser.authKey,
                 });
             }
         })
