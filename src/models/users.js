@@ -41,7 +41,7 @@ const usersSchema = new Schema({
         },
         github: {
             id: String,
-            refresh_token: String,
+            access_token: String,
             enabled: {
                 type: Boolean,
                 default: false,

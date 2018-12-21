@@ -44,7 +44,11 @@ const handleUser = (data, resolve, reject) => {
                 newUser.email = data.userInfo.email;
                 newUser.social[data.social].enabled = true;
                 newUser.social[data.social].id = data.userInfo.id;
-                newUser.social[data.social].refresh_token = data.userAuth.refresh_token;
+                if (data.social == 'github') {
+                    newUser.social[data.social].access_token = data.userAuth.access_token;
+                } else {
+                    newUser.social[data.social].refresh_token = data.userAuth.refresh_token;
+                }
                 newUser.conf.verified = 'true';
                 newUser.conf.setPassword = false;
                 newUser.conf.pToken = hat();
