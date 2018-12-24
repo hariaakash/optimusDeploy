@@ -7,15 +7,21 @@ const server = require('http').createServer(app);
 const morgan = require('morgan');
 const cors = require('cors');
 const bodyParser = require('body-parser');
-// const io = require('socket.io').listen(server);
+const cookieParser = require('cookie-parser');
+const requestIp = require('request-ip');
+const io = require('socket.io').listen(server);
 
 const config = rfr('config');
 const Log = rfr('src/helpers/logger');
-const DBConnection = rfr('src/helpers/mongoose');
+const DBConnection = rfr('src/helpers/dbconnection');
+const Sftp = rfr('src/helpers/sftp');
+const EnsureDir = rfr('src/helpers/ensureDir');
+const Init = rfr('src/helpers/init');
 const Routes = rfr('src/routes');
+const Socket = rfr('src/socket');
 
 async.auto({
-	pretty_init: (callback) => {
+	middleware: [(callback) => {
 		Log.info('+ ------------------------------------ +');
 		Log.info('|          Optimus Deploy              |');
 		Log.info('+ ------------------------------------ +');
@@ -26,22 +32,44 @@ async.auto({
 			})
 		}));
 		app.use(morgan('dev'));
-		app.use(cors());
+		app.use(cors({
+			origin: (origin, callback) => {
+				if (config.cors.whitelist.indexOf(origin) !== -1) {
+					callback(null, true);
+				} else {
+					callback(`Origin ${origin} not allowed by CORS`);
+				}
+			}
+		}));
 		app.use(bodyParser.urlencoded({
 			extended: false
 		}));
 		app.use(bodyParser.json());
+		app.use(cookieParser());
+		app.use(requestIp.mw());
 		app.use(Routes);
-	},
-	connect_mongodb: ['pretty_init', (result, callback) => {
-		Log.info(result.pretty_init);
-		// DBConnection(callback);
-		callback(null, 'MongoDB closed.');
 	}],
-	start_express: ['connect_mongodb', (result, callback) => {
-		Log.info(result.connect_mongodb);
-		server.listen(config.web.port, config.web.ip);
-		callback(null, `Express running on ${config.web.ip}:${config.web.port}`);
+	ensure_directories: [(callback) => {
+		EnsureDir(callback);
+	}],
+	dbconnection: [(callback) => {
+		DBConnection(callback);
+	}],
+	ensureSftp: [(callback) => {
+		Sftp.ensureGroup(callback);
+	}],
+	init: [(callback) => {
+		Init(callback);
+	}],
+	start_express: ['middleware', 'ensure_directories', 'dbconnection', 'ensureSftp', 'init', (result, callback) => {
+		Log.info(result.middleware);
+		Log.info(result.ensure_directories);
+		Log.info(result.dbconnection);
+		Log.info(result.ensureSftp);
+		Log.info(result.init);
+		Socket(io);
+		server.listen(config.web.port, config.web.host);
+		callback(null, `Express & Socket running on ${config.web.host}:${config.web.port}`);
 	}],
 }, (err, result) => {
 	if (err) {
@@ -52,10 +80,3 @@ async.auto({
 		Log.info('Daemon started successfully.');
 	}
 });
-
-// io.on('connection', function(client) {
-//     console.log('a user connected');
-//     client.on('disconnect', function() {
-//         console.log('user disconnected');
-//     });
-// });

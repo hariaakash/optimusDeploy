@@ -2,13 +2,13 @@ const mongoose = require('mongoose');
 
 const Schema = mongoose.Schema;
 
-const containerSchema = new Schema({
-    image: String,
-    name: String,
+const logsSchema = new Schema({
+    ip: String,
+    msg: String,
     created_at: {
         type: Date,
         default: Date.now
     }
 });
 
-module.exports = mongoose.model('Container', containerSchema);
+module.exports = logsSchema;

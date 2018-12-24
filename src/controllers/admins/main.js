@@ -1,25 +1,22 @@
 const rfr = require('rfr');
 
-const User = rfr('src/models/users');
+const Admin = rfr('src/models/admins');
 
 const uniR = rfr('src/helpers/uniR');
 
 const request = (req, res) => {
-    if (req.query.authKey) {
-        User.findOne({
-                authKey: req.query.authKey
+    if (req.query.adminKey) {
+        Admin.findOne({
+                adminKey: req.query.adminKey
             })
-            .then((user) => {
-                if (user) {
+            .then((admin) => {
+                if (admin) {
                     res.json({
                         status: true,
                         data: {
-                            email: user.email,
+                            email: admin.email,
                             conf: {
-                                verified: user.conf.verified,
-                                block: user.conf.block,
-                                setPassword: user.conf.setPassword,
-                                limit: user.conf.limit,
+                                block: admin.conf.block,
                             },
                         }
                     });

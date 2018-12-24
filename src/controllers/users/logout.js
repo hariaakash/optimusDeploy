@@ -1,4 +1,5 @@
 const rfr = require('rfr');
+const hat = require('hat');
 
 const User = rfr('src/models/users');
 
@@ -11,20 +12,18 @@ const request = (req, res) => {
             })
             .then((user) => {
                 if (user) {
+                    user.authKey = hat();
+                    user.logs.push({
+                        ip: req.clientIp,
+                        msg: 'Logged out.'
+                    });
+                    user.save();
                     res.json({
                         status: true,
-                        data: {
-                            email: user.email,
-                            conf: {
-                                verified: user.conf.verified,
-                                block: user.conf.block,
-                                setPassword: user.conf.setPassword,
-                                limit: user.conf.limit,
-                            },
-                        }
+                        msg: 'Logged out successfully.'
                     });
                 } else {
-                    uniR(res, false, 'Session expired, login to continue.');
+                    uniR(res, true, 'Session expired, login to continue.');
                 }
             })
             .catch((err) => {

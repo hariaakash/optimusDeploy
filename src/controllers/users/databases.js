@@ -9,22 +9,25 @@ const request = (req, res) => {
         User.findOne({
                 authKey: req.query.authKey
             })
+            .populate('databases')
             .then((user) => {
                 if (user) {
+                    let databases = user.databases.map((x, i) => {
+                        return {
+                            no: i,
+                            _id: x._id,
+                            name: x.name,
+                            dbType: x.dbType,
+                            pass: x.pass,
+                            blocked: x.conf.blocked,
+                        };
+                    });
                     res.json({
                         status: true,
-                        data: {
-                            email: user.email,
-                            conf: {
-                                verified: user.conf.verified,
-                                block: user.conf.block,
-                                setPassword: user.conf.setPassword,
-                                limit: user.conf.limit,
-                            },
-                        }
+                        data: databases
                     });
                 } else {
-                    uniR(res, false, 'Session expired, login to continue.');
+                    uniR(res, true, 'Session expired, login to continue.');
                 }
             })
             .catch((err) => {

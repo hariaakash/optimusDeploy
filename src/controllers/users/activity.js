@@ -11,17 +11,16 @@ const request = (req, res) => {
             })
             .then((user) => {
                 if (user) {
+                    let logs = user.logs.reverse().slice(0, 30).map((x, i) => {
+                        return {
+                            no: i,
+                            msg: x.msg,
+                            date: x.created_at,
+                        };
+                    });
                     res.json({
                         status: true,
-                        data: {
-                            email: user.email,
-                            conf: {
-                                verified: user.conf.verified,
-                                block: user.conf.block,
-                                setPassword: user.conf.setPassword,
-                                limit: user.conf.limit,
-                            },
-                        }
+                        data: logs
                     });
                 } else {
                     uniR(res, false, 'Session expired, login to continue.');
