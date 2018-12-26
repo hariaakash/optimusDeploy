@@ -1,0 +1,35 @@
+version: '3'
+
+services:
+
+    api:
+        build: ./api
+        command: npm run start
+        environment:
+            NODE_ENV: production
+            AMQP_URI: amqp://rabbitmq
+        restart: always
+        depends_on:
+            - rabbitmq
+
+    container:
+        build: ./container
+        command: npm run start
+        environment:
+            NODE_ENV: production
+            AMQP_URI: amqp://rabbitmq
+        restart: always
+        depends_on:
+            - rabbitmq
+    
+    rabbitmq:
+        image: rabbitmq:3.7-alpine
+        hostname: rabbitmq
+        volumes:
+            - ./data/rabbitmq:/var/lib/rabbitmq/mnesia/rabbit@rabbitmq
+        restart: always
+        healthcheck:
+            test: [ "CMD", "nc", "-z", "localhost", "5672" ]
+            interval: 5s
+            timeout: 15s
+            retries: 5
