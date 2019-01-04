@@ -1,11 +1,26 @@
 # Optimus Deploy
+[![Optimus Deploy Logo](https://optimuscp.io/img/logo.png)](https://optimuscp.io)
 
-## For Dev
-```
-docker-compose -f docker-compose.dev.yml up --build
+A cloud based easy infrastructure management solution.
+
+
+### Requirements
+
+  - docker > 17
+  - docker-compose > 1.18
+
+
+### Development
+```sh
+docker-compose -f docker-compose.dev.yml up --build -d
 ```
 
-## For Production
+### Production
+```sh
+docker-compose -f docker-compose.yml up --build -d
 ```
-docker-compose -f docker-compose.yml up --build
+
+## Traefik Alpha
+```sh
+docker-compose -f docker-compose-traefik.yml up -d
 ```

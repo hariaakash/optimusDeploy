@@ -4,7 +4,7 @@ services:
 
     api:
         build:
-            context: ./api
+            context: ./services/api
             args:
                 NODE_ENV: development
         command: npm run dev
@@ -12,14 +12,14 @@ services:
             NODE_ENV: development
             AMQP_URI: amqp://rabbitmq
         volumes:
-            - ./api/src:/app/src
+            - ./services/api/src:/app/src
         restart: always
         depends_on:
             - rabbitmq
 
     container:
         build:
-            context: ./container
+            context: ./services/container
             args:
                 NODE_ENV: development
         command: npm run dev
@@ -27,7 +27,7 @@ services:
             NODE_ENV: development
             AMQP_URI: amqp://rabbitmq
         volumes:
-            - ./container/src:/app/src
+            - ./services/container/src:/app/src
         restart: always
         depends_on:
             - rabbitmq

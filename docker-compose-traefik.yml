@@ -1,0 +1,35 @@
+version: '3.5'
+
+services:
+
+    api:
+        image: hariaakash/op-static
+        labels:
+            - "traefik.docker.network=proxy"
+            - "traefik.backend=qq.gameservers.ooo"
+            - "traefik.frontend.rule=Host:qq.gameservers.ooo"
+            - "traefik.port=80"
+            - "traefik.enable=true"
+        networks:
+            - apps
+            - proxy
+
+    traefik:
+        image: traefik
+        ports:
+            - 80:80
+            - 443:443
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ./config/traefik/traefik.toml:/etc/traefik/traefik.toml
+            - ./data/traefik/acme.json:/acme.json
+        restart: always
+        networks:
+            - proxy
+
+networks:
+
+    proxy:
+        name: proxy
+    apps:
+        name: apps
