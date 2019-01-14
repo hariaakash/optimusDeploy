@@ -2,9 +2,9 @@ version: '3'
 
 services:
 
-    api:
+    starter:
         build:
-            context: ./services/api
+            context: ./services/starter
             args:
                 NODE_ENV: development
         command: npm run dev
@@ -12,22 +12,7 @@ services:
             NODE_ENV: development
             AMQP_URI: amqp://rabbitmq
         volumes:
-            - ./services/api/src:/app/src
-        restart: always
-        depends_on:
-            - rabbitmq
-
-    container:
-        build:
-            context: ./services/container
-            args:
-                NODE_ENV: development
-        command: npm run dev
-        environment:
-            NODE_ENV: development
-            AMQP_URI: amqp://rabbitmq
-        volumes:
-            - ./services/container/src:/app/src
+            - ./services/starter/src:/app/src
         restart: always
         depends_on:
             - rabbitmq

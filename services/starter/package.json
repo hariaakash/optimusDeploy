@@ -10,7 +10,11 @@
   "author": "",
   "license": "ISC",
   "dependencies": {
-    "amqplib": "^0.5.3"
+    "amqp-connection-manager": "^2.3.0",
+    "amqplib": "^0.5.3",
+    "uuid": "^3.3.2"
   },
-  "devDependencies": {}
+  "devDependencies": {
+    "eslint": "^5.12.0"
+  }
 }
