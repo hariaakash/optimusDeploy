@@ -14,7 +14,5 @@
     "amqplib": "^0.5.3",
     "uuid": "^3.3.2"
   },
-  "devDependencies": {
-    "eslint": "^5.12.0"
-  }
+  "devDependencies": {}
 }

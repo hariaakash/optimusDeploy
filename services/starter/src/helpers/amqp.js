@@ -1,16 +1,14 @@
-const {
-	EventEmitter
-} = require('events');
-const amqp = require('amqp-connection-manager');
+const EventEmitter = require('events').EventEmitter;
+const AmqpConnect = require('amqp-connection-manager').connect;
 
 const amqpUri = process.env.AMQP_URI || 'amqp://localhost';
 
-const conn = amqp.connect(amqpUri);
+const conn = AmqpConnect(amqpUri);
 
-conn.on('connect', function () {
+conn.on('connect', () => {
 	console.log('Connected to RabbitMQ');
 });
-conn.on('disconnect', function (params) {
+conn.on('disconnect', (params) => {
 	console.log('Disconnected from RabbitMQ.', params.err.stack);
 });
 
@@ -18,7 +16,6 @@ conn.on('disconnect', function (params) {
  * AmqpClass
  */
 class Amqp extends EventEmitter {
-
 	/**
 	 * @constructor Creates channel wrapper
 	 * @param {string} queue - Queue name
@@ -32,7 +29,7 @@ class Amqp extends EventEmitter {
 		this.channelWrapper = conn.createChannel({
 			setup: (channel) => {
 				channel.assertQueue(queue, options);
-			}
+			},
 		});
 	}
 
@@ -44,12 +41,10 @@ class Amqp extends EventEmitter {
 	addSetup(options = {}) {
 		return new Promise((resolve, reject) => {
 			try {
-				this.channelWrapper.addSetup((channel) => {
-					return Promise.all([
-						channel.assertQueue(this.queue, options),
-						channel.consume(this.queue, data => this.onMessage(data))
-					]);
-				});
+				this.channelWrapper.addSetup((channel) => Promise.all([
+					channel.assertQueue(this.queue, options),
+					channel.consume(this.queue, (data) => this.onMessage(data)),
+				]));
 				resolve();
 			} catch (err) {
 				reject(err);
@@ -76,7 +71,7 @@ class Amqp extends EventEmitter {
 
 	/**
 	 * @ack Acknowledge message
-	 * @param {Object} - data 
+	 * @param {Object} - data
 	 */
 	ack(data) {
 		this.channelWrapper.ack(data);

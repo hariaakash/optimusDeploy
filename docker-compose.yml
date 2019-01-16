@@ -2,26 +2,14 @@ version: '3'
 
 services:
 
-    api:
-        build: ./services/api
+    starter:
+        build: ./services/starter
         command: npm run start
         environment:
             NODE_ENV: production
             AMQP_URI: amqp://rabbitmq
         volumes:
-            - ./services/api/src:/app/src
-        restart: always
-        depends_on:
-            - rabbitmq
-
-    container:
-        build: ./services/container
-        command: npm run start
-        environment:
-            NODE_ENV: production
-            AMQP_URI: amqp://rabbitmq
-        volumes:
-            - ./services/container/src:/app/src
+            - ./services/starter/src:/app/src
         restart: always
         depends_on:
             - rabbitmq

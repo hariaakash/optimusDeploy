@@ -13,7 +13,7 @@ helloQueue.on('data', (data) => {
 	console.log('Received');
 
 	// Parse data : buffer -> string -> json
-	console.log(JSON.parse(data.content.toString()))
+	console.log(JSON.parse(data.content.toString()));
 
 	// Acknowledge if messages are durable
 	helloQueue.ack(data);
@@ -21,7 +21,7 @@ helloQueue.on('data', (data) => {
 
 // Send data to queue
 helloQueue.send({
-		msg: 'hello'
+		msg: 'hello',
 	})
 	.then(() => console.log('Sent'))
 	.catch(console.log);
