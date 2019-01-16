@@ -12,12 +12,12 @@ A cloud based easy infrastructure management solution.
 
 ### Development
 ```sh
-docker-compose -f docker-compose.dev.yml up --build -d
+docker-compose -f docker-compose-dev.yml up --build -d
 ```
 
 ### Production
 ```sh
-docker-compose -f docker-compose.yml up --build -d
+docker-compose -f docker-compose-pro.yml up --build -d
 ```
 
 ## Traefik Alpha

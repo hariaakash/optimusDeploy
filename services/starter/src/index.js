@@ -23,5 +23,5 @@ helloQueue.on('data', (data) => {
 helloQueue.send({
 		msg: 'hello',
 	})
-	.then(() => console.log('Sent'))
+	.then(console.log('Sent'))
 	.catch(console.log);
