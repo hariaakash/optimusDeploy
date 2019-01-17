@@ -1,0 +1,67 @@
+version: '3.5'
+
+networks:
+
+    proxy:
+        name: proxy
+    apps:
+        name: apps
+    micros:
+        name: micros
+
+services:
+
+    api:
+        image: hariaakash/op-static
+        labels:
+            - "traefik.docker.network=proxy"
+            - "traefik.backend=haxforlyf.local"
+            - "traefik.frontend.rule=Host:haxforlyf.local"
+            - "traefik.port=80"
+            - "traefik.enable=true"
+        networks:
+            - apps
+            - proxy
+
+    starter:
+        build: ./services/starter
+        command: npm run start
+        environment:
+            NODE_ENV: production
+            AMQP_URI: amqp://rabbitmq
+        volumes:
+            - ./services/starter/src:/app/src
+        restart: always
+        depends_on:
+            - rabbitmq
+        networks:
+            - micros
+    
+    rabbitmq:
+        image: rabbitmq:3.7-alpine
+        hostname: rabbitmq
+        volumes:
+            - ./data/rabbitmq:/var/lib/rabbitmq/mnesia/rabbit@rabbitmq
+        restart: always
+        healthcheck:
+            test: [ "CMD", "nc", "-z", "localhost", "5672" ]
+            interval: 5s
+            timeout: 15s
+            retries: 5
+        networks:
+            - micros
+
+    traefik:
+        image: traefik
+        command: --api --docker
+        ports:
+            - 80:80
+            - 443:443
+            - 8080:8080
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ./config/traefik/traefik-pro.toml:/etc/traefik/traefik.toml
+            - ./data/traefik/acme.json:/acme.json
+        restart: always
+        networks:
+            - proxy
