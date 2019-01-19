@@ -34,11 +34,11 @@ class Amqp extends EventEmitter {
 	}
 
 	/**
-	 * @addSetup Creates listen on the queue
+	 * @addListener Creates listen on the queue
 	 * @param {Object} options - assertQueue options
 	 * @returns {Promise} - Promise
 	 */
-	addSetup(options = {}) {
+	addListener(options = {}) {
 		return new Promise((resolve, reject) => {
 			try {
 				this.channelWrapper.addSetup((channel) => Promise.all([

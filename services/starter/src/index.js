@@ -6,7 +6,7 @@ const Amqp = require('./helpers/amqp');
 const helloQueue = new Amqp('helloqueue');
 
 // For creation of listener.
-helloQueue.addSetup();
+helloQueue.addListener();
 
 // Listener to watch for data
 helloQueue.on('data', (data) => {
