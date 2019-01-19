@@ -13,7 +13,7 @@ A cloud based easy infrastructure management solution.
 
 #### Project Structure
 
-```toml
+```
 .
 +-- config          #Static files go here
 +-- data            #Dynamically generated data from micros go here
@@ -36,14 +36,14 @@ A cloud based easy infrastructure management solution.
 1. Add necessary .local domains required to /etc/hosts.
 2. Execute the below command to get the development environment setup.
 ```sh
-docker-compose -f docker-compose-traefik-dev.yml up --build -d
+docker-compose -f docker-compose.dev.yml up --build -d
 ```
 
 #### Production
 
 Execute the below command to get the production environment setup.
 ```sh
-docker-compose -f docker-compose-traefik-pro.yml up --build -d
+docker-compose -f docker-compose.pro.yml up --build -d
 ```
 
 #### To create a micro-service
