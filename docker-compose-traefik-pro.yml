@@ -43,21 +43,14 @@ services:
         volumes:
             - ./data/rabbitmq:/var/lib/rabbitmq/mnesia/rabbit@rabbitmq
         restart: always
-        healthcheck:
-            test: [ "CMD", "nc", "-z", "localhost", "5672" ]
-            interval: 5s
-            timeout: 15s
-            retries: 5
         networks:
             - micros
 
     traefik:
         image: traefik
-        command: --api --docker
         ports:
             - 80:80
             - 443:443
-            - 8080:8080
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
             - ./config/traefik/traefik-pro.toml:/etc/traefik/traefik.toml

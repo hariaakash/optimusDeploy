@@ -11,6 +11,21 @@ A cloud based easy infrastructure management solution.
 
 ### Basics
 
+#### Project Structure
+
+```toml
+.
++-- config          #Static files go here
++-- data            #Dynamically generated data from micros go here
+|   +-- rabbitmq
+|   +-- traefik
+|   +-- mongodb
++-- services        #All micros go here
+|   +-- starter
+|   +-- ...         #More services
++-- readme.md
+```
+
 1. All static configuration files should go inside config directory.
 2. Micro-services should be created inside services dir and on the micros network.
 3. Applications deployed should be on apps network, if public then it should be shared with proxy network.
