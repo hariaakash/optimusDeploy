@@ -4,7 +4,6 @@ const task = (ch) => {
 	ch.assertQueue(channel, {
 		durable: true,
 	});
-
 	ch.sendToQueue(channel, Buffer.from('something to do'), {
 		persistent: true,
 	});
