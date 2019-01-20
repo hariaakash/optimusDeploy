@@ -1,19 +1,19 @@
 const task = (ch) => {
 
-    const channel = 'tasks';
+	const channel = 'tasks';
 
-    ch.assertQueue(channel, {
-        durable: true
-    });
-    
-    ch.sendToQueue(channel, Buffer.from('something to do'), {
-        persistent: true
-    });
+	ch.assertQueue(channel, {
+		durable: true
+	});
+	
+	ch.sendToQueue(channel, Buffer.from('something to do'), {
+		persistent: true
+	});
 
-    ch.consume(channel, (data) => {
-        console.log(data.content.toString());
-        ch.ack(data);
-    });
+	ch.consume(channel, (data) => {
+		console.log(data.content.toString());
+		ch.ack(data);
+	});
 };
 
 module.exports = task;
