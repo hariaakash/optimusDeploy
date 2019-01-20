@@ -42,7 +42,7 @@ services:
     
     rabbitmq:
         image: rabbitmq:3-management
-        hostname: rabbitmq
+        hostname: rabbitmq  #The hostname has to be manually specified. Refer to hub.docker.com/_/rabbitmq
         volumes:
             - ./data/rabbitmq:/var/lib/rabbitmq/mnesia/rabbit@rabbitmq
         labels:
