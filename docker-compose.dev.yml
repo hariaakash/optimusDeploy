@@ -2,71 +2,71 @@ version: '3.5'
 
 networks:
 
-    proxy:
-        name: proxy
-    apps:
-        name: apps
-    micros:
-        name: micros
+	proxy:
+		name: proxy
+	apps:
+		name: apps
+	micros:
+		name: micros
 
 services:
 
-    api:
-        image: hariaakash/op-static
-        labels:
-            - "traefik.docker.network=proxy"
-            - "traefik.backend=haxforlyf.local"
-            - "traefik.frontend.rule=Host:haxforlyf.local"
-            - "traefik.port=80"
-            - "traefik.enable=true"
-        networks:
-            - apps
-            - proxy
+	api:
+		image: hariaakash/op-static
+		labels:
+			- "traefik.docker.network=proxy"
+			- "traefik.backend=haxforlyf.local"
+			- "traefik.frontend.rule=Host:haxforlyf.local"
+			- "traefik.port=80"
+			- "traefik.enable=true"
+		networks:
+			- apps
+			- proxy
 
-    starter:
-        build:
-            context: ./services/starter
-            args:
-                NODE_ENV: development
-        command: npm run dev
-        environment:
-            NODE_ENV: development
-            AMQP_URI: amqp://rabbitmq
-        volumes:
-            - ./services/starter/src:/app/src
-        restart: always
-        depends_on:
-            - rabbitmq
-        networks:
-            - micros
-    
-    rabbitmq:
-        image: rabbitmq:3-management
-        hostname: rabbitmq  #The hostname has to be manually specified. Refer to hub.docker.com/_/rabbitmq
-        volumes:
-            - ./data/rabbitmq:/var/lib/rabbitmq/mnesia/rabbit@rabbitmq
-        labels:
-            - "traefik.docker.network=proxy"
-            - "traefik.backend=rabbitmq.local"
-            - "traefik.frontend.rule=Host:rabbitmq.local"
-            - "traefik.port=15672"
-            - "traefik.enable=true"
-        restart: always
-        networks:
-            - micros
-            - proxy
+	starter:
+		build:
+			context: ./services/starter
+			args:
+				NODE_ENV: development
+		command: npm run dev
+		environment:
+			NODE_ENV: development
+			AMQP_URI: amqp://rabbitmq
+		volumes:
+			- ./services/starter/src:/app/src
+		restart: always
+		depends_on:
+			- rabbitmq
+		networks:
+			- micros
 
-    traefik:
-        image: traefik
-        ports:
-            - 80:80
-            - 443:443
-            - 8080:8080
-        volumes:
-            - /var/run/docker.sock:/var/run/docker.sock
-            - ./config/traefik/traefik-dev.toml:/etc/traefik/traefik.toml
-            - ./config/traefik/traefik.crt:/etc/traefik/traefik.crt
-            - ./config/traefik/traefik.key:/etc/traefik/traefik.key
-        restart: always
-        networks:
-            - proxy
+	rabbitmq:
+		image: rabbitmq:3-management
+		hostname: rabbitmq  #The hostname has to be manually specified. Refer to hub.docker.com/_/rabbitmq
+		volumes:
+			- ./data/rabbitmq:/var/lib/rabbitmq/mnesia/rabbit@rabbitmq
+		labels:
+			- "traefik.docker.network=proxy"
+			- "traefik.backend=rabbitmq.local"
+			- "traefik.frontend.rule=Host:rabbitmq.local"
+			- "traefik.port=15672"
+			- "traefik.enable=true"
+		restart: always
+		networks:
+			- micros
+			- proxy
+
+	traefik:
+		image: traefik
+		ports:
+			- 80:80
+			- 443:443
+			- 8080:8080
+		volumes:
+			- /var/run/docker.sock:/var/run/docker.sock
+			- ./config/traefik/traefik-dev.toml:/etc/traefik/traefik.toml
+			- ./config/traefik/traefik.crt:/etc/traefik/traefik.crt
+			- ./config/traefik/traefik.key:/etc/traefik/traefik.key
+		restart: always
+		networks:
+			- proxy
