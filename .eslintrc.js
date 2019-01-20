@@ -1,6 +1,9 @@
 module.exports = {
-	'extends': 'airbnb',
+	'extends': ['airbnb', 'prettier'],
+	'plugins': ['prettier'],
 	'rules': {
+		'no-console': 0,
+		'prettier/prettier': ['error'],
 		'indent': ['error', 'tab'],
 		'no-tabs': 0,
 		'no-unused-vars': 0,

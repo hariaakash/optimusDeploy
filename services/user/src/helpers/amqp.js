@@ -2,7 +2,7 @@ const amqp = require('amqplib');
 
 const amqpUri = process.env.AMQP_URI || 'amqp://localhost';
 
-const retry = ms => setTimeout(init, ms * 1000);
+const retry = (ms) => setTimeout(init, ms * 1000);
 
 const init = async () => {
 	try {
