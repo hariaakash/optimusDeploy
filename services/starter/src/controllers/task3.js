@@ -1,16 +1,16 @@
-const rpcServer = require('../helpers/rpc').server;
+const { rpcConsume } = require('../helpers/amqp-wrapper');
 
 const task = (ch) => {
 	const queue = 'rpc_queue';
-	rpcServer(
+	rpcConsume({
 		ch,
 		queue,
-		(data) =>
+		process: (data) =>
 			new Promise((resolve, reject) => {
-				// console.log(data.content.toString());
-				resolve(data.content.toString());
-			})
-	);
+				// console.log(data);
+				resolve(data);
+			}),
+	});
 };
 
 module.exports = task;

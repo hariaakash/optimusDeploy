@@ -8,6 +8,8 @@ networks:
         name: apps
     micros:
         name: micros
+    db:
+        name: db
 
 services:
 
@@ -36,7 +38,30 @@ services:
             - rabbitmq
         networks:
             - micros
-    
+
+    user:
+        build: ./services/user
+        command: npm run start
+        environment:
+            NODE_ENV: production
+            AMQP_URI: amqp://rabbitmq
+            MONGODB_URI: mongodb://mongodb
+        volumes:
+            - ./services/user/src:/app/src
+        restart: always
+        depends_on:
+            - rabbitmq
+        networks:
+            - micros
+            - db
+
+    mongodb:
+        image: mvertes/alpine-mongo
+        volumes:
+            - ./data/mongodb:/data/db
+        networks:
+            - db
+
     rabbitmq:
         image: rabbitmq:3.7-alpine
         hostname: rabbitmq
