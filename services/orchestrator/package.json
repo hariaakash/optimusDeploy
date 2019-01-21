@@ -1,5 +1,5 @@
 {
-	"name": "user",
+	"name": "orchestrator",
 	"version": "1.0.0",
 	"description": "",
 	"main": "src/index.js",
@@ -10,11 +10,8 @@
 	"author": "",
 	"license": "ISC",
 	"dependencies": {
-		"@sendgrid/mail": "^6.3.1",
 		"amqplib": "^0.5.3",
-		"bcryptjs": "^2.4.3",
-		"hat": "0.0.3",
-		"mongoose": "^5.4.5",
+		"async": "^2.6.1",
 		"uuid": "^3.3.2"
 	}
 }

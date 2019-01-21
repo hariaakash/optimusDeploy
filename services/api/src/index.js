@@ -32,4 +32,4 @@ app.use((req, res, next) => {
 app.use(Routes);
 
 server.listen(port);
-console.log(`Server running on port: ${port}`);
+console.log(`Express: Running on port: ${port}`);

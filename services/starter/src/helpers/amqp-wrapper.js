@@ -13,12 +13,10 @@ const rpcConsume = ({ ch, queue, process }) => {
 		durable: false,
 	}).then(() =>
 		ch.consume(queue, (data) => {
-			process(JSON.parse(data.content.toString())).then((result) => {
-				ch.sendToQueue(
-					data.properties.replyTo,
-					Buffer.from(JSON.stringify(result)),
-					{ correlationId: data.properties.correlationId }
-				);
+			process(JSON.parse(data.content.toString()), ch).then((result) => {
+				ch.sendToQueue(data.properties.replyTo, Buffer.from(JSON.stringify(result)), {
+					correlationId: data.properties.correlationId,
+				});
 				ch.ack(data);
 			});
 		})
@@ -95,8 +93,7 @@ const consume = ({ ch, queue, process }) =>
  * @param {Object} [obj.options={ durable: true }] - Options to be used for assert.
  * @returns {Promise} - Not necessary to handle this.
  */
-const assert = ({ ch, queue, options = { durable: true } }) =>
-	ch.assertQueue(queue, options);
+const assert = ({ ch, queue, options = { durable: true } }) => ch.assertQueue(queue, options);
 
 const rpc = {
 	rpcSend,

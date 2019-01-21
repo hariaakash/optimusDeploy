@@ -25,14 +25,14 @@ services:
             - apps
             - proxy
 
-    starter:
-        build: ./services/starter
+    orchestrator:
+        build: ./services/orchestrator
         command: npm run start
         environment:
             NODE_ENV: production
             AMQP_URI: amqp://rabbitmq
         volumes:
-            - ./services/starter/src:/app/src
+            - ./services/orchestrator/src:/app/src
         restart: always
         depends_on:
             - rabbitmq
@@ -45,7 +45,7 @@ services:
         environment:
             NODE_ENV: production
             AMQP_URI: amqp://rabbitmq
-            MONGODB_URI: mongodb://mongodb
+            MONGODB_HOST: mongodb://mongodb
         volumes:
             - ./services/user/src:/app/src
         restart: always

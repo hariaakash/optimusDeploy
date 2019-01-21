@@ -1,36 +1,21 @@
 const { Schema, model } = require('mongoose');
 
 const userSchema = new Schema({
-	email: String,
+	email: { type: String, required: true },
 	authKey: {
-		token: String,
-		setTime: {
-			type: Date,
-			default: Date.now,
-		},
+		token: { type: String, required: true },
+		setTime: { type: Date, default: Date.now },
 	},
 	conf: {
-		hashPassword: String,
-		setPassword: {
-			type: Boolean,
-			default: true,
-		},
-		blocked: {
-			type: Boolean,
-			default: false,
-		},
+		hashPassword: { type: String, required: true },
+		setPassword: { type: Boolean, default: true },
+		blocked: { type: Boolean, default: false },
 		pToken: String,
 		eToken: String,
-		emailVerified: {
-			type: Boolean,
-			default: false,
-		},
+		emailVerified: { type: Boolean, default: false },
 	},
 	info: {
-		registered: {
-			type: Date,
-			default: Date.now,
-		},
+		registered_at: { type: Date, default: Date.now },
 	},
 });
 

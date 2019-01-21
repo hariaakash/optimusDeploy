@@ -6,7 +6,7 @@ const task = (ch) => {
 		ch,
 		queue,
 		process: (data) =>
-			new Promise((resolve, reject) => {
+			new Promise((resolve) => {
 				// console.log(data);
 				resolve(data);
 			}),

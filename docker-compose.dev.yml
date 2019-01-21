@@ -36,9 +36,9 @@ services:
             - micros
             - proxy
 
-    starter:
+    orchestrator:
         build:
-            context: ./services/starter
+            context: ./services/orchestrator
             args:
                 NODE_ENV: development
         command: npm run dev
@@ -46,7 +46,7 @@ services:
             NODE_ENV: development
             AMQP_URI: amqp://rabbitmq
         volumes:
-            - ./services/starter/src:/app/src
+            - ./services/orchestrator/src:/app/src
         restart: always
         depends_on:
             - rabbitmq
@@ -62,7 +62,7 @@ services:
         environment:
             NODE_ENV: development
             AMQP_URI: amqp://rabbitmq
-            MONGODB_URI: mongodb://mongodb
+            MONGODB_HOST: mongodb://mongodb
         volumes:
             - ./services/user/src:/app/src
         restart: always
