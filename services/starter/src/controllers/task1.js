@@ -1,16 +1,21 @@
+const { send, consume } = require('../helpers/amqp-wrapper');
+
 const task = (ch) => {
-	const channel = 'tasks';
+	const queue = 'user:create';
 
-	ch.assertQueue(channel, {
-		durable: true,
-	});
-	ch.sendToQueue(channel, Buffer.from('something to do'), {
-		persistent: true,
+	send({
+		ch,
+		queue,
+		data: { task: 1, msg: 'Ha' },
 	});
 
-	ch.consume(channel, (data) => {
-		console.log(data.content.toString());
-		ch.ack(data);
+	consume({
+		ch,
+		queue,
+		process: (data) => {
+			console.log(data.content);
+			ch.ack(data);
+		},
 	});
 };
 

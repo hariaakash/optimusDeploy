@@ -14,15 +14,26 @@ networks:
 services:
 
     api:
-        image: hariaakash/op-static
+        build:
+            context: ./services/api
+            args:
+                NODE_ENV: development
+        command: npm run dev
+        environment:
+            NODE_ENV: development
+            AMQP_URI: amqp://rabbitmq
+            API_PORT: 3000
+        volumes:
+            - ./services/api/src:/app/src
         labels:
             - "traefik.docker.network=proxy"
-            - "traefik.backend=haxforlyf.local"
-            - "traefik.frontend.rule=Host:haxforlyf.local"
-            - "traefik.port=80"
+            - "traefik.backend=api.local"
+            - "traefik.frontend.rule=Host:api.local"
+            - "traefik.port=3000"
             - "traefik.enable=true"
+        restart: always
         networks:
-            - apps
+            - micros
             - proxy
 
     starter:
