@@ -68,6 +68,7 @@ services:
         restart: always
         depends_on:
             - rabbitmq
+            - mongodb
         networks:
             - micros
             - db

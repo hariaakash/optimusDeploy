@@ -7,8 +7,7 @@ const userSchema = new Schema({
 		setTime: { type: Date, default: Date.now },
 	},
 	conf: {
-		hashPassword: { type: String, required: true },
-		setPassword: { type: Boolean, default: true },
+		hashPassword: { type: String },
 		blocked: { type: Boolean, default: false },
 		pToken: String,
 		eToken: String,

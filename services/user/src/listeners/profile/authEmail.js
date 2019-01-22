@@ -7,10 +7,17 @@ const checkPassword = (user, password) =>
 	new Promise((resolve) => {
 		if (user)
 			bcrypt.compare(password, user.conf.hashPassword).then((status) => {
-				if (status) resolve({ status: 200, data: user.authKey.token });
-				resolve({ status: 400, data: 'Password is incorrect.' });
+				if (status)
+					resolve({
+						status: 200,
+						data: {
+							authKey: user.authKey.token,
+							msg: 'Successfully authenticated using email.',
+						},
+					});
+				resolve({ status: 400, data: { msg: 'Password is incorrect.' } });
 			});
-		else resolve({ status: 400, data: 'User not registered.' });
+		else resolve({ status: 400, data: { msg: 'User not registered.' } });
 	});
 
 const process = ({ email, password }) =>
