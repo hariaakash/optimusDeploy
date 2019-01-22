@@ -10,7 +10,7 @@ const authEmail = ({ email, password }, ch) =>
 			if (res.status === 200)
 				resolve({
 					status: 200,
-					data: { authKey: res.data, msg: 'User authenticated using email ' },
+					data: { authKey: res.data, msg: 'User authenticated using email.' },
 				});
 			else if (res.status === 400) resolve({ status: 400, data: { msg: res.data } });
 			else resolve({ status: 500, data: { msg: 'Internal Server Error' } });

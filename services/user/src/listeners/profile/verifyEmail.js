@@ -2,16 +2,16 @@ const User = require('../../schemas/user');
 
 const { rpcConsume } = require('../../helpers/amqp-wrapper');
 
-const verifyEmail = (user) =>
+const verifyEmail = ({ user, token }) =>
 	new Promise((resolve) => {
 		if (user) {
 			if (user.conf.eVerified)
 				resolve({ status: 400, data: 'User email is already verified.' });
-			else {
+			else if (user.conf.eToken === token) {
 				user.conf.eVerified = true;
 				user.save();
 				resolve({ status: 200, data: 'User email verified successfully.' });
-			}
+			} else resolve({ status: 400, data: 'Invalid token.' });
 		} else resolve({ status: 400, data: 'User not registered.' });
 	});
 
@@ -19,10 +19,9 @@ const process = ({ email, token }) =>
 	new Promise((resolve) => {
 		User.findOne({
 			email,
-			'conf.eToken': token,
 		})
-			.select('conf')
-			.then((user) => verifyEmail(user))
+			.select('conf.eToken conf.eVerified')
+			.then((user) => verifyEmail({ user, token }))
 			.then((res) => resolve(res))
 			.catch((err) => resolve({ status: 500 }));
 	});

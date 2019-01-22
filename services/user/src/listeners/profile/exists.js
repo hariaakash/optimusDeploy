@@ -8,6 +8,7 @@ const process = (data) =>
 		User.findOne({
 			email,
 		})
+			.select('email')
 			.then((user) => resolve({ status: 200, data: !!user }))
 			.catch((err) => resolve({ status: 500 }));
 	});
