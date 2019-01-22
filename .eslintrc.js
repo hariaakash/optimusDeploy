@@ -10,5 +10,6 @@ module.exports = {
 		'no-use-before-define': 0,
 		'import/no-unresolved': 0,
 		quotes: ['error', 'single'],
+		'no-param-reassign': 0,
 	},
 };

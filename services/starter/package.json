@@ -11,6 +11,6 @@
 	"license": "ISC",
 	"dependencies": {
 		"amqplib": "^0.5.3",
-		"uuid": "^3.3.2"
+		"nanoid": "^2.0.1"
 	}
 }
