@@ -1,4 +1,4 @@
-const uuid = require('uuid');
+const nanoid = require('nanoid');
 
 /**
  * RPC Consume Wrapper for amqplib
@@ -33,7 +33,7 @@ const rpcConsume = ({ ch, queue, process }) => {
  */
 const rpcSend = ({ ch, queue, data }) =>
 	new Promise((resolve, reject) => {
-		const corrId = uuid.v4();
+		const corrId = nanoid();
 		ch.assertQueue('', {
 			exclusive: true,
 		})

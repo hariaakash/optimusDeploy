@@ -12,6 +12,6 @@
 	"dependencies": {
 		"amqplib": "^0.5.3",
 		"async": "^2.6.1",
-		"uuid": "^3.3.2"
+		"nanoid": "^2.0.1"
 	}
 }

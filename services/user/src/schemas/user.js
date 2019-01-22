@@ -12,7 +12,7 @@ const userSchema = new Schema({
 		blocked: { type: Boolean, default: false },
 		pToken: String,
 		eToken: String,
-		emailVerified: { type: Boolean, default: false },
+		eVerified: { type: Boolean, default: false },
 	},
 	info: {
 		registered_at: { type: Date, default: Date.now },

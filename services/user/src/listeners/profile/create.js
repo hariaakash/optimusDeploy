@@ -1,7 +1,5 @@
 const bcrypt = require('bcryptjs');
-const hat = require('hat');
-
-const rack = hat.rack();
+const nanoid = require('nanoid');
 
 const User = require('../../schemas/user');
 
@@ -15,9 +13,9 @@ const process = (data) =>
 			.then((hash) => {
 				const user = new User();
 				user.email = email;
-				user.authKey.token = rack();
+				user.authKey.token = nanoid();
 				user.conf.hashPassword = hash;
-				user.conf.eToken = rack();
+				user.conf.eToken = nanoid();
 				return user.save().then(() => resolve({ status: 200 }));
 			})
 			.catch((err) => resolve({ status: 500 }));
