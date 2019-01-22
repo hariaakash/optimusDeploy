@@ -1,9 +1,7 @@
-const exists = require('./profile/exists');
-const create = require('./profile/create');
+const profile = require('./profile/');
 
 const tasks = (ch) => {
-	exists(ch);
-	create(ch);
+	profile(ch);
 };
 
 module.exports = tasks;

@@ -2,9 +2,8 @@ const async = require('async');
 
 const { rpcSend, rpcConsume } = require('../../helpers/amqp-wrapper');
 
-const process = (data, ch) =>
+const process = ({ email, password }, ch) =>
 	new Promise((resolve) => {
-		const { email, password } = data;
 		async.series(
 			{
 				check: (cb) => {

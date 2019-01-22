@@ -86,3 +86,22 @@ starter:
     networks:
         - micros
 ```
+
+#### Status Codes
+- **200**: Success
+- **400**: Client Error
+- **500**: Server Error
+
+#### RabbitMQ queue naming convention
+Syntax: `origin_listenerFolder:listenerFile_destination`
+
+Example Scenario: If communication originates from `orchestrator` microservice to `user` microservice, 
+for the purpose of creation of user the `create` file lies inside the `profile` folder which goes inside `listeners` folder.
+
+Queue Name: `orchestrator_profile:create_user`
+
+Label:
+- origin : orchestrator
+- destination : user
+- listenerFolder : profile
+- listenerFile : create
