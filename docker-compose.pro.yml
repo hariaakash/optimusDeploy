@@ -14,19 +14,29 @@ networks:
 services:
 
     api:
-        image: hariaakash/op-static
+        build: ./services/api
+        image: optimusdeploy_api:pro
+        command: npm run start
+        environment:
+            NODE_ENV: production
+            AMQP_URI: amqp://rabbitmq
+            API_PORT: 3000
+        volumes:
+            - ./services/api/src:/app/src
         labels:
             - "traefik.docker.network=proxy"
-            - "traefik.backend=haxforlyf.local"
-            - "traefik.frontend.rule=Host:haxforlyf.local"
-            - "traefik.port=80"
+            - "traefik.backend=api.local"
+            - "traefik.frontend.rule=Host:api.local"
+            - "traefik.port=3000"
             - "traefik.enable=true"
+        restart: always
         networks:
-            - apps
+            - micros
             - proxy
 
     orchestrator:
         build: ./services/orchestrator
+        image: optimusdeploy_orchestrator:pro
         command: npm run start
         environment:
             NODE_ENV: production
@@ -41,6 +51,7 @@ services:
 
     user:
         build: ./services/user
+        image: optimusdeploy_user:pro
         command: npm run start
         environment:
             NODE_ENV: production

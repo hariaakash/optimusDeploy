@@ -18,6 +18,7 @@ services:
             context: ./services/api
             args:
                 NODE_ENV: development
+        image: optimusdeploy_api:dev
         command: npm run dev
         environment:
             NODE_ENV: development
@@ -41,6 +42,7 @@ services:
             context: ./services/orchestrator
             args:
                 NODE_ENV: development
+        image: optimusdeploy_orchestrator:dev
         command: npm run dev
         environment:
             NODE_ENV: development
@@ -58,6 +60,7 @@ services:
             context: ./services/user
             args:
                 NODE_ENV: development
+        image: optimusdeploy_user:dev
         command: npm run dev
         environment:
             NODE_ENV: development
