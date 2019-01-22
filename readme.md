@@ -105,3 +105,18 @@ Label:
 - destination : user
 - listenerFolder : profile
 - listenerFile : create
+
+#### Communication Standard
+- Request Data: To API, API to Orchestrator & Orchestrator to Micros, Micros to Micros:
+    ```js
+    // /user/create
+    { email: 'em@i.l', pass: 'haha1234' }
+    ```
+- Response Data: Micros to Orchestrator or Orchestrator to API or Micros to Micros
+    ```js
+    { status: 200, data: { msg: 'Data processed', data: [{}] } }
+    { status: 200, data: { msg: 'Registered', authKey: 'ffff' } }
+    { status: 400, data: { msg: 'Client Error' } }
+    { status: 400, data: { msg: 'User not found' } }
+    { status: 500, data: { msg: 'Server Error' } }
+    ```

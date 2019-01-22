@@ -6,13 +6,13 @@ const verifyEmail = ({ user, token }) =>
 	new Promise((resolve) => {
 		if (user) {
 			if (user.conf.eVerified)
-				resolve({ status: 400, data: 'User email is already verified.' });
+				resolve({ status: 400, data: { msg: 'User email is already verified.' } });
 			else if (user.conf.eToken === token) {
 				user.conf.eVerified = true;
 				user.save();
-				resolve({ status: 200, data: 'User email verified successfully.' });
-			} else resolve({ status: 400, data: 'Invalid token.' });
-		} else resolve({ status: 400, data: 'User not registered.' });
+				resolve({ status: 200, data: { msg: 'User email verified successfully.' } });
+			} else resolve({ status: 400, data: { msg: 'Invalid token.' } });
+		} else resolve({ status: 400, data: { msg: 'User not registered.' } });
 	});
 
 const process = ({ email, token }) =>

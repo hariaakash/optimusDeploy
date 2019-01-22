@@ -16,7 +16,12 @@ const process = (data) =>
 				user.authKey.token = nanoid();
 				user.conf.hashPassword = hash;
 				user.conf.eToken = nanoid();
-				return user.save().then(() => resolve({ status: 200 }));
+				return user.save().then(() =>
+					resolve({
+						status: 200,
+						data: { msg: 'User registered.', eToken: user.conf.eToken },
+					})
+				);
 			})
 			.catch((err) => resolve({ status: 500 }));
 	});

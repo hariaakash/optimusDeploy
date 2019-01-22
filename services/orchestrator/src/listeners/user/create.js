@@ -13,10 +13,10 @@ const process = ({ email, password }, ch) =>
 						data: { email },
 					}).then((res) => {
 						if (res.status === 200) {
-							if (res.data)
+							if (res.data.status)
 								cb('check', {
 									status: 400,
-									data: { msg: 'User already registered.' },
+									data: { msg: res.data.msg },
 								});
 							else cb();
 						} else cb('check');
@@ -28,7 +28,7 @@ const process = ({ email, password }, ch) =>
 						queue: 'user_profile:create_orchestrator',
 						data: { email, password },
 					}).then((res) => {
-						if (res.status === 200) cb();
+						if (res.status === 200) cb(null, res.data);
 						else cb('create');
 					});
 				},
