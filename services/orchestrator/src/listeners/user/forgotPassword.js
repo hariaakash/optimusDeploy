@@ -6,15 +6,15 @@ const process = ({ email }, ch) =>
 	new Promise((resolve) => {
 		async.series(
 			{
-				generateToken: (cb) => {
+				forgotPassword: (cb) => {
 					rpcSend({
 						ch,
-						queue: 'user_profile:generatePToken_orchestrator',
+						queue: 'user_profile:forgotPassword_orchestrator',
 						data: { email },
 					}).then((res) => {
 						if (res.status === 200) {
 							cb();
-						} else cb('generateToken');
+						} else cb('forgotPassword');
 					});
 				},
 			},
