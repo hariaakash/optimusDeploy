@@ -1,17 +1,28 @@
-# Optimus Deploy
+## Optimus Deploy
 [![Optimus Deploy Logo](https://optimuscp.io/img/logo.png)](https://optimuscp.io)
 
 A cloud based easy infrastructure management solution.
 
+## Table of Contents
+- [Optimus Deploy](#optimus-deploy)
+- [Table of Contents](#table-of-contents)
+  - [Requirements](#requirements)
+  - [Project Structure](#project-structure)
+    - [Micros](#micros)
+    - [Micros Structure](#micros-structure)
+  - [Environment Setup](#environment-setup)
+  - [Create Micros](#create-micros)
+  - [Standards](#standards)
+    - [Status Codes](#status-codes)
+    - [RabbitMQ Queue Naming Convention](#rabbitmq-queue-naming-convention)
+    - [Communication Request & Response](#communication-request--response)
 
 ### Requirements
 
   - docker > 17
   - docker-compose > 1.18
 
-### Basics
-
-#### Project Structure
+### Project Structure
 
 ```
 .
@@ -21,9 +32,12 @@ A cloud based easy infrastructure management solution.
 |   +-- traefik
 |   +-- mongodb
 +-- services        #All micros go here
-|   +-- starter
+|   +-- starter     #Reference
+|   +-- service1
 |   +-- ...         #More services
 +-- readme.md
++-- docker-compose.*.yml
++-- package*.json   #Global packages required for development.
 ```
 
 1. All static configuration files should go inside config directory.
@@ -31,33 +45,53 @@ A cloud based easy infrastructure management solution.
 3. Applications deployed should be on apps network, if public then it should be shared with proxy network.
 4. For preparing development or production environment follow their respective document block.
 
-#### Development
+#### Micros
+1. **api**<br>
+   Express
+2. **orchestrator**<br>
+   Invoked by API and pipeline for the requests.
+3. **user**<br>
+4. **starter**<br>
+   For reference
 
+#### Micros Structure
+```
+.
++-- src
+|   +-- helpers
+|   +-- listeners/controllers
+|   +-- schemas     #Optional
++-- index.js
++-- Dockerfile
++-- package*.json
+```
+
+
+### Environment Setup
+For Development:
 1. Add necessary .local domains required to /etc/hosts.
 2. Execute the below command to get the development environment setup.
 ```sh
 docker-compose -f docker-compose.dev.yml up --build -d
 ```
 
-#### Production
-
-Execute the below command to get the production environment setup.
+For Production, execute the below command to get the production environment setup.
 ```sh
 docker-compose -f docker-compose.pro.yml up --build -d
 ```
 
-#### To create a micro-service
-
+### Create Micros
 1. Create a clone of starter dir which is inside services dir.
 2. Change the cloned service name and it's properties to whatever required.
 3. Add that micro to both dev and pro by using the below yml block respectively.
 
-#### Example yml for micros
+Example yml for micros
 ```yml
-    # Dev
+# Dev
 starter:
     build:
         context: ./services/starter
+        image: opdp-starter:dev
         args:
             NODE_ENV: development
     command: npm run dev
@@ -74,6 +108,7 @@ starter:
 # Production
 starter:
     build: ./services/starter
+    image: opdp-starter:pro
     command: npm run start
     environment:
         NODE_ENV: production
@@ -87,26 +122,27 @@ starter:
         - micros
 ```
 
+### Standards
+
 #### Status Codes
 - **200**: Success
 - **400**: Client Error
 - **500**: Server Error
 
-#### RabbitMQ queue naming convention
+#### RabbitMQ Queue Naming Convention
 Syntax: `origin_listenerFolder:listenerFile_destination`
 
 Example Scenario: If communication originates from `orchestrator` microservice to `user` microservice, 
-for the purpose of creation of user the `create` file lies inside the `profile` folder which goes inside `listeners` folder.
+for the purpose of creation of user the `create` file lies inside the `profile` folder which goes inside `listeners` folder.<br>
+Example Queue: `orchestrator_profile:create_user`
 
-Queue Name: `orchestrator_profile:create_user`
-
-Label:
+Labels:
 - origin : orchestrator
 - destination : user
 - listenerFolder : profile
 - listenerFile : create
 
-#### Communication Standard
+#### Communication Request & Response
 - Request Data: To API, API to Orchestrator & Orchestrator to Micros, Micros to Micros:
     ```js
     // /user/create
