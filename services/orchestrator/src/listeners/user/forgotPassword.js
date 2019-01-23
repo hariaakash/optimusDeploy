@@ -14,13 +14,16 @@ const process = ({ email }, ch) =>
 					}).then((res) => {
 						if (res.status === 200) {
 							cb();
+						} else if (res.status === 400) {
+							cb('forgotPassword', res.msg);
 						} else cb('forgotPassword');
 					});
 				},
 			},
 			(err, result) => {
 				if (err) {
-					if (err) resolve(result[err]);
+					if (err === 'forgotPassword' && !!result[err])
+						resolve({ status: 400, data: { msg: result[err] } });
 					else resolve({ status: 500, data: { msg: 'Internal Server Error' } });
 				} else {
 					resolve({
