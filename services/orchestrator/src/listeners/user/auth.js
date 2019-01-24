@@ -7,15 +7,14 @@ const authEmail = ({ email, password }, ch) =>
 			queue: 'user_profile:authEmail_orchestrator',
 			data: { email, password },
 		}).then((res) => {
-			if (res.status === 200) resolve({ status: 200, data: res.data });
-			else if (res.status === 400) resolve({ status: 400, data: res.data });
+			if (res.status === 200 || res.status === 400) resolve(res);
 			else resolve({ status: 500, data: { msg: 'Internal Server Error' } });
 		});
 	});
 
 const process = ({ email, password, authType }, ch) =>
 	new Promise((resolve) => {
-		if (authType === 'email') authEmail({ email, password }, ch).then((res) => resolve(res));
+		if (authType === 'email') authEmail({ email, password }, ch).then(resolve);
 		else
 			resolve({
 				status: 500,

@@ -22,11 +22,10 @@ const request = (req, res) => {
 			}).then(({ status, data }) => res.status(status).json(data));
 		})
 		.catch((vError) => {
-			const data = vError.details.map((d) => d.message);
 			res.status(400).json({
 				status: false,
 				msg: 'Validation Error',
-				data,
+				data: vError.details.map((d) => d.message),
 			});
 		});
 };

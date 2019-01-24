@@ -14,10 +14,7 @@ const process = ({ email, password }, ch) =>
 					}).then((res) => {
 						if (res.status === 200) {
 							if (res.data.status)
-								cb('check', {
-									status: 400,
-									data: { msg: res.data.msg },
-								});
+								cb('check', { status: 400, data: { msg: res.data.msg } });
 							else cb();
 						} else cb('check');
 					});
@@ -37,12 +34,11 @@ const process = ({ email, password }, ch) =>
 				if (err) {
 					if (err === 'check' && !!results[err]) resolve(results[err]);
 					else resolve({ status: 500, data: { msg: 'Internal Server Error' } });
-				} else {
+				} else
 					resolve({
 						status: 200,
 						data: { msg: 'User created successfully, check mail for verification' },
 					});
-				}
 			}
 		);
 	});

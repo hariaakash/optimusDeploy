@@ -5,45 +5,30 @@ const User = require('../../schemas/user');
 
 const { rpcConsume } = require('../../helpers/amqp-wrapper');
 
-const updatePassword = ({ user, pToken, newPwd }) =>
+const updatePassword = ({ user, pToken, newPassword }) =>
 	new Promise((resolve) => {
 		if (user) {
 			if (user.conf.pToken === pToken) {
-				bcrypt.hash(newPwd, 10).then((hash) => {
+				bcrypt.hash(newPassword, 10).then((hash) => {
 					user.conf.hashPassword = hash;
 					user.conf.pToken = null;
-					return user.save().then(() =>
-						resolve({
-							status: 200,
-							data: { msg: 'Password Updated' },
-						})
+					user.authKey.token = nanoid();
+					user.save().then(() =>
+						resolve({ status: 200, data: { msg: 'Password updated successfully.' } })
 					);
 				});
-			} else {
-				return resolve({
-					status: 400,
-					msg: 'Reset Token Did Not Match.',
-				});
-			}
-		} else {
-			return resolve({
-				status: 400,
-				msg: 'User Not Found. Please Try Again',
-			});
-		}
-		return undefined;
+			} else resolve({ status: 400, data: { msg: 'Reset token did not match or expired.' } });
+		} else resolve({ status: 400, data: { msg: 'User not found. Please Try Again' } });
 	});
 
-const process = (data) =>
+const process = ({ email, pToken, newPassword }) =>
 	new Promise((resolve) => {
-		console.log('Listner Invoked');
-		const { email, pToken, newPwd } = data;
 		User.findOne({
 			email,
 		})
 			.select('conf.pToken conf.hashPassword')
-			.then((user) => updatePassword({ user, pToken, newPwd }))
-			.then((res) => resolve(res))
+			.then((user) => updatePassword({ user, pToken, newPassword }))
+			.then(resolve)
 			.catch((err) => resolve({ status: 500 }));
 	});
 

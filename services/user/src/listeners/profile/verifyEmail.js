@@ -9,9 +9,10 @@ const verifyEmail = ({ user, token }) =>
 				resolve({ status: 400, data: { msg: 'User email is already verified.' } });
 			else if (user.conf.eToken === token) {
 				user.conf.eVerified = true;
-				user.save();
-				resolve({ status: 200, data: { msg: 'User email verified successfully.' } });
-			} else resolve({ status: 400, data: { msg: 'Invalid token.' } });
+				user.save().then(() =>
+					resolve({ status: 200, data: { msg: 'User email verified successfully.' } })
+				);
+			} else resolve({ status: 400, data: { msg: 'Token is invalid or got expired.' } });
 		} else resolve({ status: 400, data: { msg: 'User not registered.' } });
 	});
 
@@ -22,7 +23,7 @@ const process = ({ email, token }) =>
 		})
 			.select('conf.eToken conf.eVerified')
 			.then((user) => verifyEmail({ user, token }))
-			.then((res) => resolve(res))
+			.then(resolve)
 			.catch((err) => resolve({ status: 500 }));
 	});
 

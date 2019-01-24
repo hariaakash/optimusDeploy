@@ -2,9 +2,8 @@ const User = require('../../schemas/user');
 
 const { rpcConsume } = require('../../helpers/amqp-wrapper');
 
-const process = (data) =>
+const process = ({ email }) =>
 	new Promise((resolve) => {
-		const { email } = data;
 		User.findOne({
 			email,
 		})

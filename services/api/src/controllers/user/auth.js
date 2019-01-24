@@ -17,7 +17,7 @@ const schema = Joi.object().keys({
 
 const request = (req, res) => {
 	schema
-		.validate(req.body, { abortEarly: true })
+		.validate(req.body, { abortEarly: false })
 		.then((vData) => {
 			rpcSend({
 				ch: req.ch,

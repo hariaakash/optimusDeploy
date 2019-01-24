@@ -3,7 +3,7 @@ const User = require('../../schemas/user');
 
 const { rpcConsume } = require('../../helpers/amqp-wrapper');
 
-const checkPassword = (user, password) =>
+const checkPassword = ({ user, password }) =>
 	new Promise((resolve) => {
 		if (user)
 			bcrypt.compare(password, user.conf.hashPassword).then((status) => {
@@ -26,8 +26,8 @@ const process = ({ email, password }) =>
 			email,
 		})
 			.select('email authKey.token conf.hashPassword')
-			.then((user) => checkPassword(user, password))
-			.then((res) => resolve(res))
+			.then((user) => checkPassword({ user, password }))
+			.then(resolve)
 			.catch((err) => resolve({ status: 500 }));
 	});
 

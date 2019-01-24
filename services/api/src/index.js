@@ -7,6 +7,7 @@ const requestIp = require('request-ip');
 
 const port = process.env.API_PORT || 3000;
 
+const expressCustomMW = require('./helpers/expressCustomMW');
 const Routes = require('./routes');
 const conn = require('./helpers/amqp');
 
@@ -17,18 +18,11 @@ conn((ch) => {
 
 app.use(morgan('dev'));
 app.use(cors());
-app.use(
-	bodyParser.urlencoded({
-		extended: false,
-	})
-);
+app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
+app.use(expressCustomMW.bodyParserErrorHandler);
 app.use(requestIp.mw());
-
-app.use((req, res, next) => {
-	req.ch = channel;
-	next();
-});
+app.use((req, res, next) => expressCustomMW.setChannel(req, res, next, channel));
 app.use(Routes);
 
 server.listen(port);
