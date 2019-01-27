@@ -16,7 +16,7 @@ const process = ({ email, password }) =>
 				user.conf.hashPassword = hash;
 				user.conf.eToken = nanoid();
 				user.save().then(() =>
-					resolve({ status: 200, data: { eToken: user.conf.eToken } })
+					resolve({ status: 200, data: { email, eToken: user.conf.eToken } })
 				);
 			})
 			.catch((err) => resolve({ status: 500 }));

@@ -1,0 +1,17 @@
+{
+	"name": "mailer",
+	"version": "1.0.0",
+	"description": "",
+	"main": "src/index.js",
+	"scripts": {
+		"start": "node src/index.js",
+		"dev": "nodemon src/index.js"
+	},
+	"author": "",
+	"license": "ISC",
+	"dependencies": {
+		"@sendgrid/mail": "^6.3.1",
+		"amqplib": "^0.5.3",
+		"nanoid": "^2.0.1"
+	}
+}

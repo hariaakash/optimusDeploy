@@ -1,10 +1,10 @@
 const async = require('async');
 
-const { rpcSend, rpcConsume } = require('../../helpers/amqp-wrapper');
+const { send, rpcSend, rpcConsume } = require('../../helpers/amqp-wrapper');
 
 const process = ({ email, password }, ch) =>
 	new Promise((resolve) => {
-		async.series(
+		async.auto(
 			{
 				check: (cb) => {
 					rpcSend({
@@ -19,16 +19,30 @@ const process = ({ email, password }, ch) =>
 						} else cb('check');
 					});
 				},
-				create: (cb) => {
-					rpcSend({
-						ch,
-						queue: 'user_profile:create_orchestrator',
-						data: { email, password },
-					}).then((res) => {
-						if (res.status === 200) cb(null, res.data);
-						else cb('create');
-					});
-				},
+				create: [
+					'check',
+					(results, cb) => {
+						rpcSend({
+							ch,
+							queue: 'user_profile:create_orchestrator',
+							data: { email, password },
+						}).then((res) => {
+							if (res.status === 200) cb(null, res.data);
+							else cb('create');
+						});
+					},
+				],
+				mailer: [
+					'create',
+					(results, cb) => {
+						send({
+							ch,
+							queue: 'mailer_profile:create_orchestrator',
+							data: results.create.data,
+						});
+						cb();
+					},
+				],
 			},
 			(err, results) => {
 				if (err) {

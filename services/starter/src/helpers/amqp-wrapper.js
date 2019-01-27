@@ -74,14 +74,16 @@ const send = ({ ch, queue, data, options = { persistent: true } }) =>
  * @param {Object} obj- Information required for consumption.
  * @param {Object} obj.ch - AMQP channel connection
  * @param {String} obj.queue - Queue to which the data has to be sent for consumption.
- * @param {function} obj.process - Callback to process received data.
+ * @param {Promise} obj.process - Promise to process received data: resolve(true) for ack, reject() for nack.
  * @returns {Promise} - Not necessary to handle this.
  */
 const consume = ({ ch, queue, process }) =>
 	ch.consume(queue, (data) => {
-		const result = data;
-		result.content = JSON.parse(result.content.toString());
-		process(result);
+		process(JSON.parse(data.content.toString()))
+			.then((ack) => {
+				if (ack) ch.ack(data);
+			})
+			.catch(() => ch.nack(data));
 	});
 
 /**

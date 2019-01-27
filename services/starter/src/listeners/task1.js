@@ -12,10 +12,15 @@ const task = (ch) => {
 	consume({
 		ch,
 		queue,
-		process: (data) => {
-			console.log(data.content);
-			ch.ack(data);
-		},
+		process: (data) =>
+			new Promise((resolve, reject) => {
+				try {
+					console.log(data);
+					resolve(true); // resolve(true) to ack, resolve() to do nothing.
+				} catch (err) {
+					reject(); // reject() to nack
+				}
+			}),
 	});
 };
 
