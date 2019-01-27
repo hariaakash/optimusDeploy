@@ -15,7 +15,7 @@ const checkPassword = ({ user, password }) =>
 							msg: 'Successfully authenticated using email.',
 						},
 					});
-				resolve({ status: 400, data: { msg: 'Password is incorrect.' } });
+				else resolve({ status: 400, data: { msg: 'Password is incorrect.' } });
 			});
 		else resolve({ status: 400, data: { msg: 'User not registered.' } });
 	});
