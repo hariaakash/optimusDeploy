@@ -76,6 +76,26 @@ services:
             - micros
             - db
 
+    container:
+        build:
+            context: ./services/container
+            args:
+                NODE_ENV: development
+        image: optimusdeploy_container:dev
+        command: npm run dev
+        environment:
+            NODE_ENV: development
+            AMQP_URI: amqp://rabbitmq
+            MONGODB_HOST: mongodb://mongodb
+        volumes:
+            - ./services/container/src:/app/src
+        depends_on:
+            - rabbitmq
+            - mongodb
+        networks:
+            - micros
+            - db
+            
     mailer:
         build:
             context: ./services/mailer
@@ -107,6 +127,9 @@ services:
         hostname: rabbitmq  #The hostname has to be manually specified. Refer to hub.docker.com/_/rabbitmq
         volumes:
             - ./data/rabbitmq:/var/lib/rabbitmq/mnesia/rabbit@rabbitmq
+        environment:
+            - RABBITMQ_DEFAULT_USER=user 
+            - RABBITMQ_DEFAULT_PASS=password
         labels:
             - "traefik.docker.network=proxy"
             - "traefik.backend=rabbitmq.local"

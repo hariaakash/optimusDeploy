@@ -66,6 +66,24 @@ services:
         networks:
             - micros
             - db
+    
+    container:
+        build: ./services/container
+        image: optimusdeploy_container:pro
+        command: npm run start
+        environment:
+            NODE_ENV: production
+            AMQP_URI: amqp://rabbitmq
+            MONGODB_HOST: mongodb://mongodb
+        volumes:
+            - ./services/container/src:/app/src
+        restart: always
+        depends_on:
+            - rabbitmq
+            - mongodb
+        networks:
+            - micros
+            - db
 
     mailer:
         build: ./services/mailer
