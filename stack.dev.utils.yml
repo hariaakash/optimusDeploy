@@ -1,0 +1,97 @@
+version: '3.5'
+
+networks:
+
+    proxy:
+        name: proxy
+        driver: overlay
+    micros:
+        name: micros
+        driver: overlay
+    db:
+        name: db
+        driver: overlay
+
+services:
+
+    api:
+        image: containous/whoami
+        networks:
+            - proxy
+        deploy:
+            labels:
+                - "traefik.backend=api"
+                - "traefik.frontend.rule=Host:api.local"
+                - "traefik.port=80"
+                - "traefik.enable=true"
+            placement:
+                constraints:
+                    - "node.role == worker"
+
+    # mongodb:
+    #     image: mvertes/alpine-mongo
+    #     volumes:
+    #         - ./data/mongodb:/data/db
+    #     networks:
+    #         - db
+    #     deploy:
+    #         placement:
+    #             constraints: [node.role == manager]
+    
+    # rabbitmq:
+    #     image: rabbitmq:3-management
+    #     hostname: rabbitmq  #The hostname has to be manually specified. Refer to hub.docker.com/_/rabbitmq
+    #     volumes:
+    #         - ./data/rabbitmq:/var/lib/rabbitmq/mnesia/rabbit@rabbitmq
+    #     environment:
+    #         - RABBITMQ_DEFAULT_USER=user 
+    #         - RABBITMQ_DEFAULT_PASS=password
+    #     networks:
+    #         - micros
+    #         - proxy
+    #     deploy:
+    #         labels:
+    #             - "traefik.docker.network=proxy"
+    #             - "traefik.backend=rabbitmq.local"
+    #             - "traefik.frontend.rule=Host:www.rabbitmq.local,rabbitmq.local"
+    #             - "traefik.port=15672"
+    #             - "traefik.enable=true"
+    #         placement:
+    #             constraints: [node.role == manager]
+
+    # registry:
+    #     image: registry:2
+    #     ports:
+    #         - 5000:5000
+    #     volumes:
+    #         - ./config/traefik:/certs
+    #         - ./data/registry:/var/lib/registry
+    #     environment:
+    #         REGISTRY_HTTP_TLS_CERTIFICATE: /certs/traefik.crt
+    #         REGISTRY_HTTP_TLS_KEY: /certs/traefik.key
+    #     networks:
+    #         - micros
+    #     deploy:
+    #         placement:
+    #             constraints: [node.role == manager]
+
+    traefik:
+        image: traefik
+        ports:
+            - 80:80
+            - 443:443
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ./config/traefik/traefik-dev.toml:/etc/traefik/traefik.toml
+            - ./config/traefik/traefik.crt:/etc/traefik/traefik.crt
+            - ./config/traefik/traefik.key:/etc/traefik/traefik.key
+        networks:
+            - proxy
+        deploy:
+            labels:
+                - "traefik.backend=traefik"
+                - "traefik.frontend.rule=Host:www.traefik.local,traefik.local"
+                - "traefik.port=8080"
+                - "traefik.enable=true"
+            placement:
+                constraints: [node.role == manager]

@@ -29,7 +29,6 @@ services:
             - "traefik.frontend.rule=Host:api.local"
             - "traefik.port=3000"
             - "traefik.enable=true"
-        restart: always
         networks:
             - micros
             - proxy
@@ -43,7 +42,6 @@ services:
             AMQP_URI: amqp://rabbitmq
         volumes:
             - ./services/orchestrator/src:/app/src
-        restart: always
         depends_on:
             - rabbitmq
         networks:
@@ -59,7 +57,6 @@ services:
             MONGODB_HOST: mongodb://mongodb
         volumes:
             - ./services/user/src:/app/src
-        restart: always
         depends_on:
             - rabbitmq
             - mongodb
@@ -77,7 +74,6 @@ services:
             MONGODB_HOST: mongodb://mongodb
         volumes:
             - ./services/container/src:/app/src
-        restart: always
         depends_on:
             - rabbitmq
             - mongodb
@@ -95,7 +91,6 @@ services:
             SENDGRID_API_KEY: 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
         volumes:
             - ./services/mailer/src:/app/src
-        restart: always
         depends_on:
             - rabbitmq
         networks:
@@ -113,7 +108,18 @@ services:
         hostname: rabbitmq
         volumes:
             - ./data/rabbitmq:/var/lib/rabbitmq/mnesia/rabbit@rabbitmq
-        restart: always
+        networks:
+            - micros
+
+    registry:
+        image: registry:2
+        ports:
+            - 5000:5000
+        volumes:
+            - ./config/traefik:/certs
+        environment:
+            REGISTRY_HTTP_TLS_CERTIFICATE: /certs/traefik.crt
+            REGISTRY_HTTP_TLS_KEY: /certs/traefik.key
         networks:
             - micros
 
@@ -126,6 +132,5 @@ services:
             - /var/run/docker.sock:/var/run/docker.sock
             - ./config/traefik/traefik-pro.toml:/etc/traefik/traefik.toml
             - ./data/traefik/acme.json:/acme.json
-        restart: always
         networks:
             - proxy

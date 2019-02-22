@@ -10,12 +10,14 @@ A cloud based easy infrastructure management solution.
   - [Project Structure](#project-structure)
     - [Micros](#micros)
     - [Micros Structure](#micros-structure)
+    - [Dedicated Ports](#dedicated-ports)
   - [Environment Setup](#environment-setup)
   - [Create Micros](#create-micros)
   - [Standards](#standards)
     - [Status Codes](#status-codes)
     - [RabbitMQ Queue Naming Convention](#rabbitmq-queue-naming-convention)
     - [Communication Request & Response](#communication-request--response)
+  - [References](#references)
 
 ### Requirements
 
@@ -35,6 +37,7 @@ A cloud based easy infrastructure management solution.
 |   +-- starter     #Reference
 |   +-- service1
 |   +-- ...         #More services
++-- vagrant         #For swarm dev setup
 +-- readme.md
 +-- docker-compose.*.yml
 +-- package*.json   #Global packages required for development.
@@ -66,6 +69,11 @@ A cloud based easy infrastructure management solution.
 +-- package*.json
 ```
 
+#### Dedicated Ports
+```
+- 80, 443, 8080 : Traefik
+- 5000          : Docker Registry
+```
 
 ### Environment Setup
 For Development:
@@ -156,3 +164,8 @@ Labels:
     { status: 400, data: { msg: 'User not found' } }
     { status: 500, data: { msg: 'Server Error' } }
     ```
+
+### References
+- [Consul Traefik Setup](https://blog.ruanbekker.com/blog/2017/10/24/managing-traefik-configuration-with-consul-on-docker-swarm/)
+- [Consul Traefik Setup 2](https://jmaitrehenry.ca/2017/12/15/using-traefik-with-docker-swarm-and-consul-as-your-load-balancer/)
+- 

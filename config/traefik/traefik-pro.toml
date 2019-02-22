@@ -2,16 +2,16 @@ debug = false
 
 logLevel = "ERROR"
 
-defaultEntryPoints = ["https","http"]
+defaultEntryPoints = ["http", "https", "ws", "wss"]
 
 [entryPoints]
-  [entryPoints.http]
-  address = ":80"
-    [entryPoints.http.redirect]
-    entryPoint = "https"
-  [entryPoints.https]
-  address = ":443"
-  [entryPoints.https.tls]
+    [entryPoints.http]
+    address = ":80"
+        [entryPoints.http.redirect]
+        entryPoint = "https"
+    [entryPoints.https]
+    address = ":443"
+    [entryPoints.https.tls]
 
 [retry]
 
@@ -19,11 +19,13 @@ defaultEntryPoints = ["https","http"]
 endpoint = "unix:///var/run/docker.sock"
 watch = true
 exposedByDefault = false
+swarmMode = true
 
 [acme]
 email = "no-reply@optimuscp.io"
 storage = "acme.json"
 entryPoint = "https"
 onHostRule = true
+
 [acme.httpChallenge]
 entryPoint = "http"

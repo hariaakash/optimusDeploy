@@ -9,11 +9,16 @@
 
 -   Virtual Box
 -   Vagrant
--   vagrant-vbguest
--   vagrant-cachier
+-   Vagrant-VBGuest Plugin
+
+### Vagrant Stuck
+```
+ps aux | grep VBox
+kill $pid
+```
 
 ### References
 
 -   [Vagrant](https://vagrantup.com)
--   [Vagrant-Cachier](https://github.com/fgrehm/vagrant-cachier)
 -   [Vagrant-VBGuest](https://github.com/dotless-de/vagrant-vbguest)
+-   [Vagrant Stuck](https://superuser.com/questions/1288946/vagrant-vm-stuck-in-stopping-state)
