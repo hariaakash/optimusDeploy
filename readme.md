@@ -23,6 +23,7 @@ A cloud based easy infrastructure management solution.
 
   - docker > 17
   - docker-compose > 1.18
+  - docker-machine > 0.16.0
 
 ### Project Structure
 
@@ -37,7 +38,6 @@ A cloud based easy infrastructure management solution.
 |   +-- starter     #Reference
 |   +-- service1
 |   +-- ...         #More services
-+-- vagrant         #For swarm dev setup
 +-- readme.md
 +-- docker-compose.*.yml
 +-- package*.json   #Global packages required for development.
