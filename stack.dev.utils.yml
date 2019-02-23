@@ -14,36 +14,36 @@ networks:
 
 services:
 
-    mongodb:
-        image: mvertes/alpine-mongo
-        volumes:
-            - ./data/mongodb:/data/db
-        networks:
-            - db
-        deploy:
-            placement:
-                constraints: [node.role == manager]
+    # mongodb:
+    #     image: mvertes/alpine-mongo
+    #     volumes:
+    #         - ./data/mongodb:/data/db
+    #     networks:
+    #         - db
+    #     deploy:
+    #         placement:
+    #             constraints: [node.role == manager]
     
-    rabbitmq:
-        image: rabbitmq:3-management
-        hostname: rabbitmq  #The hostname has to be manually specified. Refer to hub.docker.com/_/rabbitmq
-        volumes:
-            - ./data/rabbitmq:/var/lib/rabbitmq/mnesia/rabbit@rabbitmq
-        environment:
-            - RABBITMQ_DEFAULT_USER=user 
-            - RABBITMQ_DEFAULT_PASS=password
-        networks:
-            - micros
-            - proxy
-        deploy:
-            labels:
-                - "traefik.docker.network=proxy"
-                - "traefik.backend=rabbitmq"
-                - "traefik.frontend.rule=Host:www.rabbitmq.local,rabbitmq.local"
-                - "traefik.port=15672"
-                - "traefik.enable=true"
-            placement:
-                constraints: [node.role == manager]
+    # rabbitmq:
+    #     image: rabbitmq:3-management
+    #     hostname: rabbitmq  #The hostname has to be manually specified. Refer to hub.docker.com/_/rabbitmq
+    #     volumes:
+    #         - ./data/rabbitmq:/var/lib/rabbitmq/mnesia/rabbit@rabbitmq
+    #     environment:
+    #         - RABBITMQ_DEFAULT_USER=user 
+    #         - RABBITMQ_DEFAULT_PASS=password
+    #     networks:
+    #         - micros
+    #         - proxy
+    #     deploy:
+    #         labels:
+    #             - "traefik.docker.network=proxy"
+    #             - "traefik.backend=rabbitmq"
+    #             - "traefik.frontend.rule=Host:www.rabbitmq.local,rabbitmq.local"
+    #             - "traefik.port=15672"
+    #             - "traefik.enable=true"
+    #         placement:
+    #             constraints: [node.role == manager]
 
     registry:
         image: registry:2
