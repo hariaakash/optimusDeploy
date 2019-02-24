@@ -6,7 +6,7 @@ set_colors() {
     COLOR_RED="\e[31m"
     COLOR_BLUE="\e[34m"
     COLOR_DEFAULT="\e[0m"
-COLOR_SECONDARY="\e[37m"
+    COLOR_SECONDARY="\e[37m"
 }
 
 # Change the IP to the docker manager ip for registry.local to be accessible
@@ -19,7 +19,7 @@ set_configs() {
     echo -e "\n${COLOR_SECONDARY}Following configuration will be used:-";
     echo -e "Workers: ${SWARM_WORKERS}"
     echo -e "Manager IP: ${MANAGER_IP}"
-echo -e "Cert file: ${file}${COLOR_DEFAULT}\n"
+    echo -e "Cert file: ${file}${COLOR_DEFAULT}\n"
 }
 
 # Create workers
@@ -31,7 +31,7 @@ create_machines() {
             --driver=virtualbox \
             --virtualbox-memory=${SWARM_MEMORY} \
             worker${server} > /dev/null
-done
+    done
 }
 
 # Configure machine

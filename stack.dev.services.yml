@@ -15,7 +15,7 @@ networks:
 services:
 
     api:
-        image: optimusdeploy_api:dev
+        image: registry.local/optimusdeploy_api:dev
         command: npm run dev
         environment:
             NODE_ENV: development
@@ -37,7 +37,7 @@ services:
                 constraints: [node.role == worker]
 
     orchestrator:
-        image: optimusdeploy_orchestrator:dev
+        image: registry.local/optimusdeploy_orchestrator:dev
         command: npm run dev
         environment:
             NODE_ENV: development
@@ -50,7 +50,7 @@ services:
 
 
     user:
-        image: optimusdeploy_user:dev
+        image: registry.local/optimusdeploy_user:dev
         command: npm run dev
         environment:
             NODE_ENV: development
@@ -66,7 +66,7 @@ services:
 
 
     container:
-        image: optimusdeploy_container:dev
+        image: registry.local/optimusdeploy_container:dev
         command: npm run dev
         environment:
             NODE_ENV: development
@@ -82,7 +82,7 @@ services:
 
             
     mailer:
-        image: optimusdeploy_mailer:dev
+        image: registry.local/optimusdeploy_mailer:dev
         command: npm run dev
         environment:
             NODE_ENV: development
