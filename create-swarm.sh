@@ -9,6 +9,16 @@ set_colors() {
     COLOR_SECONDARY="\e[37m"
 }
 
+# Check if the host is part of swarm manager, if not create it.
+check_swarm() {
+    if docker node ls > /dev/null 2>&1;
+    then
+        MANAGER_IP=$(docker node inspect self --format '{{ .Status.Addr  }}')
+    else
+        docker swarm init --advertise-addr ${MANAGER_IP} > /dev/null
+    fi
+}
+
 # Change the IP to the docker manager ip for registry.local to be accessible
 set_configs() {
     MANAGER_IP="192.168.43.66"
@@ -60,12 +70,12 @@ config_machines() {
 
 # List machine
 list_machines() {
-    echo "Machines List"
     docker-machine ls -f "Machine: {{.Name}} {{.State}} on {{.URL}}"
 }
 
 main() {
     set_colors
+    # check_swarm
     set_configs
     create_machines
     config_machines
