@@ -38,7 +38,7 @@ const process = ({ email, password }, ch) =>
 						send({
 							ch,
 							queue: 'mailer_profile:create_orchestrator',
-							data: results.create.data,
+							data: results.create,
 						});
 						cb();
 					},

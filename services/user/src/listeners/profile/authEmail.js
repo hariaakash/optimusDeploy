@@ -7,15 +7,19 @@ const checkPassword = ({ user, password }) =>
 	new Promise((resolve) => {
 		if (user)
 			bcrypt.compare(password, user.conf.hashPassword).then((status) => {
-				if (status)
-					resolve({
-						status: 200,
-						data: {
-							authKey: user.authKey.token,
-							msg: 'Successfully authenticated using email.',
-						},
-					});
-				else resolve({ status: 400, data: { msg: 'Password is incorrect.' } });
+				if (status) {
+					if (!user.conf.eVerified) {
+						resolve({ status: 400, data: { msg: 'Email not verified.' } });
+					} else {
+						resolve({
+							status: 200,
+							data: {
+								authKey: user.authKey.token,
+								msg: 'Successfully authenticated using email.',
+							},
+						});
+					}
+				} else resolve({ status: 400, data: { msg: 'Password is incorrect.' } });
 			});
 		else resolve({ status: 400, data: { msg: 'User not registered.' } });
 	});
@@ -25,7 +29,7 @@ const process = ({ email, password }) =>
 		User.findOne({
 			email,
 		})
-			.select('email authKey.token conf.hashPassword')
+			.select('email authKey.token conf.hashPassword conf.eVerified')
 			.then((user) => checkPassword({ user, password }))
 			.then(resolve)
 			.catch((err) => resolve({ status: 500 }));
