@@ -1,7 +1,7 @@
-const manager = require('./manager');
+// const task1 = require('./task1');
 
 const tasks = (ch) => {
-	manager(ch);
+	// task3(ch);
 };
 
 module.exports = tasks;
