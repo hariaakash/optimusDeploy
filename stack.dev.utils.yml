@@ -67,9 +67,13 @@ services:
             - 443:443
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
-            - ./config/traefik/traefik-dev.toml:/etc/traefik/traefik.toml
-            - ./config/traefik/traefik.crt:/etc/traefik/traefik.crt
-            - ./config/traefik/traefik.key:/etc/traefik/traefik.key
+        configs:
+            -   source: traefik_config
+                target: /etc/traefik/traefik.toml
+            -   source: traefik_crt
+                target: /etc/traefik/traefik.crt
+            -   source: traefik_key
+                target: /etc/traefik/traefik.key
         networks:
             - proxy
         deploy:
@@ -80,3 +84,12 @@ services:
                 - "traefik.enable=true"
             placement:
                 constraints: [node.role == manager]
+
+configs:
+
+    traefik_config:
+        file: ./config/traefik/traefik-dev.toml
+    traefik_crt:
+        file: ./config/traefik/traefik.crt
+    traefik_key:
+        file: ./config/traefik/traefik.key
