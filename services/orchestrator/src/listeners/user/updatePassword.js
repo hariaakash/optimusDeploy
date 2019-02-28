@@ -1,6 +1,6 @@
 const async = require('async');
 
-const { rpcSend, rpcConsume } = require('../../helpers/amqp-wrapper');
+const { rpcSend, rpcConsume, send } = require('../../helpers/amqp-wrapper');
 
 const process = ({ email, pToken, newPassword }, ch) =>
 	new Promise((resolve) => {
@@ -16,6 +16,14 @@ const process = ({ email, pToken, newPassword }, ch) =>
 						else if (res.status === 400) cb('updatePassword', res);
 						else cb('updatePassword');
 					});
+				},
+				mailer: (cb) => {
+					send({
+						ch,
+						queue: 'mailer_profile:updatePassword_orchestrator',
+						data: { email },
+					});
+					cb();
 				},
 			},
 			(err, result) => {

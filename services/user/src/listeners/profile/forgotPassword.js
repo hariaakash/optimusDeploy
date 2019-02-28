@@ -12,7 +12,7 @@ const process = ({ email }) =>
 				if (user) {
 					user.conf.pToken = nanoid();
 					user.save().then(() =>
-						resolve({ status: 200, data: { pToken: user.conf.pToken } })
+						resolve({ status: 200, data: { email, pToken: user.conf.pToken } })
 					);
 				} else resolve({ status: 400, data: { msg: 'User Not Found' } });
 			})

@@ -1,8 +1,10 @@
 const async = require('async');
 
+const Production = process.env.NODE_ENV !== 'development';
+
 const { send, rpcSend, rpcConsume } = require('../../helpers/amqp-wrapper');
 
-const process = ({ email, password }, ch) =>
+const processData = ({ email, password }, ch) =>
 	new Promise((resolve) => {
 		async.auto(
 			{
@@ -51,7 +53,10 @@ const process = ({ email, password }, ch) =>
 				} else
 					resolve({
 						status: 200,
-						data: { msg: 'User created successfully, check mail for verification' },
+						data: {
+							msg: 'User created successfully, check mail for verification',
+							eToken: Production ? undefined : results.create.eToken,
+						},
 					});
 			}
 		);
@@ -61,7 +66,7 @@ const method = (ch) => {
 	rpcConsume({
 		ch,
 		queue: 'orchestrator_user:create_api',
-		process,
+		process: processData,
 	});
 };
 
