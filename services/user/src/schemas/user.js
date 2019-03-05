@@ -13,6 +13,7 @@ const userSchema = new Schema({
 		eToken: String,
 		eVerified: { type: Boolean, default: false },
 	},
+	projects: [{ type: Schema.Types.ObjectId, ref: 'Project' }],
 	info: {
 		registered_at: { type: Date, default: Date.now },
 	},
