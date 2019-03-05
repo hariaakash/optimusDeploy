@@ -1,0 +1,60 @@
+version: '3.5'
+
+networks:
+
+    elastic:
+        name: elastic
+        driver: overlay
+
+volumes:
+
+    es_data:
+
+services:
+
+    elasticsearch:
+        image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.6.1
+        volumes:
+            - es_data:/usr/share/elasticsearch/data
+        networks:
+            - elastic
+        healthcheck:
+            test: curl -s https://localhost:9200 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
+            interval: 30s
+            timeout: 10s
+            retries: 5
+
+    kibana:
+        image: docker.elastic.co/kibana/kibana-oss:6.6.1
+        ports:
+            - 5601:5601
+        networks:
+            - elastic
+        healthcheck:
+            test: curl -s https://localhost:5601 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
+            interval: 30s
+            timeout: 10s
+            retries: 5
+
+    metricbeat:
+        image: docker.elastic.co/beats/metricbeat-oss:6.6.1
+        secrets:
+            - source: metricbeat.yml
+              target: /usr/share/metricbeat/metricbeat.yml
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock:ro
+            - /sys/fs/cgroup:/hostfs/sys/fs/cgroup:ro
+            - /proc:/hostfs/proc:ro
+            - /:/hostfs:ro
+        networks:
+            - elastic
+        healthcheck:
+            test: metricbeat test config
+            interval: 30s
+            timeout: 15s
+            retries: 5
+
+secrets:
+
+    metricbeat.yml:
+        file: ./config/metricbeat/metricbeat.yml
