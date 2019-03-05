@@ -1,8 +1,10 @@
 const async = require('async');
 
+const Production = process.env.NODE_ENV !== 'development';
+
 const { rpcSend, rpcConsume, send } = require('../../helpers/amqp-wrapper');
 
-const process = ({ email, pToken, newPassword }, ch) =>
+const processData = ({ email, pToken, newPassword }, ch) =>
 	new Promise((resolve) => {
 		async.series(
 			{
@@ -18,11 +20,12 @@ const process = ({ email, pToken, newPassword }, ch) =>
 					});
 				},
 				mailer: (cb) => {
-					send({
-						ch,
-						queue: 'mailer_profile:updatePassword_orchestrator',
-						data: { email },
-					});
+					if (Production)
+						send({
+							ch,
+							queue: 'mailer_profile:updatePassword_orchestrator',
+							data: { email },
+						});
 					cb();
 				},
 			},
@@ -43,7 +46,7 @@ const method = (ch) => {
 	rpcConsume({
 		ch,
 		queue: 'orchestrator_user:updatePassword_api',
-		process,
+		process: processData,
 	});
 };
 

@@ -11,5 +11,6 @@ module.exports = {
 		'import/no-unresolved': 0,
 		quotes: ['error', 'single'],
 		'no-param-reassign': 0,
+		'no-underscore-dangle': 0,
 	},
 };

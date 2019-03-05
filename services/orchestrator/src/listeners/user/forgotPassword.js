@@ -22,11 +22,12 @@ const processData = ({ email }, ch) =>
 				mailer: [
 					'forgotPassword',
 					(results, cb) => {
-						send({
-							ch,
-							queue: 'mailer_profile:forgotPassword_orchestrator',
-							data: results.forgotPassword,
-						});
+						if (Production)
+							send({
+								ch,
+								queue: 'mailer_profile:forgotPassword_orchestrator',
+								data: results.forgotPassword,
+							});
 						cb();
 					},
 				],

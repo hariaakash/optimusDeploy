@@ -37,11 +37,12 @@ const processData = ({ email, password }, ch) =>
 				mailer: [
 					'create',
 					(results, cb) => {
-						send({
-							ch,
-							queue: 'mailer_profile:create_orchestrator',
-							data: results.create,
-						});
+						if (Production)
+							send({
+								ch,
+								queue: 'mailer_profile:create_orchestrator',
+								data: results.create,
+							});
 						cb();
 					},
 				],
