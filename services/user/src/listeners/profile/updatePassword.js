@@ -17,8 +17,8 @@ const updatePassword = ({ user, pToken, newPassword }) =>
 						resolve({ status: 200, data: { msg: 'Password updated successfully.' } })
 					);
 				});
-			} else resolve({ status: 400, data: { msg: 'Reset token did not match or expired.' } });
-		} else resolve({ status: 400, data: { msg: 'User not found. Please Try Again' } });
+			} else resolve({ status: 401, data: { msg: 'Reset token did not match or expired.' } });
+		} else resolve({ status: 404, data: { msg: 'User not found. Please Try Again' } });
 	});
 
 const process = ({ email, pToken, newPassword }) =>

@@ -14,7 +14,7 @@ const process = ({ email }) =>
 					user.save().then(() =>
 						resolve({ status: 200, data: { email, pToken: user.conf.pToken } })
 					);
-				} else resolve({ status: 400, data: { msg: 'User Not Found' } });
+				} else resolve({ status: 404, data: { msg: 'User Not Found' } });
 			})
 			.catch((err) => resolve({ status: 500 }));
 	});

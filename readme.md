@@ -134,7 +134,10 @@ starter:
 
 #### Status Codes
 - **200**: Success
-- **400**: Client Error
+- **400**: Validation Error
+- **401**: Not Authenticated
+- **403**: Not Authorized
+- **404**: Not Found
 - **500**: Server Error
 
 #### RabbitMQ Queue Naming Convention

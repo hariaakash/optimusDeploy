@@ -12,8 +12,8 @@ const verifyEmail = ({ user, token }) =>
 				user.save().then(() =>
 					resolve({ status: 200, data: { msg: 'User email verified successfully.' } })
 				);
-			} else resolve({ status: 400, data: { msg: 'Token is invalid or got expired.' } });
-		} else resolve({ status: 400, data: { msg: 'User not registered.' } });
+			} else resolve({ status: 401, data: { msg: 'Token is invalid or got expired.' } });
+		} else resolve({ status: 404, data: { msg: 'User not registered.' } });
 	});
 
 const process = ({ email, token }) =>

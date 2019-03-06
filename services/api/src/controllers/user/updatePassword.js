@@ -27,7 +27,6 @@ const request = (req, res) => {
 		})
 		.catch((vError) => {
 			res.status(400).json({
-				status: false,
 				msg: 'Validation Error',
 				data: vError.details.map((d) => d.message),
 			});

@@ -15,7 +15,7 @@ const processData = ({ email }, ch) =>
 						data: { email },
 					}).then((res) => {
 						if (res.status === 200) cb(null, res.data);
-						else if (res.status === 400) cb('forgotPassword', res.data);
+						else if (res.status === 404) cb('forgotPassword', res);
 						else cb('forgotPassword');
 					});
 				},

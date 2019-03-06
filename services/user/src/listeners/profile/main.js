@@ -8,7 +8,7 @@ const process = ({ authKey }) =>
 			.select('email conf.eVerified')
 			.then((user) => {
 				if (user) resolve({ status: 200, data: user });
-				else resolve({ status: 400, data: { msg: 'Invalid authentication key.' } });
+				else resolve({ status: 401, data: { msg: 'Invalid authentication key.' } });
 			})
 			.catch((err) => resolve({ status: 500 }));
 	});

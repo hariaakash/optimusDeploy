@@ -15,7 +15,7 @@ const processData = ({ email, pToken, newPassword }, ch) =>
 						data: { email, pToken, newPassword },
 					}).then((res) => {
 						if (res.status === 200) cb();
-						else if (res.status === 400) cb('updatePassword', res);
+						else if (![500].includes(res.status)) cb('updatePassword', res);
 						else cb('updatePassword');
 					});
 				},

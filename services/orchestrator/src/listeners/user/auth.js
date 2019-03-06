@@ -7,7 +7,7 @@ const authEmail = ({ email, password }, ch) =>
 			queue: 'user_profile:authEmail_orchestrator',
 			data: { email, password },
 		}).then((res) => {
-			if (res.status === 200 || res.status === 400) resolve(res);
+			if (![500].includes(res.status)) resolve(res);
 			else resolve({ status: 500, data: { msg: 'Internal Server Error' } });
 		});
 	});

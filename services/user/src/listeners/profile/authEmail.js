@@ -9,7 +9,7 @@ const checkPassword = ({ user, password }) =>
 			bcrypt.compare(password, user.conf.hashPassword).then((status) => {
 				if (status) {
 					if (!user.conf.eVerified) {
-						resolve({ status: 400, data: { msg: 'Email not verified.' } });
+						resolve({ status: 403, data: { msg: 'Email not verified.' } });
 					} else {
 						resolve({
 							status: 200,
@@ -19,9 +19,9 @@ const checkPassword = ({ user, password }) =>
 							},
 						});
 					}
-				} else resolve({ status: 400, data: { msg: 'Password is incorrect.' } });
+				} else resolve({ status: 401, data: { msg: 'Password is incorrect.' } });
 			});
-		else resolve({ status: 400, data: { msg: 'User not registered.' } });
+		else resolve({ status: 404, data: { msg: 'User not registered.' } });
 	});
 
 const process = ({ email, password }) =>

@@ -22,6 +22,8 @@ const process = ({ email, password }) =>
 			.catch((err) => resolve({ status: 500 }));
 	});
 
+// User.findOne({ email: 'smgdark@gmail.com' }).then((user) => user.remove());
+
 const method = (ch) => {
 	rpcConsume({
 		ch,
