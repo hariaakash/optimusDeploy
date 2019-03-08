@@ -59,6 +59,7 @@ config_machines() {
             echo -e "${COLOR_BLUE}worker${server}${COLOR_DEFAULT}: Creating bootlocal.sh"
             docker-machine ssh worker${server} 'echo "#!/bin/sh" | sudo tee /var/lib/boot2docker/bootlocal.sh'
             docker-machine ssh worker${server} 'echo "cat /var/lib/boot2docker/traefik.crt >> /etc/ssl/certs/ca-certificates.crt" | sudo tee -a /var/lib/boot2docker/bootlocal.sh'
+            docker-machine ssh worker${server} 'sudo sysctl -w vm.max_map_count=262144'
             docker-machine ssh worker${server} "echo '${cmd}' | sudo tee -a /var/lib/boot2docker/bootlocal.sh"
             docker-machine ssh worker${server} sudo chmod +x /var/lib/boot2docker/bootlocal.sh
         } > /dev/null
