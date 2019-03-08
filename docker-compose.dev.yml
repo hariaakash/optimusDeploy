@@ -72,6 +72,26 @@ services:
         networks:
             - micros
             - db
+
+    container:
+        build:
+            context: ./services/container
+            args:
+                NODE_ENV: development
+        image: optimusdeploy_container:dev
+        command: npm run dev
+        environment:
+            NODE_ENV: development
+            AMQP_URI: amqp://rabbitmq
+            MONGODB_HOST: mongodb://mongodb
+        volumes:
+            - ./services/container/src:/app/src
+        depends_on:
+            - rabbitmq
+            - mongodb
+        networks:
+            - micros
+            - db
             
     mailer:
         build:
@@ -113,17 +133,17 @@ services:
             - micros
             - proxy
 
-    # registry:
-    #     image: registry:2
-    #     ports:
-    #         - 5000:5000
-    #     volumes:
-    #         - ./config/traefik:/certs
-    #     environment:
-    #         REGISTRY_HTTP_TLS_CERTIFICATE: /certs/traefik.crt
-    #         REGISTRY_HTTP_TLS_KEY: /certs/traefik.key
-    #     networks:
-    #         - micros
+    registry:
+        image: registry:2
+        ports:
+            - 5000:5000
+        volumes:
+            - ./config/traefik:/certs
+        environment:
+            REGISTRY_HTTP_TLS_CERTIFICATE: /certs/traefik.crt
+            REGISTRY_HTTP_TLS_KEY: /certs/traefik.key
+        networks:
+            - micros
 
     traefik:
         image: traefik
