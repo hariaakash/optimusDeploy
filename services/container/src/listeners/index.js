@@ -1,7 +1,7 @@
-// const task1 = require('./task1');
+const network = require('./network');
 
 const tasks = (ch) => {
-	// task1(ch);
+	network(ch);
 };
 
 module.exports = tasks;

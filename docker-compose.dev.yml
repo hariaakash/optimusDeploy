@@ -85,6 +85,7 @@ services:
             AMQP_URI: amqp://rabbitmq
             MONGODB_HOST: mongodb://mongodb
         volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
             - ./services/container/src:/app/src
         depends_on:
             - rabbitmq
