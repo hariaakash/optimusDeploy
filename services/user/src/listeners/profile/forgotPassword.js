@@ -20,11 +20,7 @@ const process = ({ email }) =>
 	});
 
 const method = (ch) => {
-	rpcConsume({
-		ch,
-		queue: 'user_profile:forgotPassword_orchestrator',
-		process,
-	});
+	rpcConsume({ ch, queue: 'user_profile:forgotPassword_orchestrator', process });
 };
 
 module.exports = method;

@@ -36,11 +36,7 @@ const process = ({ email, password }) =>
 	});
 
 const method = (ch) => {
-	rpcConsume({
-		ch,
-		queue: 'user_profile:authEmail_orchestrator',
-		process,
-	});
+	rpcConsume({ ch, queue: 'user_profile:authEmail_orchestrator', process });
 };
 
 module.exports = method;

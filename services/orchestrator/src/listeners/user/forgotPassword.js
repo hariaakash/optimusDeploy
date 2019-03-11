@@ -49,11 +49,7 @@ const processData = ({ email }, ch) =>
 	});
 
 const method = (ch) => {
-	rpcConsume({
-		ch,
-		queue: 'orchestrator_user:forgotPassword_api',
-		process: processData,
-	});
+	rpcConsume({ ch, queue: 'orchestrator_user:forgotPassword_api', process: processData });
 };
 
 module.exports = method;

@@ -33,11 +33,7 @@ const process = ({ email, pToken, newPassword }) =>
 	});
 
 const method = (ch) => {
-	rpcConsume({
-		ch,
-		queue: 'user_profile:updatePassword_orchestrator',
-		process,
-	});
+	rpcConsume({ ch, queue: 'user_profile:updatePassword_orchestrator', process });
 };
 
 module.exports = method;

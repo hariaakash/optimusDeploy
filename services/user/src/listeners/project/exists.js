@@ -15,11 +15,7 @@ const processData = ({ name, userId }) =>
 	});
 
 const method = (ch) => {
-	rpcConsume({
-		ch,
-		queue: 'user_project:exists_orchestrator',
-		process: processData,
-	});
+	rpcConsume({ ch, queue: 'user_project:exists_orchestrator', process: processData });
 };
 
 module.exports = method;

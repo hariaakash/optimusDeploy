@@ -23,11 +23,7 @@ const process = ({ email, password, authType }, ch) =>
 	});
 
 const method = (ch) => {
-	rpcConsume({
-		ch,
-		queue: 'orchestrator_user:auth_api',
-		process,
-	});
+	rpcConsume({ ch, queue: 'orchestrator_user:auth_api', process });
 };
 
 module.exports = method;
