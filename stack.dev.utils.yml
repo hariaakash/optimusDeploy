@@ -5,6 +5,9 @@ networks:
     proxy:
         name: proxy
         driver: overlay
+    apps:
+        name: apps
+        driver: overlay
     micros:
         name: micros
         driver: overlay
@@ -59,14 +62,35 @@ services:
                 - "traefik.enable=true"
             placement:
                 constraints: [node.role == manager]
-
+    
+    visualizer:
+        image: dockersamples/visualizer:stable
+        ports:
+            - "4000:8080"
+        volumes:
+            - "/var/run/docker.sock:/var/run/docker.sock"
+        deploy:
+            labels:
+                - "traefik.backend=visualizer"
+                - "traefik.frontend.rule=Host:visual.local"
+                - "traefik.port=8080"
+                - "traefik.enable=true"
+            placement:
+                constraints: [node.role == manager]
+        networks:
+            - proxy
+    
     traefik:
         image: traefik
+        command: --api --docker
         ports:
             - 80:80
             - 443:443
+            - 8080:8080
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
+            - ./logs/traefik/traefik.json:/var/log/traefik/traefik.log.json
+            - ./logs/traefik/access.json:/var/log/traefik/access.log.json
         configs:
             -   source: traefik_config
                 target: /etc/traefik/traefik.toml
@@ -76,6 +100,8 @@ services:
                 target: /etc/traefik/traefik.key
         networks:
             - proxy
+            - apps
+            - micros
         deploy:
             labels:
                 - "traefik.backend=traefik"

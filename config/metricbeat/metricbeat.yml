@@ -1,10 +1,17 @@
-output.elasticsearch:
-    hosts: ['elasticsearch:9200']
+output.logstash:
+    hosts: ['logstash:5044']
 
 setup.kibana:
     host: "kibana:5601"
 
 setup.dashboards.enabled: true
+setup.template.enabled: true
+setup.template.pattern: "metricbeat-*"
+setup.template.name: "metricbeat"
+setup.template.fields: "fields.yml"
+setup.template.overwrite: false
+setup.template.settings:
+  _source.enabled: false
 
 metricbeat.modules:
     -   module: docker

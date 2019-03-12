@@ -10,6 +10,9 @@ networks:
         name: micros
     db:
         name: db
+    elastic:
+        name: elastic
+        driver: overlay
 
 services:
 
@@ -145,16 +148,16 @@ services:
         networks:
             - micros
 
-    traefik:
-        image: traefik
-        ports:
-            - 80:80
-            - 443:443
-            - 8080:8080
-        volumes:
-            - /var/run/docker.sock:/var/run/docker.sock
-            - ./config/traefik/traefik-dev.compose.toml:/etc/traefik/traefik.toml
-            - ./config/traefik/traefik.crt:/etc/traefik/traefik.crt
-            - ./config/traefik/traefik.key:/etc/traefik/traefik.key
-        networks:
-            - proxy
+    # traefik:
+    #     image: traefik
+    #     ports:
+    #         - 80:80
+    #         - 443:443
+    #         - 8080:8080
+    #     volumes:
+    #         - /var/run/docker.sock:/var/run/docker.sock
+    #         - ./config/traefik/traefik-dev.compose.toml:/etc/traefik/traefik.toml
+    #         - ./config/traefik/traefik.crt:/etc/traefik/traefik.crt
+    #         - ./config/traefik/traefik.key:/etc/traefik/traefik.key
+    #     networks:
+    #         - proxy

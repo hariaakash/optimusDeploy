@@ -16,3 +16,6 @@ done
 
 # Start Services Stack
 docker stack deploy -c stack.dev.services.yml services
+
+#Start Elastic Stack
+docker stack deploy -c stack.elastic.yml services

@@ -5,6 +5,10 @@ networks:
     elastic:
         name: elastic
         driver: overlay
+    proxy:
+        name: proxy
+        driver: overlay
+        external: true
 
 volumes:
 
@@ -14,8 +18,8 @@ services:
 
     elasticsearch:
         image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.6.1
-        volumes:
-            - es_data:/usr/share/elasticsearch/data
+        # volumes:
+        #     - es_data:/usr/share/elasticsearch/data
         networks:
             - elastic
         healthcheck:
@@ -23,6 +27,9 @@ services:
             interval: 30s
             timeout: 10s
             retries: 5
+        deploy:
+            placement:
+                constraints: [node.role == manager]
 
     kibana:
         image: docker.elastic.co/kibana/kibana-oss:6.6.1
@@ -30,14 +37,37 @@ services:
             - 5601:5601
         networks:
             - elastic
+            - proxy
+        deploy:
+            labels:
+                - "traefik.docker.network=proxy"
+                - "traefik.backend=kibana"
+                - "traefik.frontend.rule=Host:kibana.local"
+                - "traefik.port=5601"
+                - "traefik.enable=true"
+            placement:
+                constraints: [node.role == manager]
         healthcheck:
             test: curl -s https://localhost:5601 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
             interval: 30s
             timeout: 10s
             retries: 5
 
+    logstash:
+        image: docker.elastic.co/logstash/logstash:6.6.1
+        volumes:
+            - ./config/logstash/pipelines/:/usr/share/logstash/pipeline/
+            - ./logs/:/usr/logs/
+        networks:
+            - elastic
+        deploy:
+            placement:
+                constraints: [node.role == manager]
+
     metricbeat:
         image: docker.elastic.co/beats/metricbeat-oss:6.6.1
+        # container_name: metricbeat
+        user: root
         secrets:
             - source: metricbeat.yml
               target: /usr/share/metricbeat/metricbeat.yml
@@ -48,6 +78,11 @@ services:
             - /:/hostfs:ro
         networks:
             - elastic
+        deploy:
+            placement:
+                constraints: [node.role == manager]    
+            restart_policy:
+                condition: on-failure
         healthcheck:
             test: metricbeat test config
             interval: 30s
