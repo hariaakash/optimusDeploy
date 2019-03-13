@@ -16,12 +16,11 @@ XX.XX.XX.XX    node1
 XX.XX.XX.XX    node2
 XX.XX.XX.XX    node3
 ```
-3. Install Docker and Glusterfs
+1. Install Glusterfs
 ```
-snap install docker
 apt install -y glusterfs-server
 ```
-4. Start Glusterfs
+1. Start Glusterfs
 ```
 sudo systemctl start glusterd
 sudo systemctl enable glusterd
@@ -48,3 +47,4 @@ gluster volume info name
 - Docs: 
 - Setup Ex 1: http://embaby.com/blog/using-glusterfs-docker-swarm-cluster/
 - Setup Ex 2: https://www.howtoforge.com/tutorial/high-availability-storage-with-glusterfs-on-ubuntu-1804/
+- Setup Ex 3: https://www.ionos.com/community/server-cloud-infrastructure/docker/using-gluster-for-a-distributed-docker-storage-volume/
