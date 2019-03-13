@@ -2,6 +2,8 @@ const Process = require('child_process');
 
 const fse = require('fs-extra');
 
+const Error = require('./utils').StatusCodeError;
+
 const dir = '/srv/daemon-data';
 
 const create = ({ projectId, volumeId, next }) =>
