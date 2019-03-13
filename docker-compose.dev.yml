@@ -87,6 +87,7 @@ services:
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
             - ./services/container/src:/app/src
+            - /srv/daemon-data:/srv/daemon-data
         depends_on:
             - rabbitmq
             - mongodb

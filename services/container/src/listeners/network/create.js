@@ -1,6 +1,6 @@
 const { create } = require('../../helpers/network');
 
-const { assert, consume, send } = require('../../helpers/amqp-wrapper');
+const { assert, consume } = require('../../helpers/amqp-wrapper');
 
 const processData = ({ name }) =>
 	new Promise((resolve, reject) => {
