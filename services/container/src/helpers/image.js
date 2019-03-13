@@ -4,7 +4,7 @@ const Docker = new Dockerode();
 
 const Error = require('./utils').StatusCodeError;
 
-const build = ({ dir, id, next }) => {
+const build = ({ dir, id, next }) =>
 	Docker.buildImage(
 		{ context: dir, src: ['Dockerfile', 'entrypoint.sh', 'src'] },
 		{ t: `${id}:latest` },
@@ -17,7 +17,6 @@ const build = ({ dir, id, next }) => {
 				});
 		}
 	);
-};
 
 const Image = { build };
 
