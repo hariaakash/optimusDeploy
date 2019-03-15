@@ -29,6 +29,22 @@ metricbeat.modules:
     processes: 
       - .*
 
+metricbeat.autodiscover:
+  providers:
+    - type: docker
+      templates:
+        - condition:
+            contains:
+              docker.container.image: elasticsearch
+          config:
+            - module: elasticsearch
+              metricsets:
+                - node
+                - node_stats
+                - index
+              period: 10s
+              hosts: ["${data.host}:9200"]
+
 output.elasticsearch: 
   hosts: 
     - "elasticsearch:9200"
