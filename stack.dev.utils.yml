@@ -89,7 +89,6 @@ services:
             - 8080:8080
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
-            - ./logs/traefik/traefik.json:/var/log/traefik/traefik.log.json
             - ./logs/traefik/access.json:/var/log/traefik/access.log.json
         configs:
             -   source: traefik_config

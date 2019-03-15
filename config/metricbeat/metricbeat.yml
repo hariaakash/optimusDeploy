@@ -1,41 +1,47 @@
-output.logstash:
-    hosts: ['logstash:5044']
+metricbeat.modules: 
+  - 
+    enabled: true
+    hosts: 
+      - "unix:///var/run/docker.sock"
+    metricsets: 
+      - container
+      - cpu
+      - diskio
+      - healthcheck
+      - info
+      - image
+      - memory
+      - network
+    module: docker
+    period: 10s
+  - 
+    enabled: true
+    metricsets: 
+      - cpu
+      - load
+      - memory
+      - network
+      - process
+      - process_summary
+      - uptime
+    module: system
+    period: 10s
+    processes: 
+      - .*
 
-setup.kibana:
-    host: "kibana:5601"
+output.elasticsearch: 
+  hosts: 
+    - "elasticsearch:9200"
 
 setup.dashboards.enabled: true
-setup.template.enabled: true
-setup.template.pattern: "metricbeat-*"
-setup.template.name: "metricbeat"
-setup.template.fields: "fields.yml"
-setup.template.overwrite: false
-setup.template.settings:
-  _source.enabled: false
 
-metricbeat.modules:
-    -   module: docker
-        metricsets:
-            - "container"
-            - "cpu"
-            - "diskio"
-            - "healthcheck"
-            - "info"
-            - "image"
-            - "memory"
-            - "network"
-        hosts: ["unix:///var/run/docker.sock"]
-        period: 10s
-        enabled: true
-    -   module: system
-        metricsets:
-            - cpu             # CPU usage
-            - load            # CPU load averages
-            - memory          # Memory usage
-            - network         # Network IO
-            - process         # Per process metrics
-            - process_summary # Process summary
-            - uptime          # System Uptime
-        enabled: true
-        period: 10s
-        processes: ['.*']
+setup.kibana: 
+  host: "kibana:5601"
+
+setup.template.enabled: true
+setup.template.fields: fields.yml
+setup.template.name: metricbeat
+setup.template.overwrite: false
+setup.template.pattern: metricbeat-*
+setup.template.settings: 
+  _source.enabled: false

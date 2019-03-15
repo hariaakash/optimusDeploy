@@ -10,10 +10,6 @@ networks:
         driver: overlay
         external: true
 
-volumes:
-
-    es_data:
-
 services:
 
     elasticsearch:
@@ -52,12 +48,13 @@ services:
             interval: 30s
             timeout: 10s
             retries: 5
+        depends_on:
+            - elasticsearch
 
     logstash:
         image: docker.elastic.co/logstash/logstash:6.6.1
         volumes:
             - ./config/logstash/pipelines/:/usr/share/logstash/pipeline/
-            - ./logs/:/usr/logs/
         networks:
             - elastic
         deploy:
@@ -88,8 +85,38 @@ services:
             interval: 30s
             timeout: 15s
             retries: 5
+        depends_on:
+            - kibana
+
+    filebeat:
+        image: docker.elastic.co/beats/filebeat:6.6.1
+        user: root
+        secrets:
+            - source: filebeat.yml
+              target: /usr/share/filebeat/filebeat.yml
+        volumes:
+            - /var/lib/docker/containers:/var/lib/docker/containers:ro
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ./logs/:/var/logs/
+        networks:
+            - elastic
+        deploy:
+            placement:
+                constraints: [node.role == manager]
+            restart_policy:
+                condition: on-failure
+        healthcheck:
+            test: filebeat test config
+            interval: 30s
+            timeout: 15s
+            retries: 5
+        depends_on:
+            - kibana
 
 secrets:
+
+    filebeat.yml:
+        file: ./config/filebeat/filebeat.yml
 
     metricbeat.yml:
         file: ./config/metricbeat/metricbeat.yml

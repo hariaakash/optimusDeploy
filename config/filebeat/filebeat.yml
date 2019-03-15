@@ -1,0 +1,60 @@
+filebeat.config.inputs:
+  enabled: true
+  path: configs/*.yml
+  reload.enabled: true
+  reload.period: 10s
+
+# filebeat.autodiscover: 
+#   providers: 
+#     - 
+#       templates: 
+#         - 
+#           condition: 
+#             contains: 
+#               docker.container.image: traefik
+#           config: 
+#             - 
+#               log: 
+#                 input: 
+#                   containers.ids: 
+#                     - "${data.docker.container.id}"
+#                   type: docker
+#               module: traefik
+#       type: docker
+
+filebeat.autodiscover:
+  providers:
+    - type: docker
+      hints.enabled: true
+    - type: docker
+      templates:
+        - condition:
+            contains:
+              docker.container.image: traefik
+          config:
+            - module: traefik
+              access:
+                enabled: true
+                prospector:
+                  type: docker
+                  containers.ids:
+                    - "${data.docker.container.id}"
+
+
+
+output.elasticsearch: 
+  hosts: 
+    - "elasticsearch:9200"
+
+setup.dashboards.enabled: true
+
+setup.kibana: 
+  host: "kibana:5601"
+
+setup.template.enabled: true
+setup.template.fields: fields.yml
+setup.template.name: filebeat
+setup.template.overwrite: false
+setup.template.pattern: filebeat-*
+setup.template.settings: 
+  _source.enabled: false

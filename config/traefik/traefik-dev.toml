@@ -26,10 +26,4 @@ exposedbydefault = false
 swarmmode = true
 network = "proxy"
 
-[traefikLog]
-  filePath = "/var/log/traefik/traefik.log.json"
-  format   = "json"
-
 [accessLog]
-  filePath = "/var/log/traefik/access.log.json"
-  format = "json"
