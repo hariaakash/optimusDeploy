@@ -1,3 +1,8 @@
+metricbeat.config.modules:
+  path: configs/*.yml
+  reload.enabled: true
+  reload.period: 10s
+
 metricbeat.modules: 
   - 
     enabled: true
@@ -44,6 +49,52 @@ metricbeat.autodiscover:
                 - index
               period: 10s
               hosts: ["${data.host}:9200"]
+        - condition:
+            contains:
+              docker.container.image: logstash
+          config:
+            - module: logstash
+              metricsets:
+                - node
+                - node_stats
+              period: 10s
+              hosts: ["${data.host}:9600"]
+        - condition:
+            contains:
+              docker.container.image: kibana
+          config:
+            - module: kibana
+              metricsets:
+                - stats
+                - status
+              period: 10s
+              basepath: ""
+              hosts: ["${data.host}:5601"]
+        - condition:
+            contains:
+              docker.container.image: rabbitmq
+          config:
+            - module: rabbitmq
+              metricsets:
+                - node
+                - connection
+                - queue
+                - exchange
+              period: 10s
+              hosts: ["${data.host}:15672"]
+        - condition:
+            contains:
+              docker.container.image: alpine-mongo
+          config:
+            - module: mongodb
+              metricsets:
+                - collstats
+                - dbstats
+                - metrics
+                - replstatus
+                - status
+              period: 10s
+              hosts: ["${data.host}:27017"]
 
 output.elasticsearch: 
   hosts: 

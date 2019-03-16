@@ -4,24 +4,6 @@ filebeat.config.inputs:
   reload.enabled: true
   reload.period: 10s
 
-# filebeat.autodiscover: 
-#   providers: 
-#     - 
-#       templates: 
-#         - 
-#           condition: 
-#             contains: 
-#               docker.container.image: traefik
-#           config: 
-#             - 
-#               log: 
-#                 input: 
-#                   containers.ids: 
-#                     - "${data.docker.container.id}"
-#                   type: docker
-#               module: traefik
-#       type: docker
-
 filebeat.autodiscover:
   providers:
     - type: docker
