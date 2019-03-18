@@ -1,29 +1,27 @@
-const { find, remove } = require('../../helpers/network');
+const async = require('async');
 
+const { remove } = require('../../helpers/network');
 const { assert, consume } = require('../../helpers/amqp-wrapper');
 
-const removeNetwork = ({ id, resolve, reject }) =>
-	remove({
-		id,
-		next: (err, data) => {
-			if (!err) resolve(true);
-			else if (err.statusCode === 409) resolve(true);
-			else reject();
-		},
-	});
-
-const processData = ({ id = false, name }) =>
+const processData = ({ name }) =>
 	new Promise((resolve, reject) => {
-		if (id) removeNetwork({ id: name, resolve, reject });
-		else
-			find({
-				name,
-				next: (err, data) => {
-					if (!err) removeNetwork({ id: data.Id, resolve, reject });
-					else if (err.statusCode === 404) resolve(true);
-					else reject();
-				},
-			});
+		async.each(
+			name,
+			(network, cb) => {
+				remove({
+					name: network,
+					next: (err, data) => {
+						if (!err) cb();
+						else if (err.statusCode === 404) cb();
+						else cb(err);
+					},
+				});
+			},
+			(err) => {
+				if (err) reject();
+				else resolve(true);
+			}
+		);
 	});
 
 const method = (ch) => {

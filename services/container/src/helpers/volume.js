@@ -4,7 +4,7 @@ const fse = require('fs-extra');
 
 const Error = require('./utils').StatusCodeError;
 
-const dir = '/srv/daemon-data';
+const dir = process.env.DATA_DIR || '/srv/daemon-data';
 
 const create = ({ projectId, volumeId, next }) =>
 	fse.ensureDir(`${dir}/${projectId}/${volumeId}`, (err) => {

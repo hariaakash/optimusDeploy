@@ -6,15 +6,8 @@ const schema = Joi.object().keys({
 	authKey: Joi.string()
 		.length(21)
 		.required(),
-	name: Joi.string()
-		.regex(/^[0-9a-zA-Z\-'" !]+$/)
-		.min(4)
-		.max(30)
-		.required(),
-	easyId: Joi.string()
-		.regex(/^(?:[A-Za-z0-9]+[-]?)+$/)
-		.min(6)
-		.max(30)
+	projectId: Joi.string()
+		.length(24)
 		.required(),
 });
 
@@ -24,7 +17,7 @@ const request = (req, res) => {
 		.then((vData) => {
 			rpcSend({
 				ch: req.ch,
-				queue: 'orchestrator_project:create_api',
+				queue: 'orchestrator_project:remove_api',
 				data: vData,
 			}).then(({ status, data }) => res.status(status).json(data));
 		})
