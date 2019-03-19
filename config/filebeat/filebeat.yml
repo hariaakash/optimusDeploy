@@ -21,8 +21,51 @@ filebeat.autodiscover:
                   type: docker
                   containers.ids:
                     - "${data.docker.container.id}"
-
-
+    - type: docker
+      templates:
+        - condition:
+            contains:
+              docker.container.image: alpine-mongo
+          config:
+            - module: mongodb
+              log:
+                enabled: true
+                var.paths: ["/var/lib/docker/containers/${data.docker.container.id}/*.log*"]
+    - type: docker
+      templates:
+        - condition:
+            contains:
+              docker.container.image: logstash
+          config:
+            - module: logstash
+              log:
+                enabled: true
+                var.paths: ["/var/lib/docker/containers/${data.docker.container.id}/*.log*"]
+                var.format: plain
+    - type: docker
+      templates:
+        - condition:
+            contains:
+              docker.container.image: elasticsearch
+          config:
+            - module: elasticsearch
+              server:
+                enabled: true
+                var.paths:
+                  - /var/lib/docker/containers/${data.docker.container.id}/*.log*
+              gc:
+                var.paths:
+                  - /var/logs/elasticsearch/*.log*
+    - type: docker
+      templates:
+        - condition:
+            contains:
+              docker.container.image: kibana
+          config:
+            - module: kibana
+              log:
+                var.paths:
+                  - /var/lib/docker/containers/${data.docker.container.id}/*.log*                                 
 
 output.elasticsearch: 
   hosts: 
