@@ -6,6 +6,7 @@ const authGithub = require('./authGithub');
 const verifyEmail = require('./verifyEmail');
 const forgotPassword = require('./forgotPassword');
 const updatePassword = require('./updatePassword');
+const repos = require('./repos');
 
 const projectCreate = require('./projectCreate');
 const projectRemove = require('./projectRemove');
@@ -19,6 +20,7 @@ const tasks = (ch) => {
 	verifyEmail(ch);
 	forgotPassword(ch);
 	updatePassword(ch);
+	repos(ch);
 
 	projectCreate(ch);
 	projectRemove(ch);

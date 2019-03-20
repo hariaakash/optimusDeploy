@@ -38,8 +38,14 @@ const repos = ({ accessToken }) =>
 		method: 'GET',
 		url: config.url.repos,
 		headers: { Authorization: `token ${accessToken}`, Accept: 'application/json' },
-		params: { per_page: 1000 },
-	});
+		params: { per_page: 1000, affiliation: 'owner,collaborator,organization_member' },
+	}).then(({ data }) =>
+		data.map((x) => ({
+			name: x.name,
+			private: x.private,
+			html_url: x.html_url,
+		}))
+	);
 
 const Github = { auth, info, repos };
 

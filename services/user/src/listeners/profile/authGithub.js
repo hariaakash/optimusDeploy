@@ -1,6 +1,6 @@
 const { rpcConsume } = require('../../helpers/amqp-wrapper');
 
-const { Github, handle, Config } = require('../../helpers/social');
+const { Github, handle } = require('../../helpers/social');
 
 const process = ({ code }) =>
 	new Promise((resolve) => {
@@ -22,7 +22,6 @@ const process = ({ code }) =>
 	});
 
 const method = (ch) => {
-	console.log(Config.github.link());
 	rpcConsume({ ch, queue: 'user_profile:authGithub_orchestrator', process });
 };
 
