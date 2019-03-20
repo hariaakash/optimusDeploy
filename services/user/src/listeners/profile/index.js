@@ -2,6 +2,7 @@ const main = require('./main');
 const exists = require('./exists');
 const create = require('./create');
 const authEmail = require('./authEmail');
+const authGithub = require('./authGithub');
 const verifyEmail = require('./verifyEmail');
 const forgotPassword = require('./forgotPassword');
 const updatePassword = require('./updatePassword');
@@ -14,6 +15,7 @@ const tasks = (ch) => {
 	exists(ch);
 	create(ch);
 	authEmail(ch);
+	authGithub(ch);
 	verifyEmail(ch);
 	forgotPassword(ch);
 	updatePassword(ch);

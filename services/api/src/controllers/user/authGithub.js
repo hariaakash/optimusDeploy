@@ -3,12 +3,8 @@ const Joi = require('joi');
 const { rpcSend } = require('../../helpers/amqp-wrapper');
 
 const schema = Joi.object().keys({
-	email: Joi.string()
-		.email({ minDomainAtoms: 2 })
-		.required(),
-	password: Joi.string()
-		.min(8)
-		.max(64)
+	code: Joi.string()
+		.length(20)
 		.required(),
 });
 
@@ -19,7 +15,7 @@ const request = (req, res) => {
 			rpcSend({
 				ch: req.ch,
 				queue: 'orchestrator_user:auth_api',
-				data: { ...vData, authType: 'email' },
+				data: { ...vData, authType: 'github' },
 			}).then(({ status, data }) => res.status(status).json(data));
 		})
 		.catch((vError) =>

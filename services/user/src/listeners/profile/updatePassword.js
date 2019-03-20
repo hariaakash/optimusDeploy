@@ -10,6 +10,7 @@ const updatePassword = ({ user, pToken, newPassword }) =>
 		if (user) {
 			if (user.conf.pToken === pToken) {
 				bcrypt.hash(newPassword, 10).then((hash) => {
+					if (!user.conf.setPassword) user.conf.setPassword = true;
 					user.conf.hashPassword = hash;
 					user.conf.pToken = null;
 					user.authKey.token = nanoid();

@@ -11,6 +11,7 @@
 	"license": "ISC",
 	"dependencies": {
 		"amqplib": "^0.5.3",
+		"axios": "^0.18.0",
 		"bcryptjs": "^2.4.3",
 		"mongoose": "^5.4.5",
 		"nanoid": "^2.0.1"
