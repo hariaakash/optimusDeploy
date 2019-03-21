@@ -9,5 +9,6 @@ router.post('/authGithub', user.authGithub);
 router.post('/verifyEmail', user.verifyEmail);
 router.post('/forgotPassword', user.forgotPassword);
 router.post('/updatePassword', user.updatePassword);
+router.get('/repos', user.repos);
 
 module.exports = router;
