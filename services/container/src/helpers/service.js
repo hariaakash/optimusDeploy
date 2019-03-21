@@ -39,12 +39,29 @@ const create = ({ Name, Labels, Image, projectId, serviceId, Networks, next }) =
 			err.statusCode ? next(err) : next(new Error('Service creation failed.', 500, err))
 		);
 
+const update = async ({ name: Name, type, next }) => {
+	try {
+		const service = Docker.getService(Name);
+		let opts = await service.inspect();
+		opts = { Name, version: opts.Version.Index, ...opts.Spec };
+		if (type.includes('scale')) {
+			if (type === 'scaleup') opts.Mode.Replicated.Replicas += 1;
+			else if (type === 'scaledown') opts.Mode.Replicated.Replicas -= 1;
+		}
+		const res = await service.update(opts);
+		next(null, res);
+	} catch (err) {
+		if (err.statusCode) next(err);
+		else next(new Error('Unable to update service', 500, err));
+	}
+};
+
 const remove = ({ name, next }) =>
 	Docker.getService(name)
 		.remove()
 		.then((data) => next(null, data))
 		.catch(next);
 
-const Service = { create, remove };
+const Service = { create, update, remove };
 
 module.exports = Service;

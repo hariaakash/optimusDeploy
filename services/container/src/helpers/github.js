@@ -6,9 +6,12 @@ const dir = process.env.DATA_DIR || '/srv/daemon-data';
 
 const clone = ({ projectId, volumeId, accessToken, repo }) =>
 	new Promise((resolve, reject) => {
-		let cmd = `cd ${dir}/${projectId}/${volumeId} && `;
-		cmd += `git clone https://${accessToken}@`;
-		cmd += `${repo.replace('https://', '')} .`;
+		const uri = repo
+			.slice(0, 8)
+			.concat(accessToken)
+			.concat('@')
+			.concat(repo.slice(8));
+		const cmd = `cd ${dir}/${projectId}/${volumeId} && git clone ${uri} .`;
 		Process.exec(cmd, (err) => {
 			if (err) reject(new Error('Github repo clone failed', 500, err));
 			else resolve();

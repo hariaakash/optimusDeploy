@@ -15,7 +15,7 @@ const find = ({ id = false, name, next }) => {
 
 const create = ({ name: Name, Driver = 'overlay', next }) =>
 	Docker.createNetwork({ Name, Driver, Attachable: true })
-		.then((network) => next(null, network))
+		.then((network) => next(null, network.id))
 		.catch(next);
 
 const remove = ({ name, next }) =>
