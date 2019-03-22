@@ -1,9 +1,8 @@
 const Dockerode = require('dockerode');
 
-const Docker = new Dockerode();
-
-const Network = require('./network');
 const Error = require('./utils').StatusCodeError;
+
+const Docker = new Dockerode();
 
 const dir = process.env.DATA_DIR || '/srv/daemon-data';
 
@@ -49,12 +48,8 @@ const update = async ({ name: Name, type, data = {}, next }) => {
 			if (type === 'scaleup') opts.Mode.Replicated.Replicas += 1;
 			else if (type === 'scaledown') opts.Mode.Replicated.Replicas -= 1;
 		} else if (type.includes('network')) {
-			if (type === 'networkAttach') {
-				opts.Networks.push({ Target: data.network });
-				opts.TaskTemplate.Networks = opts.Networks;
-			} else if (type === 'networkDetach') {
-				opts.TaskTemplate.Networks = data.Networks;
-			}
+			opts.Networks = data.Networks;
+			opts.TaskTemplate.Networks = opts.Networks;
 		}
 		const res = await service.update(opts);
 		next(null, res);

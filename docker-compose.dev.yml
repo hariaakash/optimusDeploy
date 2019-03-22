@@ -141,11 +141,15 @@ services:
         ports:
             - 80:80
             - 443:443
-            - 8080:8080
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
             - ./config/traefik/traefik-dev.compose.toml:/etc/traefik/traefik.toml
             - ./config/traefik/traefik.crt:/etc/traefik/traefik.crt
             - ./config/traefik/traefik.key:/etc/traefik/traefik.key
+        labels:
+            - "traefik.backend=traefik.local"
+            - "traefik.frontend.rule=Host:traefik.local"
+            - "traefik.port=8080"
+            - "traefik.enable=true"
         networks:
             - proxy

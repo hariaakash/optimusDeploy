@@ -59,7 +59,7 @@ const processData = ({ authKey, projectId }, ch) =>
 						send({
 							ch,
 							queue: 'container_network:remove_orchestrator',
-							data: { name: results.removeProject.networks.map((x) => x.easyId) },
+							data: { names: results.removeProject.networks.map((x) => x.easyId) },
 						});
 						cb();
 					},

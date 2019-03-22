@@ -1,15 +1,15 @@
 const async = require('async');
 
-const { remove } = require('../../helpers/network');
+const { remove } = require('../../helpers/service');
 const { assert, consume } = require('../../helpers/amqp-wrapper');
 
 const processData = ({ names }) =>
 	new Promise((resolve, reject) => {
 		async.each(
 			names,
-			(network, cb) => {
+			(service, cb) => {
 				remove({
-					name: network,
+					name: service,
 					next: (err, data) => {
 						if (!err) cb();
 						else if (err.statusCode === 404) cb();
@@ -25,8 +25,8 @@ const processData = ({ names }) =>
 	});
 
 const method = (ch) => {
-	assert({ ch, queue: 'container_network:remove_orchestrator' });
-	consume({ ch, queue: 'container_network:remove_orchestrator', process: processData });
+	assert({ ch, queue: 'container_service:remove_orchestrator' });
+	consume({ ch, queue: 'container_service:remove_orchestrator', process: processData });
 };
 
 module.exports = method;
