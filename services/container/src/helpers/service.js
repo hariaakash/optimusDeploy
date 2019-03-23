@@ -47,12 +47,28 @@ const update = async ({ name: Name, type, data = {}, next }) => {
 		if (type.includes('scale')) {
 			if (type === 'scaleup') opts.Mode.Replicated.Replicas += 1;
 			else if (type === 'scaledown') opts.Mode.Replicated.Replicas -= 1;
-		} else if (type.includes('network')) {
+		} else if (type === 'network') {
 			opts.Networks = data.Networks;
 			opts.TaskTemplate.Networks = opts.Networks;
+		} else if (type === 'enablePublic') {
+			opts.Labels['traefik.enable'] = `${data.enablePublic}`;
+		} else if (type === 'domain') {
+			opts.Labels['traefik.frontend.rule'] = `Host:${data.domain}`;
+		} else if (type === 'port') {
+			opts.Labels['traefik.port'] = `${data.port}`;
+		} else if (type === 'stop') {
+			opts.Mode.Replicated.Replicas = 0;
+		} else if (type === 'start') {
+			if (opts.Mode.Replicated.Replicas === 0) opts.Mode.Replicated.Replicas = 1;
+		} else if (type === 'restart') {
+			opts.Mode.Replicated.Replicas = 0;
+			await service.update(opts);
+			update({ name: Name, type: 'start', next });
 		}
-		const res = await service.update(opts);
-		next(null, res);
+		if (type !== 'restart') {
+			const res = await service.update(opts);
+			next(null, res);
+		}
 	} catch (err) {
 		if (err.statusCode) next(err);
 		else next(new Error('Unable to update service', 500, err));
