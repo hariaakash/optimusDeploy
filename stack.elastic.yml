@@ -13,7 +13,7 @@ networks:
 services:
 
     elasticsearch:
-        image: docker.elastic.co/elasticsearch/elasticsearch-oss:6.6.1
+        image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
         # user: root
         # volumes:
         #     - ./logs/elasticsearch/:/usr/share/elasticsearch/logs/
@@ -30,12 +30,12 @@ services:
                 constraints: [node.role == manager]
 
     kibana:
-        image: docker.elastic.co/kibana/kibana-oss:6.6.1
+        image: docker.elastic.co/kibana/kibana:6.6.1
         ports:
             - 5601:5601
         networks:
             - elastic
-            - proxy
+            # - proxy
         deploy:
             labels:
                 - "traefik.docker.network=proxy"
@@ -65,7 +65,7 @@ services:
                 constraints: [node.role == manager]
 
     metricbeat:
-        image: docker.elastic.co/beats/metricbeat-oss:6.6.1
+        image: docker.elastic.co/beats/metricbeat:6.6.2
         # container_name: metricbeat
         user: root
         secrets:
@@ -92,7 +92,7 @@ services:
             - kibana
 
     filebeat:
-        image: docker.elastic.co/beats/filebeat:6.6.1
+        image: docker.elastic.co/beats/filebeat:6.6.2
         user: root
         secrets:
             - source: filebeat.yml
@@ -100,7 +100,9 @@ services:
         volumes:
             - /var/lib/docker/containers:/var/lib/docker/containers:ro
             - /var/run/docker.sock:/var/run/docker.sock
-            - ./logs/:/var/logs/
+            - ./logs/:/var/log/
+            - /var/log/syslog:/var/log/host/syslog
+            - /var/log/auth.log:/var/log/host/auth.log
         networks:
             - elastic
         deploy:

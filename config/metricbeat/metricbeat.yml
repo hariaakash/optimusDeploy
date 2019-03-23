@@ -1,10 +1,12 @@
+# Refresh config file options
 metricbeat.config.modules:
   path: configs/*.yml
   reload.enabled: true
   reload.period: 10s
 
+# Core Module Settings
 metricbeat.modules: 
-  - 
+  - module: docker
     enabled: true
     hosts: 
       - "unix:///var/run/docker.sock"
@@ -17,9 +19,8 @@ metricbeat.modules:
       - image
       - memory
       - network
-    module: docker
     period: 10s
-  - 
+  - module: system
     enabled: true
     metricsets: 
       - cpu
@@ -29,11 +30,11 @@ metricbeat.modules:
       - process
       - process_summary
       - uptime
-    module: system
     period: 10s
     processes: 
       - .*
 
+# Docker Autodiscover Settings
 metricbeat.autodiscover:
   providers:
     - type: docker
@@ -96,19 +97,24 @@ metricbeat.autodiscover:
               period: 10s
               hosts: ["${data.host}:27017"]
 
+# Docker Metadata Processor
+processors:
+- add_docker_metadata:
+    host: "unix:///var/run/docker.sock"
+
+# Elasticsearch Settings
 output.elasticsearch: 
   hosts: 
     - "elasticsearch:9200"
 
+# Dashboard setup Options
 setup.dashboards.enabled: true
-
 setup.kibana: 
   host: "kibana:5601"
 
+# Template Setup settings
 setup.template.enabled: true
 setup.template.fields: fields.yml
 setup.template.name: metricbeat
 setup.template.overwrite: false
 setup.template.pattern: metricbeat-*
-setup.template.settings: 
-  _source.enabled: false

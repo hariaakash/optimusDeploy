@@ -1,9 +1,32 @@
+# Config file refresh settigns
 filebeat.config.inputs:
   enabled: true
   path: configs/*.yml
   reload.enabled: true
   reload.period: 10s
 
+# Core inputs
+filebeat.inputs:
+- type: docker
+  containers.ids:
+    - '*'
+
+# Filebeat Core modules
+filebeat.modules:
+  - module: system
+    syslog:
+      enabled: true
+      var.paths: ["/var/log/host/syslog*"]
+    auth:
+      enabled: true
+      var.paths: ["/var/log/host/auth.log*"]
+
+# Docker metadata providers
+processors:
+- add_docker_metadata:
+    host: "unix:///var/run/docker.sock"
+
+# Filebeat autodiscover settings
 filebeat.autodiscover:
   providers:
     - type: docker
@@ -55,7 +78,7 @@ filebeat.autodiscover:
                   - /var/lib/docker/containers/${data.docker.container.id}/*.log*
               gc:
                 var.paths:
-                  - /var/logs/elasticsearch/*.log*
+                  - /var/log/elasticsearch/*.log*
     - type: docker
       templates:
         - condition:
@@ -67,19 +90,20 @@ filebeat.autodiscover:
                 var.paths:
                   - /var/lib/docker/containers/${data.docker.container.id}/*.log*                                 
 
+# Elasticsearch output options
 output.elasticsearch: 
   hosts: 
     - "elasticsearch:9200"
 
+# Kibana Setup options
 setup.dashboards.enabled: true
-
 setup.kibana: 
   host: "kibana:5601"
 
+# Template installation options
 setup.template.enabled: true
 setup.template.fields: fields.yml
 setup.template.name: filebeat
 setup.template.overwrite: false
 setup.template.pattern: filebeat-*
-setup.template.settings: 
-  _source.enabled: false
+
