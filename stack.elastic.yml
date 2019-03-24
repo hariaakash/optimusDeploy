@@ -14,9 +14,8 @@ services:
 
     elasticsearch:
         image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
-        # user: root
-        # volumes:
-        #     - ./logs/elasticsearch/:/usr/share/elasticsearch/logs/
+        volumes:
+            - ./logs/elasticsearch/:/usr/share/elasticsearch/logs/
         #     - es_data:/usr/share/elasticsearch/data
         networks:
             - elastic
@@ -50,8 +49,6 @@ services:
             interval: 30s
             timeout: 10s
             retries: 5
-        depends_on:
-            - elasticsearch
 
     logstash:
         image: docker.elastic.co/logstash/logstash:6.6.1
@@ -88,8 +85,6 @@ services:
             interval: 30s
             timeout: 15s
             retries: 5
-        depends_on:
-            - kibana
 
     filebeat:
         image: docker.elastic.co/beats/filebeat:6.6.2
@@ -115,8 +110,27 @@ services:
             interval: 30s
             timeout: 15s
             retries: 5
-        depends_on:
-            - kibana
+
+    apm-server:
+        image: docker.elastic.co/apm/apm-server:6.6.2
+        user: root
+        ports:
+            - 8200:8200
+        networks:
+            - elastic
+        secrets:
+            - source: apm-server.yml
+              target: /usr/share/apm-server/apm-server.yml
+        healthcheck:
+            test: apm-server test config
+            interval: 30s
+            timeout: 15s
+            retries: 5
+        deploy:
+            placement:
+                constraints: [node.role == manager]
+            restart_policy:
+                condition: on-failure
 
 secrets:
 
@@ -125,3 +139,6 @@ secrets:
 
     metricbeat.yml:
         file: ./config/metricbeat/metricbeat.yml
+
+    apm-server.yml:
+        file: ./config/APM/apm-server.yml
