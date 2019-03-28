@@ -9,6 +9,10 @@ networks:
         name: proxy
         driver: overlay
         external: true
+    micros:
+        name: micros
+        driver: overlay
+        external: true
 
 services:
 
@@ -34,7 +38,7 @@ services:
             - 5601:5601
         networks:
             - elastic
-            # - proxy
+            - proxy
         deploy:
             labels:
                 - "traefik.docker.network=proxy"
@@ -63,7 +67,6 @@ services:
 
     metricbeat:
         image: docker.elastic.co/beats/metricbeat:6.6.2
-        # container_name: metricbeat
         user: root
         secrets:
             - source: metricbeat.yml
@@ -118,6 +121,7 @@ services:
             - 8200:8200
         networks:
             - elastic
+            - micros
         secrets:
             - source: apm-server.yml
               target: /usr/share/apm-server/apm-server.yml

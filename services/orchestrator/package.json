@@ -12,6 +12,7 @@
 	"dependencies": {
 		"amqplib": "^0.5.3",
 		"async": "^2.6.1",
+		"elastic-apm-node": "^2.6.0",
 		"nanoid": "^2.0.1"
 	}
 }

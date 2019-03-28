@@ -12,6 +12,7 @@
 	"dependencies": {
 		"amqplib": "^0.5.3",
 		"bcryptjs": "^2.4.3",
+		"elastic-apm-node": "^2.6.0",
 		"mongoose": "^5.4.5",
 		"nanoid": "^2.0.1"
 	}
