@@ -58,7 +58,7 @@ const processData = ({ authKey, name, easyId }, ch) =>
 							data: {
 								projectId: results.createProject.projectId,
 								name: 'Default',
-								easyId: `${easyId}_default`,
+								easyId: 'default',
 							},
 						}).then((res) =>
 							res.status === 200 ? cb(null, res.data) : cb('createDefaultNetwork')

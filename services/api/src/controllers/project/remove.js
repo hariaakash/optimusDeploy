@@ -6,8 +6,10 @@ const schema = Joi.object().keys({
 	authKey: Joi.string()
 		.length(21)
 		.required(),
-	projectId: Joi.string()
-		.length(24)
+	projectEasyId: Joi.string()
+		.regex(/^(?:[a-z0-9]+[-]?)+$/)
+		.min(6)
+		.max(30)
 		.required(),
 });
 

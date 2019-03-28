@@ -71,8 +71,8 @@ A cloud based easy infrastructure management solution.
 
 #### Dedicated Ports
 ```
-- 80, 443, 8080 : Traefik
-- 5000          : Docker Registry
+- 80, 443   : Traefik
+- 5000      : Docker Registry
 ```
 
 ### Environment Setup
@@ -81,6 +81,10 @@ For Development:
 2. Execute the below command to get the development environment setup.
 ```sh
 docker-compose -f docker-compose.dev.yml up --build -d
+```
+3. Tunnel local requests to public using serveo or ngrok. Replace localhost with the docker equaivalent IP for api.local
+```
+ssh -R optimusdeploy.serveo.net:80:localhost:3000 serveo.net
 ```
 
 For Production, execute the below command to get the production environment setup.
@@ -171,4 +175,3 @@ Labels:
 ### References
 - [Consul Traefik Setup](https://blog.ruanbekker.com/blog/2017/10/24/managing-traefik-configuration-with-consul-on-docker-swarm/)
 - [Consul Traefik Setup 2](https://jmaitrehenry.ca/2017/12/15/using-traefik-with-docker-swarm-and-consul-as-your-load-balancer/)
-- 

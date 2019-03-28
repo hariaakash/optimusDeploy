@@ -2,7 +2,7 @@ const async = require('async');
 
 const { send, rpcSend, rpcConsume } = require('../../helpers/amqp-wrapper');
 
-const processData = ({ authKey, projectId }, ch) =>
+const processData = ({ authKey, projectEasyId }, ch) =>
 	new Promise((resolve) => {
 		async.auto(
 			{
@@ -22,12 +22,26 @@ const processData = ({ authKey, projectId }, ch) =>
 				checkProjectExists: [
 					'checkAuth',
 					(results, cb) => {
-						if (results.checkAuth.projects.includes(projectId)) cb();
-						else
-							cb('checkProjectExists', {
-								status: 404,
-								data: { msg: 'Project not found.' },
-							});
+						rpcSend({
+							ch,
+							queue: 'user_project:exists_orchestrator',
+							data: { easyId: projectEasyId },
+						}).then((res) => {
+							if (res.status === 404)
+								cb('checkProjectExists', {
+									status: 404,
+									data: { msg: 'Project not found.' },
+								});
+							else if (res.status === 200)
+								if (results.checkAuth.projects.includes(res.data.projectId))
+									cb(null, res.data);
+								else
+									cb('checkProjectExists', {
+										status: 404,
+										data: { msg: res.data.msg },
+									});
+							else cb('checkProjectExists');
+						});
 					},
 				],
 				removeProject: [
@@ -36,7 +50,7 @@ const processData = ({ authKey, projectId }, ch) =>
 						rpcSend({
 							ch,
 							queue: 'user_project:remove_orchestrator',
-							data: { projectId },
+							data: { projectId: results.checkProjectExists.projectId },
 						}).then((res) => {
 							if (res.status === 200) cb(null, res.data);
 							else cb('create');
@@ -49,17 +63,24 @@ const processData = ({ authKey, projectId }, ch) =>
 						send({
 							ch,
 							queue: 'user_profile:projectRemove_orchestrator',
-							data: { userId: results.checkAuth._id, projectId },
+							data: {
+								userId: results.checkAuth._id,
+								projectId: results.checkProjectExists.projectId,
+							},
 						});
 						send({
 							ch,
 							queue: 'user_network:remove_orchestrator',
-							data: { projectId },
+							data: { projectId: results.checkProjectExists.projectId },
 						});
 						send({
 							ch,
 							queue: 'container_network:remove_orchestrator',
-							data: { names: results.removeProject.networks.map((x) => x.easyId) },
+							data: {
+								names: results.removeProject.networks.map(
+									(x) => `${projectEasyId}_${x.easyId}`
+								),
+							},
 						});
 						cb();
 					},
