@@ -22,11 +22,7 @@ const process = ({ authKey }, ch) =>
 	});
 
 const method = (ch) => {
-	rpcConsume({
-		ch,
-		queue: 'orchestrator_user:main_api',
-		process,
-	});
+	rpcConsume({ ch, queue: 'orchestrator_user:main_api', process });
 };
 
 module.exports = method;

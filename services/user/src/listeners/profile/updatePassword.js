@@ -11,6 +11,7 @@ const updatePassword = ({ user, pToken, newPassword }) =>
 		if (user) {
 			if (user.conf.pToken === pToken) {
 				bcrypt.hash(newPassword, 10).then((hash) => {
+					if (!user.conf.setPassword) user.conf.setPassword = true;
 					user.conf.hashPassword = hash;
 					user.conf.pToken = null;
 					user.authKey.token = nanoid();
@@ -45,11 +46,7 @@ const process = ({ email, pToken, newPassword }) =>
 	});
 
 const method = (ch) => {
-	rpcConsume({
-		ch,
-		queue: 'user_profile:updatePassword_orchestrator',
-		process,
-	});
+	rpcConsume({ ch, queue: 'user_profile:updatePassword_orchestrator', process });
 };
 
 module.exports = method;

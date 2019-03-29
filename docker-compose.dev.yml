@@ -94,8 +94,11 @@ services:
             NODE_ENV: development
             AMQP_URI: amqp://rabbitmq
             MONGODB_HOST: mongodb://mongodb
+            DATA_DIR: /srv/daemon-data
         volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
             - ./services/container/src:/app/src
+            - /srv/daemon-data:/srv/daemon-data
         depends_on:
             - rabbitmq
             - mongodb
@@ -143,28 +146,20 @@ services:
             - micros
             - proxy
 
-    registry:
-        image: registry:2
-        ports:
-            - 5000:5000
-        volumes:
-            - ./config/traefik:/certs
-        environment:
-            REGISTRY_HTTP_TLS_CERTIFICATE: /certs/traefik.crt
-            REGISTRY_HTTP_TLS_KEY: /certs/traefik.key
-        networks:
-            - micros
-
     traefik:
         image: traefik
         ports:
             - 80:80
             - 443:443
-            - 8080:8080
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
             - ./config/traefik/traefik-dev.compose.toml:/etc/traefik/traefik.toml
             - ./config/traefik/traefik.crt:/etc/traefik/traefik.crt
             - ./config/traefik/traefik.key:/etc/traefik/traefik.key
+        labels:
+            - "traefik.backend=traefik.local"
+            - "traefik.frontend.rule=Host:traefik.local"
+            - "traefik.port=8080"
+            - "traefik.enable=true"
         networks:
             - proxy

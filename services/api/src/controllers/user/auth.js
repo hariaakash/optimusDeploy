@@ -11,9 +11,6 @@ const schema = Joi.object().keys({
 		.min(8)
 		.max(64)
 		.required(),
-	authType: Joi.string()
-		.valid(['email', 'google', 'github'])
-		.required(),
 });
 
 const request = (req, res) => {
@@ -28,7 +25,7 @@ const request = (req, res) => {
 			rpcSend({
 				ch: req.ch,
 				queue: 'orchestrator_user:auth_api',
-				data: vData,
+				data: { ...vData, authType: 'email' },
 			}).then(({ status, data }) => {
 				if (amqpSpan) {
 					amqpSpan.end();

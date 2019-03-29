@@ -98,11 +98,7 @@ const processData = ({ email, password }, ch) =>
 	});
 
 const method = (ch) => {
-	rpcConsume({
-		ch,
-		queue: 'orchestrator_user:create_api',
-		process: processData,
-	});
+	rpcConsume({ ch, queue: 'orchestrator_user:create_api', process: processData });
 };
 
 module.exports = method;

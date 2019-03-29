@@ -34,14 +34,8 @@ const process = ({ email, password }) =>
 			});
 	});
 
-// User.findOne({ email: 'smgdark@gmail.com' }).then((user) => user.remove());
-
 const method = (ch) => {
-	rpcConsume({
-		ch,
-		queue: 'user_profile:create_orchestrator',
-		process,
-	});
+	rpcConsume({ ch, queue: 'user_profile:create_orchestrator', process });
 };
 
 module.exports = method;

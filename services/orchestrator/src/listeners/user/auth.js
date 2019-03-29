@@ -17,7 +17,19 @@ const authEmail = ({ email, password }, ch, trans) =>
 		});
 	});
 
-const process = ({ email, password, authType }, ch) =>
+const authGithub = ({ code }, ch) =>
+	new Promise((resolve) => {
+		rpcSend({
+			ch,
+			queue: 'user_profile:authGithub_orchestrator',
+			data: { code },
+		}).then((res) => {
+			if (![500].includes(res.status)) resolve(res);
+			else resolve({ status: 500, data: { msg: 'Internal Server Error' } });
+		});
+	});
+
+const process = ({ email, password, code, authType }, ch) =>
 	new Promise((resolve) => {
 		const authTransaction = apm.startTransaction('Orchestration: User: Authenticaiton');
 		if (authType === 'email') {
@@ -28,7 +40,9 @@ const process = ({ email, password, authType }, ch) =>
 						authTransaction.end();
 					}
 				});
-		} else {
+		} 
+		else if (authType === 'github') authGithub({ code }, ch).then(resolve);
+    else {
 			if (authTransaction) {
 				authTransaction.end();
 			}
@@ -40,11 +54,7 @@ const process = ({ email, password, authType }, ch) =>
 	});
 
 const method = (ch) => {
-	rpcConsume({
-		ch,
-		queue: 'orchestrator_user:auth_api',
-		process,
-	});
+	rpcConsume({ ch, queue: 'orchestrator_user:auth_api', process });
 };
 
 module.exports = method;

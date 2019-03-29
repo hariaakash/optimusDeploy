@@ -4,22 +4,14 @@ const Project = require('../../schemas/project');
 
 const { rpcConsume } = require('../../helpers/amqp-wrapper');
 
-const processData = ({ name, userId }) =>
+const processData = ({ name, userId, easyId }) =>
 	new Promise((resolve) => {
-		const project = new Project({
-			_id: ObjectId(),
-			name,
-			userId,
-		});
+		const project = new Project({ _id: ObjectId(), name, user: userId, easyId });
 		project.save().then(() => resolve({ status: 200, data: { projectId: project._id } }));
 	});
 
 const method = (ch) => {
-	rpcConsume({
-		ch,
-		queue: 'user_project:create_orchestrator',
-		process: processData,
-	});
+	rpcConsume({ ch, queue: 'user_project:create_orchestrator', process: processData });
 };
 
 module.exports = method;

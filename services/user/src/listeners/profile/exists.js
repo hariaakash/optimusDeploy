@@ -33,11 +33,7 @@ const process = ({ email }) =>
 	});
 
 const method = (ch) => {
-	rpcConsume({
-		ch,
-		queue: 'user_profile:exists_orchestrator',
-		process,
-	});
+	rpcConsume({ ch, queue: 'user_profile:exists_orchestrator', process });
 };
 
 module.exports = method;

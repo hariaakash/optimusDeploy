@@ -40,11 +40,7 @@ const process = ({ email, token }) =>
 	});
 
 const method = (ch) => {
-	rpcConsume({
-		ch,
-		queue: 'user_profile:verifyEmail_orchestrator',
-		process,
-	});
+	rpcConsume({ ch, queue: 'user_profile:verifyEmail_orchestrator', process });
 };
 
 module.exports = method;

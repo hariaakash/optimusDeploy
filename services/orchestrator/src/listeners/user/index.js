@@ -4,6 +4,7 @@ const auth = require('./auth');
 const verifyEmail = require('./verifyEmail');
 const forgotPassword = require('./forgotPassword');
 const updatePassword = require('./updatePassword');
+const repos = require('./repos');
 
 const listeners = (ch) => {
 	main(ch);
@@ -12,6 +13,7 @@ const listeners = (ch) => {
 	verifyEmail(ch);
 	forgotPassword(ch);
 	updatePassword(ch);
+	repos(ch);
 };
 
 module.exports = listeners;
