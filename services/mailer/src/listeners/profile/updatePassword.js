@@ -19,11 +19,7 @@ const processData = ({ email }) =>
 
 const method = (ch) => {
 	assert({ ch, queue: 'mailer_profile:updatePassword_orchestrator' });
-	consume({
-		ch,
-		queue: 'mailer_profile:updatePassword_orchestrator',
-		process: (data) => processData(data),
-	});
+	consume({ ch, queue: 'mailer_profile:updatePassword_orchestrator', process: processData });
 };
 
 module.exports = method;

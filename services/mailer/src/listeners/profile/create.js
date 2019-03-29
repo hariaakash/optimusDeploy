@@ -19,11 +19,7 @@ const processData = ({ email, eToken }) =>
 
 const method = (ch) => {
 	assert({ ch, queue: 'mailer_profile:create_orchestrator' });
-	consume({
-		ch,
-		queue: 'mailer_profile:create_orchestrator',
-		process: (data) => processData(data),
-	});
+	consume({ ch, queue: 'mailer_profile:create_orchestrator', process: processData });
 };
 
 module.exports = method;

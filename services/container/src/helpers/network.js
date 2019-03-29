@@ -13,13 +13,13 @@ const find = ({ id = false, name, next }) => {
 		.catch(next);
 };
 
-const create = ({ name, next }) =>
-	Docker.createNetwork({ Name: name, Driver: 'overlay' })
-		.then((network) => next(null, network))
+const create = ({ name: Name, Driver = 'overlay', next }) =>
+	Docker.createNetwork({ Name, Driver, Attachable: true })
+		.then((network) => next(null, network.id))
 		.catch(next);
 
-const remove = ({ id, next }) =>
-	Docker.getNetwork(id)
+const remove = ({ name, next }) =>
+	Docker.getNetwork(name)
 		.remove()
 		.then((data) => next(null, data))
 		.catch(next);

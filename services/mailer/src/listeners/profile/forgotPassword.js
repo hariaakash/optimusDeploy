@@ -19,11 +19,7 @@ const processData = ({ email, pToken }) =>
 
 const method = (ch) => {
 	assert({ ch, queue: 'mailer_profile:forgotPassword_orchestrator' });
-	consume({
-		ch,
-		queue: 'mailer_profile:forgotPassword_orchestrator',
-		process: (data) => processData(data),
-	});
+	consume({ ch, queue: 'mailer_profile:forgotPassword_orchestrator', process: processData });
 };
 
 module.exports = method;

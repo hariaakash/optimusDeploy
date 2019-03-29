@@ -7,9 +7,14 @@ const schema = Joi.object().keys({
 		.length(21)
 		.required(),
 	name: Joi.string()
-		.min(3)
-		.max(16)
-		.alphanum()
+		.regex(/^[0-9a-zA-Z\-'" !]+$/)
+		.min(4)
+		.max(30)
+		.required(),
+	easyId: Joi.string()
+		.regex(/^(?:[A-Za-z0-9]+[-]?)+$/)
+		.min(6)
+		.max(30)
 		.required(),
 });
 

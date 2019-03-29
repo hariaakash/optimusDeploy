@@ -8,10 +8,17 @@ const userSchema = new Schema({
 	},
 	conf: {
 		hashPassword: { type: String },
+		setPassword: { type: Boolean, default: true },
 		blocked: { type: Boolean, default: false },
 		pToken: String,
 		eToken: String,
 		eVerified: { type: Boolean, default: false },
+		social: {
+			github: {
+				access_token: { type: String },
+				enabled: { type: Boolean, default: false },
+			},
+		},
 	},
 	projects: [{ type: Schema.Types.ObjectId, ref: 'Project' }],
 	info: {

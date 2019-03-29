@@ -8,9 +8,7 @@ const dbURI = `${host}:${port}/${db}`;
 
 const connect = () => {
 	mongoose
-		.connect(dbURI, {
-			useNewUrlParser: true,
-		})
+		.connect(dbURI, { useNewUrlParser: true, useCreateIndex: true })
 		.then(() => console.log('MongoDB: Connected'))
 		.catch((err) => console.log(`MongoDB: Connection failed: ${err.message}`));
 };

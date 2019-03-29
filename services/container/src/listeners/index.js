@@ -1,7 +1,13 @@
-// const task1 = require('./task1');
+const network = require('./network');
+const service = require('./service');
 
 const tasks = (ch) => {
-	// task1(ch);
+	try {
+		network(ch);
+		service(ch);
+	} catch (err) {
+		console.log(err);
+	}
 };
 
 module.exports = tasks;
