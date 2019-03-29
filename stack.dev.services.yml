@@ -24,7 +24,7 @@ services:
             NODE_ENV: development
             AMQP_URI: amqp://rabbitmq
             API_PORT: 3000
-            ELASTIC_APM_SERVICE_NAME: optimus-deploy-api
+            ELASTIC_APM_SERVICE_NAME: optimus-deploy-stack
             ELASTIC_APM_SERVER_URL: http://apm-server:8200
         networks:
             - micros
@@ -47,6 +47,8 @@ services:
         environment:
             NODE_ENV: development
             AMQP_URI: amqp://rabbitmq
+            ELASTIC_APM_SERVICE_NAME: optimus-deploy-stack
+            ELASTIC_APM_SERVER_URL: http://apm-server:8200
         networks:
             - micros
         deploy:
@@ -61,6 +63,8 @@ services:
             NODE_ENV: development
             AMQP_URI: amqp://rabbitmq
             MONGODB_HOST: mongodb://mongodb
+            ELASTIC_APM_SERVICE_NAME: optimus-deploy-stack
+            ELASTIC_APM_SERVER_URL: http://apm-server:8200
         networks:
             - micros
             - db
