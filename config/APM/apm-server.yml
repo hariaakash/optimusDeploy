@@ -1,0 +1,14 @@
+apm-server:
+  host: "0.0.0.0:8200"
+  concurent_requests: 5
+
+queue.mem.events: 4096
+
+max_procs: 4
+
+output.elasticsearch:
+  hosts: ["http://elasticsearch:9200"]
+
+setup.template.enabled: true
+setup.template.name: "apm-server"
+setup.template.pattern: "apm-*"

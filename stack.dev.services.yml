@@ -4,12 +4,15 @@ networks:
 
     proxy:
         name: proxy
+        driver: overlay
         external: true
     micros:
         name: micros
+        driver: overlay
         external: true
     db:
         name: db
+        driver: overlay
         external: true
 
 services:
@@ -21,6 +24,11 @@ services:
             NODE_ENV: development
             AMQP_URI: amqp://rabbitmq
             API_PORT: 3000
+            ELASTIC_APM_SERVICE_NAME: optimus-deploy-API
+            ELASTIC_APM_SERVER_URL: http://apm-server:8200
+            ELASTIC_APM_HOSTNAME: "express-api"
+            ELASTIC_APM_FRAMEWORK_NAME: "Express"
+            ELASTIC_APM_FRAMEWORK_VERSION: "~4.16.0"
         networks:
             - micros
             - proxy
@@ -34,7 +42,7 @@ services:
                 - "traefik.port=3000"
                 - "traefik.enable=true"
             placement:
-                constraints: [node.role == worker]
+                constraints: [node.role == manager]
 
     orchestrator:
         image: registry.local/optimusdeploy_orchestrator:dev
@@ -42,11 +50,13 @@ services:
         environment:
             NODE_ENV: development
             AMQP_URI: amqp://rabbitmq
+            ELASTIC_APM_SERVICE_NAME: optimus-deploy-orchestrator
+            ELASTIC_APM_SERVER_URL: http://apm-server:8200
         networks:
             - micros
         deploy:
             placement:
-                constraints: [node.role == worker]
+                constraints: [node.role == manager]
 
 
     user:
@@ -56,13 +66,15 @@ services:
             NODE_ENV: development
             AMQP_URI: amqp://rabbitmq
             MONGODB_HOST: mongodb://mongodb
+            ELASTIC_APM_SERVICE_NAME: optimus-deploy-user-service
+            ELASTIC_APM_SERVER_URL: http://apm-server:8200
         networks:
             - micros
             - db
         deploy:
             replicas: 1
             placement:
-                constraints: [node.role == worker]
+                constraints: [node.role == manager]
 
 
     container:
@@ -78,7 +90,7 @@ services:
         deploy:
             replicas: 1
             placement:
-                constraints: [node.role == worker]
+                constraints: [node.role == manager]
 
             
     mailer:
@@ -93,4 +105,4 @@ services:
         deploy:
             replicas: 1
             placement:
-                constraints: [node.role == worker]
+                constraints: [node.role == manager]

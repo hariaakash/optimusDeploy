@@ -1,9 +1,3 @@
-# Start Utils Stack
-docker stack deploy -c stack.dev.utils.yml utils
-
-#Start Elastic Stack
-docker stack deploy -c stack.elastic.yml elastic
-
 # Build docker image for services.
 docker-compose -f docker-compose.dev.yml build
 

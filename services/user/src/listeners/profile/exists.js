@@ -1,9 +1,11 @@
+const apm = require('elastic-apm-node');
 const User = require('../../schemas/user');
 
 const { rpcConsume } = require('../../helpers/amqp-wrapper');
 
 const process = ({ email }) =>
 	new Promise((resolve) => {
+		const existsTransaction = apm.startTransaction('User-service: user-exists');
 		User.findOne({
 			email,
 		})
@@ -17,7 +19,17 @@ const process = ({ email }) =>
 					},
 				})
 			)
-			.catch((err) => resolve({ status: 500 }));
+			.then(() => {
+				if (existsTransaction) {
+					existsTransaction.end();
+				}
+			})
+			.catch((err) => {
+				if (existsTransaction) {
+					existsTransaction.end();
+				}
+				resolve({ status: 500 });
+			});
 	});
 
 const method = (ch) => {

@@ -1,3 +1,4 @@
+const apm = require('elastic-apm-node');
 const bcrypt = require('bcryptjs');
 const nanoid = require('nanoid');
 
@@ -7,6 +8,7 @@ const { rpcConsume } = require('../../helpers/amqp-wrapper');
 
 const process = ({ email, password }) =>
 	new Promise((resolve) => {
+		const createTransaction = apm.startTransaction('User-service: user-creation');
 		bcrypt
 			.hash(password, 10)
 			.then((hash) => {
@@ -19,7 +21,17 @@ const process = ({ email, password }) =>
 					resolve({ status: 200, data: { email, eToken: user.conf.eToken } })
 				);
 			})
-			.catch((err) => resolve({ status: 500 }));
+			.then(() => {
+				if (createTransaction) {
+					createTransaction.end();
+				}
+			})
+			.catch((err) => {
+				if (createTransaction) {
+					createTransaction.end();
+				}
+				resolve({ status: 500 });
+			});
 	});
 
 const method = (ch) => {
