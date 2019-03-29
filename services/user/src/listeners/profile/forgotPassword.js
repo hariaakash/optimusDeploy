@@ -1,3 +1,4 @@
+const apm = require('elastic-apm-node');
 const nanoid = require('nanoid');
 
 const User = require('../../schemas/user');
@@ -5,6 +6,7 @@ const { rpcConsume } = require('../../helpers/amqp-wrapper');
 
 const process = ({ email }) =>
 	new Promise((resolve) => {
+		const forgotTransaction = apm.startTransaction('User-service: user-forgot-password');
 		User.findOne({
 			email,
 		})
@@ -16,7 +18,17 @@ const process = ({ email }) =>
 					);
 				} else resolve({ status: 404, data: { msg: 'User Not Found' } });
 			})
-			.catch((err) => resolve({ status: 500 }));
+			.then(() => {
+				if (forgotTransaction) {
+					forgotTransaction.end();
+				}
+			})
+			.catch((err) => {
+				if (forgotTransaction) {
+					forgotTransaction.end();
+				}
+				resolve({ status: 500 });
+			});
 	});
 
 const method = (ch) => {

@@ -1,3 +1,4 @@
+const apm = require('elastic-apm-node');
 const bcrypt = require('bcryptjs');
 const nanoid = require('nanoid');
 
@@ -23,13 +24,24 @@ const updatePassword = ({ user, pToken, newPassword }) =>
 
 const process = ({ email, pToken, newPassword }) =>
 	new Promise((resolve) => {
+		const updateTransaction = apm.startTransaction('User-Service: user-update-password');
 		User.findOne({
 			email,
 		})
 			.select('conf.pToken conf.hashPassword')
 			.then((user) => updatePassword({ user, pToken, newPassword }))
 			.then(resolve)
-			.catch((err) => resolve({ status: 500 }));
+			.then(() => {
+				if (updateTransaction) {
+					updateTransaction.end();
+				}
+			})
+			.catch((err) => {
+				if (updateTransaction) {
+					updateTransaction.end();
+				}
+				resolve({ status: 500 });
+			});
 	});
 
 const method = (ch) => {

@@ -37,6 +37,9 @@ const request = (req, res) => {
 				msg: 'Validation Error',
 				data: vError.details.map((d) => d.message),
 			});
+			if (validateSpan) {
+				validateSpan.end();
+			}
 		});
 };
 

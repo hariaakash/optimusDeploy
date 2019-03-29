@@ -19,8 +19,8 @@ services:
 
     mongodb:
         image: mvertes/alpine-mongo
-        volumes:
-            - ./data/mongodb:/data/db
+        # volumes:
+        #     - ./data/mongodb:/data/db
         networks:
             - db
         deploy:

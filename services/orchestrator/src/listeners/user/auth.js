@@ -1,7 +1,9 @@
+const apm = require('elastic-apm-node');
 const { rpcSend, rpcConsume } = require('../../helpers/amqp-wrapper');
 
-const authEmail = ({ email, password }, ch) =>
+const authEmail = ({ email, password }, ch, trans) =>
 	new Promise((resolve) => {
+		const authSpan = trans.startSpan('AMQP Call: user_profile:authEmail_orchestrator');
 		rpcSend({
 			ch,
 			queue: 'user_profile:authEmail_orchestrator',
@@ -9,17 +11,32 @@ const authEmail = ({ email, password }, ch) =>
 		}).then((res) => {
 			if (![500].includes(res.status)) resolve(res);
 			else resolve({ status: 500, data: { msg: 'Internal Server Error' } });
+			if (authSpan) {
+				authSpan.end();
+			}
 		});
 	});
 
 const process = ({ email, password, authType }, ch) =>
 	new Promise((resolve) => {
-		if (authType === 'email') authEmail({ email, password }, ch).then(resolve);
-		else
+		const authTransaction = apm.startTransaction('Orchestration: User: Authenticaiton');
+		if (authType === 'email') {
+			authEmail({ email, password }, ch, authTransaction)
+				.then(resolve)
+				.then(() => {
+					if (authTransaction) {
+						authTransaction.end();
+					}
+				});
+		} else {
+			if (authTransaction) {
+				authTransaction.end();
+			}
 			resolve({
 				status: 500,
 				data: { msg: `Authentication type:${authType} not available` },
 			});
+		}
 	});
 
 const method = (ch) => {
