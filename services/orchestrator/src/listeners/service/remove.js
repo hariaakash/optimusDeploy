@@ -85,6 +85,14 @@ const processData = ({ authKey, projectEasyId, serviceEasyId }, ch) =>
 								serviceId: results.checkServiceExists.serviceId,
 							},
 						});
+						send({
+							ch,
+							queue: 'container_volume:remove_orchestrator',
+							data: {
+								projectId: results.checkProjectExists.projectId,
+								volumeId: results.checkServiceExists.serviceId,
+							},
+						});
 						cb();
 					},
 				],

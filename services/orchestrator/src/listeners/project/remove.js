@@ -82,6 +82,13 @@ const processData = ({ authKey, projectEasyId }, ch) =>
 								),
 							},
 						});
+						send({
+							ch,
+							queue: 'container_volume:projectRemove_orchestrator',
+							data: {
+								projectId: results.checkProjectExists.projectId,
+							},
+						});
 						cb();
 					},
 				],

@@ -152,6 +152,14 @@ const processData = (
 								serviceId: results.createService.serviceId,
 							},
 						});
+						send({
+							ch,
+							queue: 'container_volume:create_orchestrator',
+							data: {
+								projectId: results.checkProjectExists.projectId,
+								volumeId: results.createService.serviceId,
+							},
+						});
 						cb();
 					},
 				],
