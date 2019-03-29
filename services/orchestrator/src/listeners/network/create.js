@@ -4,7 +4,7 @@ const Production = process.env.NODE_ENV !== 'development';
 
 const { send, rpcSend, rpcConsume } = require('../../helpers/amqp-wrapper');
 
-const processData = ({ authKey, name, easyId }, ch) =>
+const processData = ({ authKey, name, projectEasyId, networkEasyId }, ch) =>
 	new Promise((resolve) => {
 		async.auto(
 			{
@@ -27,66 +27,63 @@ const processData = ({ authKey, name, easyId }, ch) =>
 						rpcSend({
 							ch,
 							queue: 'user_project:exists_orchestrator',
-							data: { easyId },
+							data: { easyId: projectEasyId },
 						}).then((res) => {
-							if (res.status === 404) cb(null);
-							else if (res.status === 200)
-								cb('checkProjectExists', {
-									status: 404,
-									data: { msg: res.data.msg },
-								});
+							if (res.status === 200) cb(null, res.data);
+							else if (res.status === 404) cb('checkProjectExists', res);
 							else cb('checkProjectExists');
 						});
 					},
 				],
-				createProject: [
-					'checkProjectExists',
+				checkNetworkExists: [
+					'checkAuth',
 					(results, cb) => {
 						rpcSend({
 							ch,
-							queue: 'user_project:create_orchestrator',
-							data: { name, easyId, userId: results.checkAuth._id },
-						}).then((res) => (res.status === 200 ? cb(null, res.data) : cb('create')));
+							queue: 'user_network:exists_orchestrator',
+							data: { easyId: networkEasyId },
+						}).then((res) => {
+							if (res.status === 404) cb();
+							else if (res.status === 200)
+								cb('checkNetworkExists', {
+									status: 404,
+									data: { msg: res.data.msg },
+								});
+							else cb('checkNetworkExists');
+						});
 					},
 				],
-				createDefaultNetwork: [
-					'createProject',
+				createNetwork: [
+					'checkProjectExists',
+					'checkNetworkExists',
 					(results, cb) => {
 						rpcSend({
 							ch,
 							queue: 'user_network:create_orchestrator',
 							data: {
-								projectId: results.createProject.projectId,
-								name: 'Default',
-								easyId: 'default',
+								name,
+								easyId: networkEasyId,
+								projectId: results.checkProjectExists.projectId,
 							},
 						}).then((res) =>
-							res.status === 200 ? cb(null, res.data) : cb('createDefaultNetwork')
+							res.status === 200 ? cb(null, res.data) : cb('createNetwork')
 						);
 						send({
 							ch,
 							queue: 'container_network:create_orchestrator',
-							data: { name: `${easyId}_default` },
+							data: { name: `${projectEasyId}_${networkEasyId}` },
 						});
 					},
 				],
 				saveReference: [
-					'createDefaultNetwork',
+					'createNetwork',
 					(results, cb) => {
-						send({
-							ch,
-							queue: 'user_profile:projectCreate_orchestrator',
-							data: {
-								userId: results.checkAuth._id,
-								projectId: results.createProject.projectId,
-							},
-						});
 						send({
 							ch,
 							queue: 'user_project:networkCreate_orchestrator',
 							data: {
-								projectId: results.createProject.projectId,
-								networkId: results.createDefaultNetwork.networkId,
+								projectId: results.checkProjectExists.projectId,
+								networkId: results.createNetwork.networkId,
 							},
 						});
 						cb();
@@ -99,28 +96,29 @@ const processData = ({ authKey, name, easyId }, ch) =>
 						[
 							'checkAuth',
 							'checkProjectExists',
-							'createProject',
-							'createDefaultNetwork',
+							'checkNetworkExists',
+							'createNetwork',
 							'saveReference',
 						].includes(err) &&
 						!!results[err]
 					)
 						resolve(results[err]);
 					else resolve({ status: 500, data: { msg: 'Internal Server Error' } });
-				} else
+				} else {
 					resolve({
 						status: 200,
 						data: {
-							msg: 'Project created successfully.',
-							projectEasyId: Production ? undefined : easyId,
+							msg: 'Network created successfully.',
+							networkEasyId: Production ? undefined : networkEasyId,
 						},
 					});
+				}
 			}
 		);
 	});
 
 const method = (ch) => {
-	rpcConsume({ ch, queue: 'orchestrator_project:create_api', process: processData });
+	rpcConsume({ ch, queue: 'orchestrator_network:create_api', process: processData });
 };
 
 module.exports = method;

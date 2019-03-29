@@ -2,6 +2,7 @@ const main = require('./main');
 const create = require('./create');
 const auth = require('./auth');
 const authGithub = require('./authGithub');
+const hookGithub = require('./hookGithub');
 const verifyEmail = require('./verifyEmail');
 const forgotPassword = require('./forgotPassword');
 const updatePassword = require('./updatePassword');
@@ -12,6 +13,7 @@ const methods = {
 	create,
 	auth,
 	authGithub,
+	hookGithub,
 	verifyEmail,
 	forgotPassword,
 	updatePassword,

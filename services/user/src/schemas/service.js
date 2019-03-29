@@ -6,6 +6,20 @@ const serviceSchema = new Schema({
 	project: { type: Schema.Types.ObjectId, ref: 'Project' },
 	networks: [{ type: Schema.Types.ObjectId, ref: 'Network' }],
 	info: {
+		domain: [{ type: String }],
+		image: {
+			name: { type: String, required: true },
+			registry: { type: String, default: 'global' },
+		},
+		repo: {
+			source: String,
+			name: String,
+			branch: String,
+			hookId: String,
+			enabled: { type: Boolean, default: false },
+			pulled_at: { type: Date, default: Date.now },
+		},
+		enablepublic: { type: Boolean, default: false },
 		created_at: { type: Date, default: Date.now },
 	},
 });
