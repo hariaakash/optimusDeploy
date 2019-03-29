@@ -4,12 +4,20 @@ networks:
 
     proxy:
         name: proxy
+        driver: overlay
+        external: true
     apps:
         name: apps
+        driver: overlay
+        external: true
     micros:
         name: micros
+        driver: overlay
+        external: true
     db:
         name: db
+        driver: overlay
+        external: true
 
 services:
 
@@ -24,6 +32,8 @@ services:
             NODE_ENV: development
             AMQP_URI: amqp://rabbitmq
             API_PORT: 3000
+            ELASTIC_APM_SERVICE_NAME: optimus-deploy-api
+            ELASTIC_APM_SERVER_URL: http://apm-server:8200
         volumes:
             - ./services/api/src:/app/src
         labels:

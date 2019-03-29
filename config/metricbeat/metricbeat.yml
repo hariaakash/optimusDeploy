@@ -1,34 +1,120 @@
-output.elasticsearch:
-    hosts: ['elasticsearch:9200']
+# Refresh config file options
+metricbeat.config.modules:
+  path: configs/*.yml
+  reload.enabled: true
+  reload.period: 10s
 
-setup.kibana:
-    host: "kibana:5601"
+# Core Module Settings
+metricbeat.modules: 
+  - module: docker
+    enabled: true
+    hosts: 
+      - "unix:///var/run/docker.sock"
+    metricsets: 
+      - container
+      - cpu
+      - diskio
+      - healthcheck
+      - info
+      - image
+      - memory
+      - network
+    period: 10s
+  - module: system
+    enabled: true
+    metricsets: 
+      - cpu
+      - load
+      - memory
+      - network
+      - process
+      - process_summary
+      - uptime
+    period: 10s
+    processes: 
+      - .*
 
+# Docker Autodiscover Settings
+metricbeat.autodiscover:
+  providers:
+    - type: docker
+      templates:
+        - condition:
+            contains:
+              docker.container.image: elasticsearch
+          config:
+            - module: elasticsearch
+              metricsets:
+                - node
+                - node_stats
+                - index
+              period: 10s
+              hosts: ["${data.host}:9200"]
+        - condition:
+            contains:
+              docker.container.image: logstash
+          config:
+            - module: logstash
+              metricsets:
+                - node
+                - node_stats
+              period: 10s
+              hosts: ["${data.host}:9600"]
+        - condition:
+            contains:
+              docker.container.image: kibana
+          config:
+            - module: kibana
+              metricsets:
+                - stats
+                - status
+              period: 10s
+              basepath: ""
+              hosts: ["${data.host}:5601"]
+        - condition:
+            contains:
+              docker.container.image: rabbitmq
+          config:
+            - module: rabbitmq
+              metricsets:
+                - node
+                - connection
+                - queue
+                - exchange
+              period: 10s
+              hosts: ["${data.host}:15672"]
+        - condition:
+            contains:
+              docker.container.image: alpine-mongo
+          config:
+            - module: mongodb
+              metricsets:
+                - collstats
+                - dbstats
+                - metrics
+                - replstatus
+                - status
+              period: 10s
+              hosts: ["${data.host}:27017"]
+
+# Docker Metadata Processor
+processors:
+- add_docker_metadata:
+    host: "unix:///var/run/docker.sock"
+
+# Elasticsearch Settings
+output.elasticsearch: 
+  hosts: 
+    - "elasticsearch:9200"
+
+# Dashboard setup Options
 setup.dashboards.enabled: true
+setup.kibana: 
+  host: "kibana:5601"
 
-metricbeat.modules:
-    -   module: docker
-        metricsets:
-            - "container"
-            - "cpu"
-            - "diskio"
-            - "healthcheck"
-            - "info"
-            - "image"
-            - "memory"
-            - "network"
-        hosts: ["unix:///var/run/docker.sock"]
-        period: 10s
-        enabled: true
-    -   module: system
-        metricsets:
-            - cpu             # CPU usage
-            - load            # CPU load averages
-            - memory          # Memory usage
-            - network         # Network IO
-            - process         # Per process metrics
-            - process_summary # Process summary
-            - uptime          # System Uptime
-        enabled: true
-        period: 10s
-        processes: ['.*']
+# Template Setup settings
+setup.template.enabled: true
+setup.template.fields: fields.yml
+setup.template.name: metricbeat
+setup.template.overwrite: false
+setup.template.pattern: metricbeat-*

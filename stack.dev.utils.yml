@@ -5,6 +5,9 @@ networks:
     proxy:
         name: proxy
         driver: overlay
+    apps:
+        name: apps
+        driver: overlay
     micros:
         name: micros
         driver: overlay
@@ -16,8 +19,8 @@ services:
 
     mongodb:
         image: mvertes/alpine-mongo
-        volumes:
-            - ./data/mongodb:/data/db
+        # volumes:
+        #     - ./data/mongodb:/data/db
         networks:
             - db
         deploy:
@@ -36,12 +39,12 @@ services:
             - micros
             - proxy
         deploy:
-            labels:
-                - "traefik.docker.network=proxy"
-                - "traefik.backend=rabbitmq"
-                - "traefik.frontend.rule=Host:www.rabbitmq.local,rabbitmq.local"
-                - "traefik.port=15672"
-                - "traefik.enable=true"
+            # labels:
+            #     traefik.docker.network: "proxy"
+            #     traefik.backend: "rabbitmq"
+            #     traefik.frontend.rule: "Host:www.rabbitmq.local,rabbitmq.local"
+            #     traefik.port: "15672"
+            #     traefik.enable: "true"
             placement:
                 constraints: [node.role == manager]
 
@@ -54,12 +57,12 @@ services:
             - proxy
         deploy:
             labels:
-                - "traefik.frontend.rule=Host:www.registry.local,registry.local"
-                - "traefik.port=5000"
-                - "traefik.enable=true"
+                traefik.frontend.rule: "Host:www.registry.local,registry.local"
+                traefik.port: "5000"
+                traefik.enable: "true"
             placement:
                 constraints: [node.role == manager]
-
+    
     traefik:
         image: traefik
         ports:
@@ -67,6 +70,7 @@ services:
             - 443:443
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
+            - ./logs/traefik/access.json:/var/log/traefik/access.log.json
         configs:
             -   source: traefik_config
                 target: /etc/traefik/traefik.toml
@@ -76,12 +80,14 @@ services:
                 target: /etc/traefik/traefik.key
         networks:
             - proxy
+            - apps
+            - micros
         deploy:
             labels:
-                - "traefik.backend=traefik"
-                - "traefik.frontend.rule=Host:www.traefik.local,traefik.local"
-                - "traefik.port=8080"
-                - "traefik.enable=true"
+                traefik.backend: "traefik"
+                traefik.frontend.rule: "Host:www.traefik.local,traefik.local"
+                traefik.port: "8080"
+                traefik.enable: "true"
             placement:
                 constraints: [node.role == manager]
 

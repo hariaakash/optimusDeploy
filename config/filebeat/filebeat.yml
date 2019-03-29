@@ -1,0 +1,109 @@
+# Config file refresh settigns
+filebeat.config.inputs:
+  enabled: true
+  path: configs/*.yml
+  reload.enabled: true
+  reload.period: 10s
+
+# Core inputs
+filebeat.inputs:
+- type: docker
+  containers.ids:
+    - '*'
+
+# Filebeat Core modules
+filebeat.modules:
+  - module: system
+    syslog:
+      enabled: true
+      var.paths: ["/var/log/host/syslog*"]
+    auth:
+      enabled: true
+      var.paths: ["/var/log/host/auth.log*"]
+
+# Docker metadata providers
+processors:
+- add_docker_metadata:
+    host: "unix:///var/run/docker.sock"
+
+# Filebeat autodiscover settings
+filebeat.autodiscover:
+  providers:
+    - type: docker
+      hints.enabled: true
+    - type: docker
+      templates:
+        - condition:
+            contains:
+              docker.container.image: traefik
+          config:
+            - module: traefik
+              access:
+                enabled: true
+                prospector:
+                  type: docker
+                  containers.ids:
+                    - "${data.docker.container.id}"
+    - type: docker
+      templates:
+        - condition:
+            contains:
+              docker.container.image: alpine-mongo
+          config:
+            - module: mongodb
+              log:
+                enabled: true
+                var.paths: ["/var/lib/docker/containers/${data.docker.container.id}/*.log*"]
+    - type: docker
+      templates:
+        - condition:
+            contains:
+              docker.container.image: logstash
+          config:
+            - module: logstash
+              log:
+                enabled: true
+                var.paths: ["/var/lib/docker/containers/${data.docker.container.id}/*.log*"]
+                var.format: plain
+    - type: docker
+      templates:
+        - condition:
+            contains:
+              docker.container.image: elasticsearch
+          config:
+            - module: elasticsearch
+              server:
+                enabled: true
+                var.paths:
+                  - /var/lib/docker/containers/${data.docker.container.id}/*.log*
+              gc:
+                var.paths:
+                  - /var/log/elasticsearch/*.log*
+    - type: docker
+      templates:
+        - condition:
+            contains:
+              docker.container.image: kibana
+          config:
+            - module: kibana
+              log:
+                var.paths:
+                  - /var/lib/docker/containers/${data.docker.container.id}/*.log*                                 
+
+# Elasticsearch output options
+output.elasticsearch: 
+  hosts: 
+    - "elasticsearch:9200"
+
+# Kibana Setup options
+setup.dashboards.enabled: true
+setup.kibana: 
+  host: "kibana:5601"
+
+# Template installation options
+setup.template.enabled: true
+setup.template.fields: fields.yml
+setup.template.name: filebeat
+setup.template.overwrite: false
+setup.template.pattern: filebeat-*
+

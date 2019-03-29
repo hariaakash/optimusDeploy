@@ -1,3 +1,5 @@
+const apm = require('elastic-apm-node').start();
+
 const app = require('express')();
 const server = require('http').createServer(app);
 const morgan = require('morgan');

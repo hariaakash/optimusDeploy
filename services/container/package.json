@@ -13,6 +13,7 @@
 		"amqplib": "^0.5.3",
 		"async": "^2.6.2",
 		"dockerode": "^2.5.8",
+		"elastic-apm-node": "^2.6.0",
 		"fs-extra": "^7.0.1",
 		"nanoid": "^2.0.1"
 	}

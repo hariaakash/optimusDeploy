@@ -1,3 +1,4 @@
+const apm = require('elastic-apm-node');
 const bcrypt = require('bcryptjs');
 const User = require('../../schemas/user');
 
@@ -28,13 +29,24 @@ const checkPassword = ({ user, password }) =>
 
 const process = ({ email, password }) =>
 	new Promise((resolve) => {
+		const authTransaction = apm.startTransaction('User-service: user-authentication');
 		User.findOne({
 			email,
 		})
 			.select('email authKey.token conf.hashPassword conf.eVerified conf.setPassword')
 			.then((user) => checkPassword({ user, password }))
 			.then(resolve)
-			.catch((err) => resolve({ status: 500 }));
+			.then(() => {
+				if (authTransaction) {
+					authTransaction.end();
+				}
+			})
+			.catch((err) => {
+				if (authTransaction) {
+					authTransaction.end();
+				}
+				resolve({ status: 500 });
+			});
 	});
 
 const method = (ch) => {

@@ -1,3 +1,4 @@
+const apm = require('elastic-apm-node');
 const User = require('../../schemas/user');
 
 const { rpcConsume } = require('../../helpers/amqp-wrapper');
@@ -18,13 +19,24 @@ const verifyEmail = ({ user, token }) =>
 
 const process = ({ email, token }) =>
 	new Promise((resolve) => {
+		const verfiyTransaction = apm.startTransaction('User-service: user-email-verification');
 		User.findOne({
 			email,
 		})
 			.select('conf.eToken conf.eVerified')
 			.then((user) => verifyEmail({ user, token }))
 			.then(resolve)
-			.catch((err) => resolve({ status: 500 }));
+			.then(() => {
+				if (verfiyTransaction) {
+					verfiyTransaction.end();
+				}
+			})
+			.catch((err) => {
+				if (verfiyTransaction) {
+					verfiyTransaction.end();
+				}
+				resolve({ status: 500 });
+			});
 	});
 
 const method = (ch) => {
