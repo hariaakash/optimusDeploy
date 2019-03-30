@@ -17,8 +17,9 @@ const authEmail = ({ email, password }, ch, trans) =>
 		});
 	});
 
-const authGithub = ({ code }, ch) =>
+const authGithub = ({ code }, ch, trans) =>
 	new Promise((resolve) => {
+		const authSpan = trans.startSpan('AMQP Call: user_profile:authGithub_orchestrator');
 		rpcSend({
 			ch,
 			queue: 'user_profile:authGithub_orchestrator',
@@ -26,6 +27,9 @@ const authGithub = ({ code }, ch) =>
 		}).then((res) => {
 			if (![500].includes(res.status)) resolve(res);
 			else resolve({ status: 500, data: { msg: 'Internal Server Error' } });
+			if (authSpan) {
+				authSpan.end();
+			}
 		});
 	});
 
@@ -40,9 +44,15 @@ const process = ({ email, password, code, authType }, ch) =>
 						authTransaction.end();
 					}
 				});
-		} 
-		else if (authType === 'github') authGithub({ code }, ch).then(resolve);
-    else {
+		} else if (authType === 'github') {
+			authGithub({ code }, ch, authTransaction)
+				.then(resolve)
+				.then(() => {
+					if (authTransaction) {
+						authTransaction.end();
+					}
+				});
+		} else {
 			if (authTransaction) {
 				authTransaction.end();
 			}
