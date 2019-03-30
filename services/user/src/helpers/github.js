@@ -1,14 +1,21 @@
 const axios = require('axios');
 
+const Production = process.env.NODE_ENV !== 'development';
+
 const config = {
 	client_id: '129800c9747092aabe46',
 	client_secret: '267225d33106584503b84551d493e77bbdd7b0b8',
 	url: {
 		token: 'https://github.com/login/oauth/access_token',
 		info: 'https://api.github.com/user',
-		repos: 'https://api.github.com/user/repos',
+		userRepos: 'https://api.github.com/user/repos',
+		repos: 'https://api.github.com/repos',
 	},
 };
+
+config.hookUrl = Production
+	? process.env.GITHUB_HOOKURL
+	: 'https://optimusdeploy.serveo.net/user/hookGithub';
 
 const info = ({ accessToken }) =>
 	axios({
@@ -36,17 +43,35 @@ const auth = ({ code, data = {} }) =>
 const repos = ({ accessToken }) =>
 	axios({
 		method: 'GET',
-		url: config.url.repos,
+		url: config.url.userRepos,
 		headers: { Authorization: `token ${accessToken}`, Accept: 'application/json' },
 		params: { per_page: 1000, affiliation: 'owner,collaborator,organization_member' },
 	}).then(({ data }) =>
-		data.map((x) => ({
-			name: x.name,
-			private: x.private,
-			html_url: x.html_url,
-		}))
+		data.map((x) => ({ repo: x.full_name, default_branch: x.default_branch }))
 	);
 
-const Github = { auth, info, repos };
+const branches = ({ accessToken, repo }) =>
+	axios({
+		method: 'GET',
+		url: `${config.url.repos}/${repo}/branches`,
+		headers: { Authorization: `token ${accessToken}`, Accept: 'application/json' },
+	}).then(({ data }) => data.map((x) => x.name));
+
+const createHook = ({ accessToken, repo }) =>
+	axios({
+		method: 'POST',
+		url: `${config.url.repos}/${repo}/hooks`,
+		headers: { Authorization: `token ${accessToken}`, Accept: 'application/json' },
+		data: { config: { url: config.hookUrl, content_type: 'json' } },
+	}).then(({ data }) => ({ id: data.id }));
+
+const removeHook = ({ accessToken, repo, hookId }) =>
+	axios({
+		method: 'DELETE',
+		url: `${config.url.repos}/${repo}/hooks/${hookId}`,
+		headers: { Authorization: `token ${accessToken}`, Accept: 'application/json' },
+	}).then(({ data }) => data);
+
+const Github = { auth, info, repos, branches, hook: { create: createHook, remove: removeHook } };
 
 module.exports = Github;

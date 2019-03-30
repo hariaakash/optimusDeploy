@@ -2,7 +2,7 @@ const async = require('async');
 
 const { send, rpcSend, rpcConsume } = require('../../helpers/amqp-wrapper');
 
-const processData = ({ authKey, projectEasyId }, ch) =>
+const processData = ({ authKey, projectEasyId, networkEasyId }, ch) =>
 	new Promise((resolve) => {
 		async.auto(
 			{
@@ -27,12 +27,7 @@ const processData = ({ authKey, projectEasyId }, ch) =>
 							queue: 'user_project:exists_orchestrator',
 							data: { easyId: projectEasyId },
 						}).then((res) => {
-							if (res.status === 404)
-								cb('checkProjectExists', {
-									status: 404,
-									data: { msg: 'Project not found.' },
-								});
-							else if (res.status === 200)
+							if (res.status === 200)
 								if (results.checkAuth.projects.includes(res.data.projectId))
 									cb(null, res.data);
 								else
@@ -40,53 +35,72 @@ const processData = ({ authKey, projectEasyId }, ch) =>
 										status: 404,
 										data: { msg: res.data.msg },
 									});
+							else if (res.status === 404) cb('checkProjectExists', res);
 							else cb('checkProjectExists');
 						});
 					},
 				],
-				removeProject: [
+				checkNetworkExists: [
 					'checkProjectExists',
 					(results, cb) => {
 						rpcSend({
 							ch,
-							queue: 'user_project:remove_orchestrator',
-							data: { projectId: results.checkProjectExists.projectId },
+							queue: 'user_network:exists_orchestrator',
+							data: {
+								projectId: results.checkProjectExists.projectId,
+								easyId: networkEasyId,
+							},
 						}).then((res) => {
 							if (res.status === 200) cb(null, res.data);
-							else cb('create');
+							else if (res.status === 404)
+								cb('checkNetworkExists', {
+									status: 404,
+									data: { msg: res.data.msg },
+								});
+							else cb('checkNetworkExists');
 						});
 					},
 				],
-				cleanupTask: [
-					'removeProject',
+				checkNetworkUsage: [
+					'checkNetworkExists',
+					(results, cb) => {
+						rpcSend({
+							ch,
+							queue: 'user_service:networkUsage_orchestrator',
+							data: {
+								projectId: results.checkProjectExists.projectId,
+								networkId: results.checkNetworkExists.networkId,
+							},
+						}).then((res) => {
+							if (res.status === 404) cb();
+							else if (res.status === 200)
+								cb('checkNetworkUsage', {
+									status: 404,
+									data: { msg: res.data.msg },
+								});
+							else cb('checkNetworkUsage');
+						});
+					},
+				],
+				removeNetwork: [
+					'checkNetworkUsage',
 					(results, cb) => {
 						send({
 							ch,
-							queue: 'user_profile:projectRemove_orchestrator',
-							data: {
-								userId: results.checkAuth._id,
-								projectId: results.checkProjectExists.projectId,
-							},
-						});
-						send({
-							ch,
 							queue: 'user_network:remove_orchestrator',
-							data: { projectId: results.checkProjectExists.projectId },
+							data: { networkId: results.checkNetworkExists.networkId },
 						});
 						send({
 							ch,
 							queue: 'container_network:remove_orchestrator',
-							data: {
-								names: results.removeProject.networks.map(
-									(x) => `${projectEasyId}_${x.easyId}`
-								),
-							},
+							data: { names: [`${projectEasyId}_${networkEasyId}`] },
 						});
 						send({
 							ch,
-							queue: 'container_volume:projectRemove_orchestrator',
+							queue: 'user_project:networkRemove_orchestrator',
 							data: {
 								projectId: results.checkProjectExists.projectId,
+								networkId: results.checkNetworkExists.networkId,
 							},
 						});
 						cb();
@@ -99,26 +113,28 @@ const processData = ({ authKey, projectEasyId }, ch) =>
 						[
 							'checkAuth',
 							'checkProjectExists',
-							'removeProject',
-							'cleanupTask',
+							'checkNetworkExists',
+							'checkNetworkUsage',
+							'removeNetwork',
 						].includes(err) &&
 						!!results[err]
 					)
 						resolve(results[err]);
 					else resolve({ status: 500, data: { msg: 'Internal Server Error' } });
-				} else
+				} else {
 					resolve({
 						status: 200,
 						data: {
-							msg: 'Project removed successfully.',
+							msg: 'Network removed successfully.',
 						},
 					});
+				}
 			}
 		);
 	});
 
 const method = (ch) => {
-	rpcConsume({ ch, queue: 'orchestrator_project:remove_api', process: processData });
+	rpcConsume({ ch, queue: 'orchestrator_network:remove_api', process: processData });
 };
 
 module.exports = method;

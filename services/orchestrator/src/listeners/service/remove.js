@@ -2,7 +2,7 @@ const async = require('async');
 
 const { send, rpcSend, rpcConsume } = require('../../helpers/amqp-wrapper');
 
-const processData = ({ authKey, projectEasyId }, ch) =>
+const processData = ({ authKey, projectEasyId, serviceEasyId }, ch) =>
 	new Promise((resolve) => {
 		async.auto(
 			{
@@ -27,12 +27,7 @@ const processData = ({ authKey, projectEasyId }, ch) =>
 							queue: 'user_project:exists_orchestrator',
 							data: { easyId: projectEasyId },
 						}).then((res) => {
-							if (res.status === 404)
-								cb('checkProjectExists', {
-									status: 404,
-									data: { msg: 'Project not found.' },
-								});
-							else if (res.status === 200)
+							if (res.status === 200)
 								if (results.checkAuth.projects.includes(res.data.projectId))
 									cb(null, res.data);
 								else
@@ -40,53 +35,62 @@ const processData = ({ authKey, projectEasyId }, ch) =>
 										status: 404,
 										data: { msg: res.data.msg },
 									});
+							else if (res.status === 404) cb('checkProjectExists', res);
 							else cb('checkProjectExists');
 						});
 					},
 				],
-				removeProject: [
+				checkServiceExists: [
 					'checkProjectExists',
 					(results, cb) => {
 						rpcSend({
 							ch,
-							queue: 'user_project:remove_orchestrator',
-							data: { projectId: results.checkProjectExists.projectId },
+							queue: 'user_service:exists_orchestrator',
+							data: {
+								projectId: results.checkProjectExists.projectId,
+								easyId: serviceEasyId,
+							},
+						}).then((res) => {
+							if (res.status === 404) cb('checkServiceExists', res);
+							else if (res.status === 200) cb(null, res.data);
+							else cb('checkServiceExists');
+						});
+					},
+				],
+				removeService: [
+					'checkServiceExists',
+					(results, cb) => {
+						rpcSend({
+							ch,
+							queue: 'user_service:remove_orchestrator',
+							data: {
+								projectId: results.checkProjectExists.projectId,
+								serviceId: results.checkServiceExists.serviceId,
+							},
 						}).then((res) => {
 							if (res.status === 200) cb(null, res.data);
+							else if (res.status === 404) cb(null, res.data);
 							else cb('create');
 						});
 					},
 				],
 				cleanupTask: [
-					'removeProject',
+					'removeService',
 					(results, cb) => {
 						send({
 							ch,
-							queue: 'user_profile:projectRemove_orchestrator',
+							queue: 'user_project:serviceRemove_orchestrator',
 							data: {
-								userId: results.checkAuth._id,
-								projectId: results.checkProjectExists.projectId,
+								projectId: results.checkServiceExists.projectId,
+								serviceId: results.checkServiceExists.serviceId,
 							},
 						});
 						send({
 							ch,
-							queue: 'user_network:remove_orchestrator',
-							data: { projectId: results.checkProjectExists.projectId },
-						});
-						send({
-							ch,
-							queue: 'container_network:remove_orchestrator',
-							data: {
-								names: results.removeProject.networks.map(
-									(x) => `${projectEasyId}_${x.easyId}`
-								),
-							},
-						});
-						send({
-							ch,
-							queue: 'container_volume:projectRemove_orchestrator',
+							queue: 'container_volume:remove_orchestrator',
 							data: {
 								projectId: results.checkProjectExists.projectId,
+								volumeId: results.checkServiceExists.serviceId,
 							},
 						});
 						cb();
@@ -99,7 +103,8 @@ const processData = ({ authKey, projectEasyId }, ch) =>
 						[
 							'checkAuth',
 							'checkProjectExists',
-							'removeProject',
+							'checkServiceExists',
+							'removeService',
 							'cleanupTask',
 						].includes(err) &&
 						!!results[err]
@@ -110,7 +115,7 @@ const processData = ({ authKey, projectEasyId }, ch) =>
 					resolve({
 						status: 200,
 						data: {
-							msg: 'Project removed successfully.',
+							msg: 'Service removed successfully.',
 						},
 					});
 			}
@@ -118,7 +123,7 @@ const processData = ({ authKey, projectEasyId }, ch) =>
 	});
 
 const method = (ch) => {
-	rpcConsume({ ch, queue: 'orchestrator_project:remove_api', process: processData });
+	rpcConsume({ ch, queue: 'orchestrator_service:remove_api', process: processData });
 };
 
 module.exports = method;

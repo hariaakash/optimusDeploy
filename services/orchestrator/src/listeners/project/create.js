@@ -90,7 +90,7 @@ const processData = ({ authKey, name, easyId }, ch) =>
 							data: {
 								projectId: results.createProject.projectId,
 								name: 'Default',
-								easyId: `${easyId}_default`,
+								easyId: 'default',
 							},
 						})
 							.then((res) =>
@@ -177,7 +177,6 @@ const processData = ({ authKey, name, easyId }, ch) =>
 						data: {
 							msg: 'Project created successfully.',
 							projectEasyId: Production ? undefined : easyId,
-							projectId: Production ? undefined : results.createProject.projectId,
 						},
 					});
 					if (createProTrans) {

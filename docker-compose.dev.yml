@@ -5,19 +5,15 @@ networks:
     proxy:
         name: proxy
         driver: overlay
-        external: true
     apps:
         name: apps
         driver: overlay
-        external: true
     micros:
         name: micros
         driver: overlay
-        external: true
     db:
         name: db
         driver: overlay
-        external: true
 
 services:
 

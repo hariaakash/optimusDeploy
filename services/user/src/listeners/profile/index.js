@@ -7,6 +7,7 @@ const verifyEmail = require('./verifyEmail');
 const forgotPassword = require('./forgotPassword');
 const updatePassword = require('./updatePassword');
 const repos = require('./repos');
+const branches = require('./branches');
 
 const projectCreate = require('./projectCreate');
 const projectRemove = require('./projectRemove');
@@ -21,6 +22,7 @@ const tasks = (ch) => {
 	forgotPassword(ch);
 	updatePassword(ch);
 	repos(ch);
+	branches(ch);
 
 	projectCreate(ch);
 	projectRemove(ch);

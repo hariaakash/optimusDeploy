@@ -31,7 +31,7 @@ const Config = {
 		url: 'https://github.com/login/oauth/authorize',
 		client_id: '129800c9747092aabe46',
 		scope: 'user:email,repo,admin:repo_hook',
-		redirect_uri: 'https://8e9d3323.ngrok.io/user/authGithub',
+		redirect_uri: 'https://optimusdeploy.serveo.net/user/authGithub',
 		params: () => {
 			const params = [];
 			params.push(`client_id=${Config.github.client_id}`);

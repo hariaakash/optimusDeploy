@@ -12,11 +12,14 @@ const create = ({ projectId, volumeId, next }) =>
 		else next(null, 'Volume Created.');
 	});
 
-const remove = ({ projectId, volumeId, next }) =>
-	fse.remove(`${dir}/${projectId}/${volumeId}`, (err) => {
+const remove = ({ projectId, volumeId, next }) => {
+	let rmDir = `${dir}/${projectId}`;
+	if (volumeId) rmDir += `/${volumeId}`;
+	fse.remove(rmDir, (err) => {
 		if (err) next(new Error('Unable to delete volume', 401, err));
 		else next(null, 'Volume Deleted.');
 	});
+};
 
 const stats = ({ projectId, volumeId, next }) =>
 	Process.exec(`du -sh ${dir}/${projectId}/${volumeId}`, (err, data) => {

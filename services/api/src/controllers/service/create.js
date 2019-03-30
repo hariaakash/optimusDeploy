@@ -1,4 +1,3 @@
-const apm = require('elastic-apm-node');
 const Joi = require('joi');
 
 const { rpcSend } = require('../../helpers/amqp-wrapper');
@@ -12,41 +11,53 @@ const schema = Joi.object().keys({
 		.min(4)
 		.max(30)
 		.required(),
-	easyId: Joi.string()
+	projectEasyId: Joi.string()
 		.regex(/^(?:[a-z0-9]+[-]?)+$/)
 		.min(6)
 		.max(30)
 		.required(),
+	serviceEasyId: Joi.string()
+		.regex(/^(?:[a-z0-9]+[-]?)+$/)
+		.min(6)
+		.max(30)
+		.required(),
+	networks: Joi.array().items(
+		Joi.string()
+			.regex(/^(?:[a-z0-9]+[-_]?)+$/)
+			.min(6)
+			.max(30)
+			.required()
+	),
+	enablePublic: Joi.boolean().required(),
+	image: Joi.string()
+		.valid(['node', 'php7', 'static', 'flask'])
+		.required(),
+	repo: Joi.object()
+		.keys({
+			source: Joi.string()
+				.valid(['github'])
+				.required(),
+			name: Joi.string().required(),
+			branch: Joi.string().required(),
+		})
+		.required(),
 });
 
 const request = (req, res) => {
-	const validationSpan = apm.startSpan('Data Validation');
 	schema
 		.validate({ ...req.body, authKey: req.headers.authkey }, { abortEarly: false })
 		.then((vData) => {
-			if (validationSpan) {
-				validationSpan.end();
-			}
-			const createProSpan = apm.startSpan('AMQP Call: orchestrator_project:create_api');
 			rpcSend({
 				ch: req.ch,
-				queue: 'orchestrator_project:create_api',
+				queue: 'orchestrator_service:create_api',
 				data: vData,
-			}).then(({ status, data }) => {
-				if (createProSpan) {
-					createProSpan.end();
-				}
-				res.status(status).json(data);
-			});
+			}).then(({ status, data }) => res.status(status).json(data));
 		})
 		.catch((vError) => {
 			res.status(400).json({
 				msg: 'Validation Error',
 				data: vError.details.map((d) => d.message),
 			});
-			if (validationSpan) {
-				validationSpan.end();
-			}
 		});
 };
 
