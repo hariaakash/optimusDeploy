@@ -60,18 +60,14 @@ const processData = ({ authKey, projectEasyId, serviceEasyId }, ch) =>
 				removeService: [
 					'checkServiceExists',
 					(results, cb) => {
-						rpcSend({
+						send({
 							ch,
 							queue: 'user_service:remove_orchestrator',
 							data: {
-								projectId: results.checkProjectExists.projectId,
 								serviceId: results.checkServiceExists.serviceId,
 							},
-						}).then((res) => {
-							if (res.status === 200) cb(null, res.data);
-							else if (res.status === 404) cb(null, res.data);
-							else cb('create');
 						});
+						cb();
 					},
 				],
 				cleanupTask: [
@@ -81,7 +77,7 @@ const processData = ({ authKey, projectEasyId, serviceEasyId }, ch) =>
 							ch,
 							queue: 'user_project:serviceRemove_orchestrator',
 							data: {
-								projectId: results.checkServiceExists.projectId,
+								projectId: results.checkProjectExists.projectId,
 								serviceId: results.checkServiceExists.serviceId,
 							},
 						});
@@ -92,6 +88,11 @@ const processData = ({ authKey, projectEasyId, serviceEasyId }, ch) =>
 								projectId: results.checkProjectExists.projectId,
 								volumeId: results.checkServiceExists.serviceId,
 							},
+						});
+						send({
+							ch,
+							queue: 'container_service:remove_orchestrator',
+							data: { names: [`${projectEasyId}_${serviceEasyId}`] },
 						});
 						cb();
 					},

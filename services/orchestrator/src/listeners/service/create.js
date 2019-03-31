@@ -5,7 +5,7 @@ const Production = process.env.NODE_ENV !== 'development';
 const { send, rpcSend, rpcConsume } = require('../../helpers/amqp-wrapper');
 
 const processData = (
-	{ authKey, name, projectEasyId, serviceEasyId, networks, repo, enablePublic, image },
+	{ authKey, name, projectEasyId, serviceEasyId, networks, repo, enablePublic, port, image },
 	ch
 ) =>
 	new Promise((resolve) => {
@@ -135,6 +135,7 @@ const processData = (
 								repo,
 								image,
 								enablePublic,
+								port,
 							},
 						}).then((res) =>
 							res.status === 200 ? cb(null, res.data) : cb('createService')
@@ -158,6 +159,31 @@ const processData = (
 							data: {
 								projectId: results.checkProjectExists.projectId,
 								volumeId: results.createService.serviceId,
+							},
+						});
+						send({
+							ch,
+							queue: 'container_git:clone_orchestrator',
+							data: {
+								projectId: results.checkProjectExists.projectId,
+								serviceId: results.createService.serviceId,
+								repo: repo.name,
+								branch: repo.branch,
+								source: repo.source,
+							},
+						});
+						send({
+							ch,
+							queue: 'container_service:create_orchestrator',
+							data: {
+								name: `${projectEasyId}_${serviceEasyId}`,
+								enablePublic,
+								domain: `${serviceEasyId}.gameservers.ooo`,
+								port,
+								image,
+								projectId: results.checkProjectExists.projectId,
+								serviceId: results.createService.serviceId,
+								networks: networks.map((x) => `${projectEasyId}_${x}`),
 							},
 						});
 						cb();

@@ -6,6 +6,7 @@ const serviceSchema = new Schema({
 	project: { type: Schema.Types.ObjectId, ref: 'Project' },
 	networks: [{ type: Schema.Types.ObjectId, ref: 'Network' }],
 	info: {
+		port: { type: Number, required: true },
 		domain: [{ type: String }],
 		image: {
 			name: { type: String, required: true },

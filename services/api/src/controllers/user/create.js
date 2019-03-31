@@ -11,9 +11,6 @@ const schema = Joi.object().keys({
 		.min(8)
 		.max(64)
 		.required(),
-	authType: Joi.string()
-		.valid(['email', 'google', 'github'])
-		.required(),
 });
 
 const request = (req, res) => {

@@ -6,16 +6,12 @@ const processData = ({ projectId, networkId }) =>
 	new Promise((resolve) => {
 		if (projectId)
 			Network.find({ project: projectId }).then((networks) => {
-				for (let i = 0; i < networks.length; i += 1) {
-					networks[i].remove();
-				}
+				networks.forEach((x) => x.remove());
 				resolve(true);
 			});
 		else
 			Network.findOne({ _id: networkId }).then((network) => {
-				if (network) {
-					network.remove();
-				}
+				if (network) network.remove();
 				resolve(true);
 			});
 	});

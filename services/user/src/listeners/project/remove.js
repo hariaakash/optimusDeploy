@@ -14,8 +14,8 @@ const processData = ({ projectId }) =>
 							status: 200,
 							data: {
 								msg: 'Project removed.',
-								networks: project.networks,
-								services: project.services,
+								networks: project.networks.map((x) => ({ easyId: x.easyId })),
+								services: project.services.map((x) => ({ easyId: x.easyId })),
 							},
 						})
 					);

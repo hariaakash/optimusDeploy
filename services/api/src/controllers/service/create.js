@@ -29,6 +29,7 @@ const schema = Joi.object().keys({
 			.required()
 	),
 	enablePublic: Joi.boolean().required(),
+	port: Joi.number().required(),
 	image: Joi.string()
 		.valid(['node', 'php7', 'static', 'flask'])
 		.required(),

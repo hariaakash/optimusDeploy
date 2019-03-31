@@ -22,6 +22,10 @@ const { assert, consume } = require('../../helpers/amqp-wrapper');
 
 const processData = ({ name, enablePublic, domain, port, image, projectId, serviceId, networks }) =>
 	new Promise((resolve, reject) => {
+		const Image = ['node', 'php7', 'static', 'flask'].includes(image)
+			? `hariaakash/op-${image}`
+			: null;
+		if (enablePublic) networks.push('proxy');
 		create({
 			Name: name,
 			Labels: {
@@ -29,7 +33,7 @@ const processData = ({ name, enablePublic, domain, port, image, projectId, servi
 				'traefik.frontend.rule': `Host:${domain}`,
 				'traefik.port': `${port}`,
 			},
-			Image: image,
+			Image,
 			projectId,
 			serviceId,
 			Networks: networks.map((Target) => ({ Target })),
