@@ -48,7 +48,11 @@ const processData = ({ authKey, projectEasyId }, ch) =>
 										data: { msg: 'Project not found.' },
 									});
 								else if (res.status === 200)
-									if (results.checkAuth.projects.includes(res.data.projectId))
+									if (
+										results.checkAuth.projects.some(
+											(x) => x._id === res.data.projectId
+										)
+									)
 										cb(null, res.data);
 									else
 										cb('checkProjectExists', {

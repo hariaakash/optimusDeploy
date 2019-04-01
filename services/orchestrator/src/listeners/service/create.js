@@ -33,7 +33,11 @@ const processData = (
 							data: { easyId: projectEasyId },
 						}).then((res) => {
 							if (res.status === 200)
-								if (results.checkAuth.projects.includes(res.data.projectId))
+								if (
+									results.checkAuth.projects.some(
+										(x) => x._id === res.data.projectId
+									)
+								)
 									cb(null, res.data);
 								else
 									cb('checkProjectExists', {

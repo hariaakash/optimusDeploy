@@ -44,91 +44,50 @@ const processData = ({ authKey, projectEasyId, serviceEasyId }, ch) =>
 						});
 					},
 				],
-				checkServiceExists: [
+				getService: [
 					'checkProjectExists',
 					(results, cb) => {
 						rpcSend({
 							ch,
-							queue: 'user_service:exists_orchestrator',
+							queue: 'user_service:main_orchestrator',
 							data: {
 								projectId: results.checkProjectExists.projectId,
 								easyId: serviceEasyId,
 							},
 						}).then((res) => {
-							if (res.status === 404) cb('checkServiceExists', res);
+							if (res.status === 404) cb('getService', res);
 							else if (res.status === 200) cb(null, res.data);
-							else cb('checkServiceExists');
+							else cb('getService');
 						});
-					},
-				],
-				removeService: [
-					'checkServiceExists',
-					(results, cb) => {
-						send({
-							ch,
-							queue: 'user_service:remove_orchestrator',
-							data: {
-								serviceId: results.checkServiceExists.serviceId,
-							},
-						});
-						cb();
-					},
-				],
-				cleanupTask: [
-					'removeService',
-					(results, cb) => {
-						send({
-							ch,
-							queue: 'user_project:serviceRemove_orchestrator',
-							data: {
-								projectId: results.checkProjectExists.projectId,
-								serviceId: results.checkServiceExists.serviceId,
-							},
-						});
-						send({
-							ch,
-							queue: 'container_volume:remove_orchestrator',
-							data: {
-								projectId: results.checkProjectExists.projectId,
-								volumeId: results.checkServiceExists.serviceId,
-							},
-						});
-						send({
-							ch,
-							queue: 'container_service:remove_orchestrator',
-							data: { names: [`${projectEasyId}_${serviceEasyId}`] },
-						});
-						cb();
 					},
 				],
 			},
 			(err, results) => {
 				if (err) {
 					if (
-						[
-							'checkAuth',
-							'checkProjectExists',
-							'checkServiceExists',
-							'removeService',
-							'cleanupTask',
-						].includes(err) &&
+						['checkAuth', 'checkProjectExists', 'getService'].includes(err) &&
 						!!results[err]
 					)
 						resolve(results[err]);
 					else resolve({ status: 500, data: { msg: 'Internal Server Error' } });
-				} else
+				} else {
+					const service = results.getService;
+					delete service._id;
+					service.networks = service.networks.map((x) => ({
+						name: x.name,
+						easyId: x.easyId,
+					}));
 					resolve({
 						status: 200,
-						data: {
-							msg: 'Service removed successfully.',
-						},
+						data: service,
 					});
+				}
 			}
 		);
 	});
 
 const method = (ch) => {
-	rpcConsume({ ch, queue: 'orchestrator_service:remove_api', process: processData });
+	rpcConsume({ ch, queue: 'orchestrator_service:main_api', process: processData });
 };
 
 module.exports = method;

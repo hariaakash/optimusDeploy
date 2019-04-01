@@ -7,27 +7,29 @@ const schema = Joi.object().keys({
 	authKey: Joi.string()
 		.length(21)
 		.required(),
-	source: Joi.string()
-		.valid(['github'])
+	projectEasyId: Joi.string()
+		.regex(/^(?:[a-z0-9]+[-]?)+$/)
+		.min(6)
+		.max(30)
 		.required(),
 });
 
 const request = (req, res) => {
 	const validationSpan = apm.startSpan('Data Validation');
 	schema
-		.validate({ authKey: req.headers.authkey, ...req.query }, { abortEarly: false })
+		.validate({ ...req.query, authKey: req.headers.authkey }, { abortEarly: false })
 		.then((vData) => {
 			if (validationSpan) {
 				validationSpan.end();
 			}
-			const fetchRepoSpan = apm.startSpan('AMQP Call: orchestrator_user:repos_api');
+			const mainProjectSpan = apm.startSpan('AMQP Call: orchestrator_project:main_api');
 			rpcSend({
 				ch: req.ch,
-				queue: 'orchestrator_user:repos_api',
+				queue: 'orchestrator_project:main_api',
 				data: vData,
 			}).then(({ status, data }) => {
-				if (fetchRepoSpan) {
-					fetchRepoSpan.end();
+				if (mainProjectSpan) {
+					mainProjectSpan.end();
 				}
 				res.status(status).json(data);
 			});

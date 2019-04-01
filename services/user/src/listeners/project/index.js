@@ -1,4 +1,5 @@
 const exists = require('./exists');
+const main = require('./main');
 const create = require('./create');
 const remove = require('./remove');
 
@@ -9,6 +10,7 @@ const serviceRemove = require('./serviceRemove');
 
 const tasks = (ch) => {
 	exists(ch);
+	main(ch);
 	create(ch);
 	remove(ch);
 
