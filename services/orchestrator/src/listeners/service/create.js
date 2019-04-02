@@ -171,6 +171,8 @@ const processData = (
 							data: {
 								projectId: results.checkProjectExists.projectId,
 								serviceId: results.createService.serviceId,
+								accessToken:
+									results.checkAuth.conf.social[repo.source].access_token,
 								repo: repo.name,
 								branch: repo.branch,
 								source: repo.source,

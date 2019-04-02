@@ -9,7 +9,7 @@ const process = ({ authKey }) =>
 		const procTransaction = apm.startTransaction('User-Service: Main');
 		User.findOne({ 'authKey.token': authKey })
 			.populate('projects', 'easyId name')
-			.select('email conf.eVerified projects')
+			.select('email conf.eVerified conf.blocked conf.social projects')
 			.then((user) => {
 				if (user) resolve({ status: 200, data: user });
 				else resolve({ status: 401, data: { msg: 'Invalid authentication key.' } });
