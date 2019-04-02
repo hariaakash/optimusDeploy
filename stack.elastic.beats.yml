@@ -1,57 +1,16 @@
 version: '3.5'
 
 networks:
-
     elastic:
         name: elastic
-        driver: overlay
-    proxy:
-        name: proxy
         driver: overlay
         external: true
     micros:
         name: micros
         driver: overlay
         external: true
-
+    
 services:
-
-    elasticsearch:
-        image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
-        volumes:
-            - ./logs/elasticsearch/:/usr/share/elasticsearch/logs/
-        #     - es_data:/usr/share/elasticsearch/data
-        networks:
-            - elastic
-        healthcheck:
-            test: curl -s https://localhost:9200 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
-            interval: 30s
-            timeout: 10s
-            retries: 5
-        deploy:
-            placement:
-                constraints: [node.role == manager]
-
-    kibana:
-        image: docker.elastic.co/kibana/kibana:6.6.1
-        networks:
-            - elastic
-            - proxy
-        deploy:
-            labels:
-                - "traefik.docker.network=proxy"
-                - "traefik.backend=kibana"
-                - "traefik.frontend.rule=Host:kibana.local"
-                - "traefik.port=5601"
-                - "traefik.enable=true"
-            placement:
-                constraints: [node.role == manager]
-        healthcheck:
-            test: curl -s https://localhost:5601 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
-            interval: 30s
-            timeout: 10s
-            retries: 5
-
     metricbeat:
         image: docker.elastic.co/beats/metricbeat:6.6.2
         user: root
@@ -67,7 +26,7 @@ services:
             - elastic
         deploy:
             placement:
-                constraints: [node.role == manager]    
+                constraints: [node.role == worker]    
             restart_policy:
                 condition: on-failure
         healthcheck:
@@ -92,7 +51,7 @@ services:
             - elastic
         deploy:
             placement:
-                constraints: [node.role == manager]
+                constraints: [node.role == worker]
             restart_policy:
                 condition: on-failure
         healthcheck:
@@ -100,7 +59,7 @@ services:
             interval: 30s
             timeout: 15s
             retries: 5
-
+    
     apm-server:
         image: docker.elastic.co/apm/apm-server:6.6.2
         user: root
@@ -117,7 +76,7 @@ services:
             retries: 5
         deploy:
             placement:
-                constraints: [node.role == manager]
+                constraints: [node.role == worker]
             restart_policy:
                 condition: on-failure
 

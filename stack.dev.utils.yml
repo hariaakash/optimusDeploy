@@ -39,12 +39,12 @@ services:
             - micros
             - proxy
         deploy:
-            # labels:
-            #     traefik.docker.network: "proxy"
-            #     traefik.backend: "rabbitmq"
-            #     traefik.frontend.rule: "Host:www.rabbitmq.local,rabbitmq.local"
-            #     traefik.port: "15672"
-            #     traefik.enable: "true"
+            labels:
+                traefik.docker.network: "proxy"
+                traefik.backend: "rabbitmq"
+                traefik.frontend.rule: "Host:www.rabbitmq.local,rabbitmq.local"
+                traefik.port: "15672"
+                traefik.enable: "true"
             placement:
                 constraints: [node.role == manager]
 
