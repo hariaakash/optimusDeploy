@@ -4,31 +4,32 @@ const Joi = require('joi');
 const { rpcSend } = require('../../helpers/amqp-wrapper');
 
 const schema = Joi.object().keys({
-	email: Joi.string()
-		.email({ minDomainAtoms: 2 })
+	authKey: Joi.string()
+		.length(21)
 		.required(),
-	password: Joi.string()
-		.min(8)
-		.max(64)
+	projectEasyId: Joi.string()
+		.regex(/^(?:[a-z0-9]+[-]?)+$/)
+		.min(6)
+		.max(30)
 		.required(),
 });
 
 const request = (req, res) => {
-	const validateSpan = apm.startSpan('Data Validation');
+	const validationSpan = apm.startSpan('Data Validation');
 	schema
-		.validate(req.body, { abortEarly: false })
+		.validate({ ...req.query, authKey: req.headers.authkey }, { abortEarly: false })
 		.then((vData) => {
-			if (validateSpan) {
-				validateSpan.end();
+			if (validationSpan) {
+				validationSpan.end();
 			}
-			const amqpSpan = apm.startSpan('AMQP Call: orchestrator_user:create_api');
+			const mainProjectSpan = apm.startSpan('AMQP Call: orchestrator_project:main_api');
 			rpcSend({
 				ch: req.ch,
-				queue: 'orchestrator_user:create_api',
+				queue: 'orchestrator_project:main_api',
 				data: vData,
 			}).then(({ status, data }) => {
-				if (amqpSpan) {
-					amqpSpan.end();
+				if (mainProjectSpan) {
+					mainProjectSpan.end();
 				}
 				res.status(status).json(data);
 			});
@@ -38,8 +39,8 @@ const request = (req, res) => {
 				msg: 'Validation Error',
 				data: vError.details.map((d) => d.message),
 			});
-			if (validateSpan) {
-				validateSpan.end();
+			if (validationSpan) {
+				validationSpan.end();
 			}
 		});
 };

@@ -4,7 +4,7 @@ const Service = require('../../schemas/service');
 
 const { rpcConsume } = require('../../helpers/amqp-wrapper');
 
-const processData = ({ name, easyId, projectId, networks, repo, image, enablePublic }) =>
+const processData = ({ name, easyId, projectId, networks, repo, image, enablePublic, port }) =>
 	new Promise((resolve) => {
 		const service = new Service({
 			_id: ObjectId(),
@@ -13,6 +13,7 @@ const processData = ({ name, easyId, projectId, networks, repo, image, enablePub
 			project: projectId,
 			networks,
 			info: {
+				port,
 				image: { name: image },
 				repo: { source: repo.source, name: repo.name, branch: repo.branch },
 				enablePublic,

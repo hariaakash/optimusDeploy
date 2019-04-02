@@ -66,7 +66,10 @@ const rpcSend = ({ ch, queue, data }) =>
  * @returns {Promise} - Not necessary to handle this.
  */
 const send = ({ ch, queue, data, options = { persistent: true } }) =>
-	ch.sendToQueue(queue, Buffer.from(JSON.stringify(data)), options);
+	new Promise((resolve) => {
+		ch.sendToQueue(queue, Buffer.from(JSON.stringify(data)), options);
+		resolve();
+	});
 
 /**
  * Consume Wrapper (consume) for amqplib

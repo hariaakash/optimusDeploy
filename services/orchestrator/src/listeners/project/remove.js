@@ -48,7 +48,11 @@ const processData = ({ authKey, projectEasyId }, ch) =>
 										data: { msg: 'Project not found.' },
 									});
 								else if (res.status === 200)
-									if (results.checkAuth.projects.includes(res.data.projectId))
+									if (
+										results.checkAuth.projects.some(
+											(x) => x._id === res.data.projectId
+										)
+									)
 										cb(null, res.data);
 									else
 										cb('checkProjectExists', {
@@ -114,6 +118,18 @@ const processData = ({ authKey, projectEasyId }, ch) =>
 								cleanUpNetworkDB.end();
 							}
 						});
+						const cleanUpServiceDB = removeProTrans.startSpan(
+							'AMQP Call: user_service:remove_orchestrator'
+						);
+						send({
+							ch,
+							queue: 'user_service:remove_orchestrator',
+							data: { projectId: results.checkProjectExists.projectId },
+						}).then(() => {
+							if (cleanUpServiceDB) {
+								cleanUpServiceDB.end();
+							}
+						});
 						const cleanUpNetwork = removeProTrans.startSpan(
 							'container_network:remove_orchestrator'
 						);
@@ -143,6 +159,15 @@ const processData = ({ authKey, projectEasyId }, ch) =>
 							if (cleanUpVolume) {
 								cleanUpVolume.end();
 							}
+						});
+						send({
+							ch,
+							queue: 'container_service:remove_orchestrator',
+							data: {
+								names: results.removeProject.services.map(
+									(x) => `${projectEasyId}_${x.easyId}`
+								),
+							},
 						});
 						cb();
 					},

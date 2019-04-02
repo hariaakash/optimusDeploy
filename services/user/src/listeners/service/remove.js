@@ -1,26 +1,24 @@
-const Project = require('../../schemas/project');
 const Service = require('../../schemas/service');
 
-const { rpcConsume } = require('../../helpers/amqp-wrapper');
+const { assert, consume } = require('../../helpers/amqp-wrapper');
 
-const processData = ({ serviceId }) =>
+const processData = ({ projectId, serviceId }) =>
 	new Promise((resolve) => {
-		Service.findOne({ _id: serviceId }).then((service) => {
-			if (service)
-				service.remove().then(() =>
-					resolve({
-						status: 200,
-						data: {
-							msg: 'Project removed.',
-						},
-					})
-				);
-			else resolve({ status: 404, data: { msg: 'Service not found.' } });
-		});
+		if (projectId)
+			Service.find({ project: projectId }).then((services) => {
+				services.forEach((x) => x.remove());
+				resolve(true);
+			});
+		else
+			Service.findOne({ _id: serviceId }).then((service) => {
+				if (service) service.remove();
+				else resolve(true);
+			});
 	});
 
 const method = (ch) => {
-	rpcConsume({ ch, queue: 'user_service:remove_orchestrator', process: processData });
+	assert({ ch, queue: 'user_service:remove_orchestrator' });
+	consume({ ch, queue: 'user_service:remove_orchestrator', process: processData });
 };
 
 module.exports = method;

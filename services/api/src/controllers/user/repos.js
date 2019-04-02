@@ -8,7 +8,7 @@ const schema = Joi.object().keys({
 		.length(21)
 		.required(),
 	source: Joi.string()
-		.valid(['github', 'gitlab', 'bitbucket'])
+		.valid(['github'])
 		.required(),
 });
 
