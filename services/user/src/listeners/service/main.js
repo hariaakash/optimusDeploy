@@ -9,8 +9,7 @@ let select = [
 	'info.domain',
 	'info.enablePublic',
 	'info.port',
-	'info.repo.name',
-	'info.repo.source',
+	'info.repo',
 	'info.image.name',
 ];
 select = select.join(' ');

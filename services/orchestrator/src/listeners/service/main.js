@@ -73,6 +73,10 @@ const processData = ({ authKey, projectEasyId, serviceEasyId }, ch) =>
 				} else {
 					const service = results.getService;
 					delete service._id;
+					if (Object.prototype.hasOwnProperty.call(service.info, 'repo')) {
+						delete service.info.repo.hookId;
+						delete service.info.repo.enabled;
+					}
 					service.networks = service.networks.map((x) => ({
 						name: x.name,
 						easyId: x.easyId,

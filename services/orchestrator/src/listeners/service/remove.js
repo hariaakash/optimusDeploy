@@ -49,7 +49,7 @@ const processData = ({ authKey, projectEasyId, serviceEasyId }, ch) =>
 					(results, cb) => {
 						rpcSend({
 							ch,
-							queue: 'user_service:exists_orchestrator',
+							queue: 'user_service:main_orchestrator',
 							data: {
 								projectId: results.checkProjectExists.projectId,
 								easyId: serviceEasyId,
@@ -68,7 +68,7 @@ const processData = ({ authKey, projectEasyId, serviceEasyId }, ch) =>
 							ch,
 							queue: 'user_service:remove_orchestrator',
 							data: {
-								serviceId: results.checkServiceExists.serviceId,
+								serviceId: results.checkServiceExists._id,
 							},
 						});
 						cb();
@@ -82,7 +82,16 @@ const processData = ({ authKey, projectEasyId, serviceEasyId }, ch) =>
 							queue: 'user_project:serviceRemove_orchestrator',
 							data: {
 								projectId: results.checkProjectExists.projectId,
-								serviceId: results.checkServiceExists.serviceId,
+								serviceId: results.checkServiceExists._id,
+							},
+						});
+						send({
+							ch,
+							queue: 'user_service:hookRemove_orchestrator',
+							data: {
+								accessTokens: results.checkAuth.conf.social,
+								projectId: results.checkProjectExists.projectId,
+								serviceId: results.checkServiceExists._id,
 							},
 						});
 						send({
@@ -90,7 +99,7 @@ const processData = ({ authKey, projectEasyId, serviceEasyId }, ch) =>
 							queue: 'container_volume:remove_orchestrator',
 							data: {
 								projectId: results.checkProjectExists.projectId,
-								volumeId: results.checkServiceExists.serviceId,
+								volumeId: results.checkServiceExists._id,
 							},
 						});
 						send({

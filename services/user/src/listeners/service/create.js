@@ -15,7 +15,7 @@ const processData = ({ name, easyId, projectId, networks, repo, image, enablePub
 			info: {
 				port,
 				image: { name: image },
-				repo: { source: repo.source, name: repo.name, branch: repo.branch },
+				repo: { enabled: true, source: repo.source, name: repo.name, branch: repo.branch },
 				enablePublic,
 			},
 		});

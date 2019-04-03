@@ -130,6 +130,14 @@ const processData = ({ authKey, projectEasyId }, ch) =>
 								cleanUpServiceDB.end();
 							}
 						});
+						send({
+							ch,
+							queue: 'user_service:hookRemove_orchestrator',
+							data: {
+								accessTokens: results.checkAuth.conf.social,
+								projectId: results.checkProjectExists.projectId,
+							},
+						});
 						const cleanUpNetwork = removeProTrans.startSpan(
 							'container_network:remove_orchestrator'
 						);

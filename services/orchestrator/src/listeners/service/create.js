@@ -159,6 +159,18 @@ const processData = (
 						});
 						send({
 							ch,
+							queue: 'user_service:hookCreate_orchestrator',
+							data: {
+								_id: results.checkAuth._id,
+								projectId: results.checkProjectExists.projectId,
+								easyId: serviceEasyId,
+								repo,
+								accessToken:
+									results.checkAuth.conf.social[repo.source].access_token,
+							},
+						});
+						send({
+							ch,
 							queue: 'container_volume:create_orchestrator',
 							data: {
 								projectId: results.checkProjectExists.projectId,
