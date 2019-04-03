@@ -41,7 +41,10 @@ const processData = ({ authKey, source }, ch) =>
 							queue: 'user_profile:repos_orchestrator',
 							data: { _id: results.checkAuth._id, source },
 						})
-							.then((res) => (res.status === 200 ? cb(null, res) : cb('getRepos')))
+							.then((res) => {
+								if ([200, 404].includes(res.status)) cb(null, res);
+								else cb('getRepos');
+							})
 							.then(() => {
 								if (getSpan) {
 									getSpan.end();

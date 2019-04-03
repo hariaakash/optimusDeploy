@@ -8,11 +8,18 @@ const processData = ({ _id, source }) =>
 		try {
 			const data = {};
 			const user = await User.findById(_id).select(`conf.social.${source}`);
-			if (user.conf.social[source].enabled)
+			if (user.conf.social[source].enabled) {
 				data[source] = await Github.repos({
 					accessToken: user.conf.social[source].access_token,
 				});
-			resolve({ status: 200, data });
+				resolve({ status: 200, data });
+			} else
+				resolve({
+					status: 404,
+					data: {
+						msg: `${source.charAt(0).toUpperCase()}${source.slice(1)} not enabled.`,
+					},
+				});
 		} catch (err) {
 			resolve({ status: 500 });
 		}
