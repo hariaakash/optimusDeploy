@@ -34,7 +34,7 @@ services:
             - ./services/api/src:/app/src
         labels:
             - "traefik.docker.network=proxy"
-            - "traefik.backend=api.local"
+            - "traefik.backend=api"
             - "traefik.frontend.rule=Host:api.local"
             - "traefik.port=3000"
             - "traefik.enable=true"
@@ -125,7 +125,7 @@ services:
         ports:
             - 27017:27017
         volumes:
-            - ./data/mongodb:/data/db
+            - /srv/utils/mongodb:/data/db
         networks:
             - db
     
@@ -133,10 +133,10 @@ services:
         image: rabbitmq:3-management
         hostname: rabbitmq  #The hostname has to be manually specified. Refer to hub.docker.com/_/rabbitmq
         volumes:
-            - ./data/rabbitmq:/var/lib/rabbitmq/mnesia/rabbit@rabbitmq
+            - /srv/utils/rabbitmq:/var/lib/rabbitmq/
         labels:
             - "traefik.docker.network=proxy"
-            - "traefik.backend=rabbitmq.local"
+            - "traefik.backend=rabbitmq"
             - "traefik.frontend.rule=Host:rabbitmq.local"
             - "traefik.port=15672"
             - "traefik.enable=true"
@@ -155,7 +155,7 @@ services:
             - ./config/traefik/traefik.crt:/etc/traefik/traefik.crt
             - ./config/traefik/traefik.key:/etc/traefik/traefik.key
         labels:
-            - "traefik.backend=traefik.local"
+            - "traefik.backend=traefik"
             - "traefik.frontend.rule=Host:traefik.local"
             - "traefik.port=8080"
             - "traefik.enable=true"
