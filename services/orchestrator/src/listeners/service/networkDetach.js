@@ -56,12 +56,20 @@ const processData = ({ authKey, projectEasyId, serviceEasyId, networkEasyId }, c
 							},
 						}).then((res) => {
 							if (res.status === 200)
-								if (res.data.networks.some((x) => x.easyId === networkEasyId))
-									cb(null, res.data);
+								if (res.data.networks.length > 1)
+									if (res.data.networks.some((x) => x.easyId === networkEasyId))
+										cb(null, res.data);
+									else
+										cb('checkServiceExists', {
+											status: 403,
+											data: { msg: 'Network is not attached to service.' },
+										});
 								else
 									cb('checkServiceExists', {
 										status: 403,
-										data: { msg: 'Network is not attached to service.' },
+										data: {
+											msg: 'Service should atleast belong to one network.',
+										},
 									});
 							else if (res.status === 404) cb('checkServiceExists', res);
 							else cb('checkServiceExists');
