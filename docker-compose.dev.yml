@@ -23,6 +23,8 @@ services:
             args:
                 NODE_ENV: development
         image: optimusdeploy_api:dev
+        ports:
+            - 3000:3000
         command: npm run dev
         environment:
             NODE_ENV: development

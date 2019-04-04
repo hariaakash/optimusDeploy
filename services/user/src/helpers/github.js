@@ -57,12 +57,12 @@ const branches = ({ accessToken, repo }) =>
 		headers: { Authorization: `token ${accessToken}`, Accept: 'application/json' },
 	}).then(({ data }) => data.map((x) => x.name));
 
-const createHook = ({ accessToken, repo }) =>
+const createHook = ({ serviceId, accessToken, repo }) =>
 	axios({
 		method: 'POST',
 		url: `${config.url.repos}/${repo}/hooks`,
 		headers: { Authorization: `token ${accessToken}`, Accept: 'application/json' },
-		data: { config: { url: config.hookUrl, content_type: 'json' } },
+		data: { config: { url: `${config.hookUrl}/${serviceId}`, content_type: 'json' } },
 	}).then(({ data }) => ({ id: data.id }));
 
 const removeHook = ({ accessToken, repo, hookId }) =>

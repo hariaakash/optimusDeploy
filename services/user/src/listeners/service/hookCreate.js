@@ -9,7 +9,11 @@ const processData = ({ easyId, projectId, repo, accessToken }) =>
 			const service = await Service.findOne({ easyId, project: projectId });
 			if (service) {
 				if (repo.source === 'github') {
-					const hook = await Github.hook.create({ accessToken, repo: repo.name });
+					const hook = await Github.hook.create({
+						serviceId: service._id,
+						accessToken,
+						repo: repo.name,
+					});
 					service.info.repo.hookId = hook.id;
 					service.save(() => resolve(true));
 				} else resolve(true);

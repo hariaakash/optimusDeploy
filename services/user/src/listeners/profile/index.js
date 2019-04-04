@@ -1,5 +1,6 @@
 const main = require('./main');
 const exists = require('./exists');
+const existsProject = require('./existsProject');
 const create = require('./create');
 const authEmail = require('./authEmail');
 const authGithub = require('./authGithub');
@@ -15,6 +16,7 @@ const projectRemove = require('./projectRemove');
 const tasks = (ch) => {
 	main(ch);
 	exists(ch);
+	existsProject(ch);
 	create(ch);
 	authEmail(ch);
 	authGithub(ch);

@@ -18,6 +18,7 @@ const serviceSchema = new Schema({
 			branch: String,
 			hookId: String,
 			enabled: { type: Boolean, default: false },
+			auto: { type: Boolean, default: true },
 			pulled_at: { type: Date, default: Date.now },
 		},
 		enablepublic: { type: Boolean, default: false },

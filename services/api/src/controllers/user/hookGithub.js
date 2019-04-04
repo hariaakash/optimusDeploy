@@ -1,15 +1,20 @@
 const Joi = require('joi');
 
-const { send } = require('../../helpers/amqp-wrapper');
+const { rpcSend } = require('../../helpers/amqp-wrapper');
 
-const schema = Joi.object().keys({ ref: Joi.string().required() });
+const schema = Joi.object().keys({
+	serviceId: Joi.string()
+		.length(24)
+		.required(),
+});
 
 const request = (req, res) => {
 	schema
-		.validate({ ...req.body }, { allowUnknown: true })
+		.validate({ ...req.body, ...req.params }, { allowUnknown: true })
 		.then((vData) => {
-			send({ ch: req.ch, queue: 'orchestrator_user:hookGithub_api', data: vData });
-			res.json({});
+			rpcSend({ ch: req.ch, queue: 'orchestrator_user:hookGithub_api', data: vData }).then(
+				({ status, data }) => res.status(status).json(data)
+			);
 		})
 		.catch((vError) => {
 			res.status(400).json({
