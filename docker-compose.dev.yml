@@ -72,6 +72,10 @@ services:
             NODE_ENV: development
             AMQP_URI: amqp://rabbitmq
             MONGODB_HOST: mongodb://mongodb
+            GITHUB_CLIENT_ID: 129800c9747092aabe46
+            GITHUB_CLIENT_SECRET: 267225d33106584503b84551d493e77bbdd7b0b8
+            GOOGLE_CLIENT_ID: 666163516742-b89cg46pnk6o8p75b9btgp7o03gvv081.apps.googleusercontent.com
+            GOOGLE_CLIENT_SECRET: OzxCxTGs8PJedpi4y1VeqdRH
         volumes:
             - ./services/user/src:/app/src
         depends_on:

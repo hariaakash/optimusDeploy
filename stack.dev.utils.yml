@@ -19,8 +19,8 @@ services:
 
     mongodb:
         image: mvertes/alpine-mongo
-        # volumes:
-        #     - ./data/mongodb:/data/db
+        volumes:
+            - /srv/utils/mongodb:/data/db
         networks:
             - db
         deploy:
@@ -29,9 +29,9 @@ services:
     
     rabbitmq:
         image: rabbitmq:3-management
-        hostname: rabbitmq  #The hostname has to be manually specified. Refer to hub.docker.com/_/rabbitmq
+        hostname: rabbitmq
         volumes:
-            - ./data/rabbitmq:/var/lib/rabbitmq/mnesia/rabbit@rabbitmq
+            - /srv/utils/rabbitmq:/var/lib/rabbitmq/
         environment:
             - RABBITMQ_DEFAULT_USER=user 
             - RABBITMQ_DEFAULT_PASS=password
@@ -51,7 +51,7 @@ services:
     registry:
         image: registry:2
         volumes:
-            - ./data/registry:/var/lib/registry
+            - /srv/utils/registry:/var/lib/registry
         networks:
             - micros
             - proxy
@@ -70,7 +70,7 @@ services:
             - 443:443
         volumes:
             - /var/run/docker.sock:/var/run/docker.sock
-            - ./logs/traefik/access.json:/var/log/traefik/access.log.json
+            - /srv/utils/traefik/access.json:/var/log/traefik/access.log.json
         configs:
             -   source: traefik_config
                 target: /etc/traefik/traefik.toml

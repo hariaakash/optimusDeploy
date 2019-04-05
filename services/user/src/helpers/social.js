@@ -5,16 +5,17 @@ const User = require('../schemas/user');
 const Github = require('./github');
 const Google = require('./google');
 
+const Production = process.env.NODE_ENV !== 'development';
+
 const Config = {
 	google: {
 		url: 'https://accounts.google.com/o/oauth2/v2/auth',
-		client_id: '666163516742-b89cg46pnk6o8p75b9btgp7o03gvv081.apps.googleusercontent.com',
+		client_id: process.env.GOOGLE_CLIENT_ID,
 		response_type: 'code',
 		scope:
 			'https://www.googleapis.com/auth/userinfo.email https://www.googleapis.com/auth/userinfo.profile',
 		redirect_uri: 'https://optimuscp.io/oauth.html',
 		access_type: 'offline',
-		state: 'google',
 		params: () => {
 			const params = [];
 			params.push(`client_id=${Config.google.client_id}`);
@@ -22,16 +23,17 @@ const Config = {
 			params.push(`scope=${Config.google.scope}`);
 			params.push(`redirect_uri=${Config.google.redirect_uri}`);
 			params.push(`access_type=${Config.google.access_type}`);
-			params.push(`state=${Config.google.state}`);
 			return params.join('&');
 		},
 		link: () => `${Config.google.url}?${Config.google.params()}`,
 	},
 	github: {
 		url: 'https://github.com/login/oauth/authorize',
-		client_id: '129800c9747092aabe46',
+		client_id: process.env.GITHUB_CLIENT_ID,
 		scope: 'user:email,repo,admin:repo_hook',
-		redirect_uri: 'https://optimusdeploy.serveo.net/user/authGithub',
+		redirect_uri: Production
+			? process.env.GITHUB_HOOKURL
+			: 'https://optimusdeploy.serveo.net/user/hookGithub',
 		params: () => {
 			const params = [];
 			params.push(`client_id=${Config.github.client_id}`);

@@ -33,6 +33,7 @@ services:
             - micros
             - proxy
         deploy:
+            mode: replicated
             replicas: 1
             labels:
                 - "traefik.docker.network=proxy"
@@ -42,7 +43,7 @@ services:
                 - "traefik.port=3000"
                 - "traefik.enable=true"
             placement:
-                constraints: [node.role == manager]
+                constraints: [node.role == worker]
 
     orchestrator:
         image: registry.local/optimusdeploy_orchestrator:dev
@@ -55,8 +56,10 @@ services:
         networks:
             - micros
         deploy:
+            mode: replicated
+            replicas: 1
             placement:
-                constraints: [node.role == manager]
+                constraints: [node.role == worker]
 
 
     user:
@@ -66,15 +69,20 @@ services:
             NODE_ENV: development
             AMQP_URI: amqp://rabbitmq
             MONGODB_HOST: mongodb://mongodb
+            GITHUB_CLIENT_ID: 129800c9747092aabe46
+            GITHUB_CLIENT_SECRET: 267225d33106584503b84551d493e77bbdd7b0b8
+            GOOGLE_CLIENT_ID: 666163516742-b89cg46pnk6o8p75b9btgp7o03gvv081.apps.googleusercontent.com
+            GOOGLE_CLIENT_SECRET: OzxCxTGs8PJedpi4y1VeqdRH
             ELASTIC_APM_SERVICE_NAME: optimus-deploy-user-service
             ELASTIC_APM_SERVER_URL: http://apm-server:8200
         networks:
             - micros
             - db
         deploy:
+            mode: replicated
             replicas: 1
             placement:
-                constraints: [node.role == manager]
+                constraints: [node.role == worker]
 
 
     container:
@@ -84,10 +92,15 @@ services:
             NODE_ENV: development
             AMQP_URI: amqp://rabbitmq
             MONGODB_HOST: mongodb://mongodb
+            DATA_DIR: /srv/daemon-data
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - /srv/daemon-data:/srv/daemon-data
         networks:
             - micros
             - db
         deploy:
+            mode: replicated
             replicas: 1
             placement:
                 constraints: [node.role == manager]
@@ -103,6 +116,7 @@ services:
         networks:
             - micros
         deploy:
+            mode: replicated
             replicas: 1
             placement:
-                constraints: [node.role == manager]
+                constraints: [node.role == worker]

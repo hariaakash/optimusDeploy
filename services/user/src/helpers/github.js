@@ -3,8 +3,8 @@ const axios = require('axios');
 const Production = process.env.NODE_ENV !== 'development';
 
 const config = {
-	client_id: '129800c9747092aabe46',
-	client_secret: '267225d33106584503b84551d493e77bbdd7b0b8',
+	client_id: process.env.GITHUB_CLIENT_ID,
+	client_secret: process.env.GITHUB_CLIENT_SECRET,
 	url: {
 		token: 'https://github.com/login/oauth/access_token',
 		info: 'https://api.github.com/user',
