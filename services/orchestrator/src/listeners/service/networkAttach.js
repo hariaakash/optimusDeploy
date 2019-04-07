@@ -114,6 +114,7 @@ const processData = ({ authKey, projectEasyId, serviceEasyId, networkEasyId }, c
 							data: {
 								name: `${projectEasyId}_${serviceEasyId}`,
 								networks,
+								enablePublic: results.checkServiceExists.info.enablePublic,
 							},
 						});
 						cb();

@@ -21,7 +21,7 @@ const serviceSchema = new Schema({
 			auto: { type: Boolean, default: true },
 			pulled_at: { type: Date, default: Date.now },
 		},
-		enablepublic: { type: Boolean, default: false },
+		enablePublic: { type: Boolean, default: false },
 		created_at: { type: Date, default: Date.now },
 	},
 });

@@ -1,8 +1,9 @@
 const { update } = require('../../helpers/service');
 const { assert, consume } = require('../../helpers/amqp-wrapper');
 
-const processData = ({ name, networks }) =>
+const processData = ({ name, networks, enablePublic }) =>
 	new Promise((resolve, reject) => {
+		if (enablePublic) networks.push('proxy');
 		update({
 			name,
 			type: 'network',
