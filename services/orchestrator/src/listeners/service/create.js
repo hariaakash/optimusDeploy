@@ -190,13 +190,15 @@ const processData = (
 								source: repo.source,
 							},
 						});
+						const pathPrefixStrip = `PathPrefixStrip:/${serviceEasyId}`;
+						const mainDomain = Production ? 'optimuscp.io' : 'local';
 						send({
 							ch,
 							queue: 'container_service:create_orchestrator',
 							data: {
 								name: `${projectEasyId}_${serviceEasyId}`,
 								enablePublic,
-								domain: `${serviceEasyId}.gameservers.ooo`,
+								domain: `${projectEasyId}.${mainDomain};${pathPrefixStrip}`,
 								port,
 								image,
 								projectId: results.checkProjectExists.projectId,

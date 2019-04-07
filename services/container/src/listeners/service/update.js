@@ -15,9 +15,9 @@ const { assert, consume } = require('../../helpers/amqp-wrapper');
 // 	next: (err, data) => console.log(err || data),
 // });
 // update({
-// 	name: 'qq',
+// 	name: 'test-pro_test-node',
 // 	type: 'domain',
-// 	data: { domain: 'www.api.local,api.local' },
+// 	data: { domain: 'test-pro.local;PathPrefixStrip:/test-node' },
 // 	next: (err, data) => console.log(err || data),
 // });
 // update({
