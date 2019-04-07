@@ -19,8 +19,8 @@ services:
     elasticsearch:
         image: docker.elastic.co/elasticsearch/elasticsearch:6.6.1
         volumes:
-            - ./logs/elasticsearch/:/usr/share/elasticsearch/logs/
-        #     - es_data:/usr/share/elasticsearch/data
+            - /srv/elastic/elasticsearch/logs/:/usr/share/elasticsearch/logs/
+            - /srv/elastic/elasticsearch/data/:/usr/share/elasticsearch/data
         networks:
             - elastic
         healthcheck:
@@ -85,7 +85,7 @@ services:
         volumes:
             - /var/lib/docker/containers:/var/lib/docker/containers:ro
             - /var/run/docker.sock:/var/run/docker.sock
-            - ./logs/:/var/log/
+            - /srv/elastic/filebeat/logs/:/var/log/
             - /var/log/syslog:/var/log/host/syslog
             - /var/log/auth.log:/var/log/host/auth.log
         networks:

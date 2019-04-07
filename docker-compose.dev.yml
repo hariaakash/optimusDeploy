@@ -34,15 +34,16 @@ services:
             ELASTIC_APM_SERVER_URL: http://apm-server:8200
         volumes:
             - ./services/api/src:/app/src
-        labels:
-            - "traefik.docker.network=proxy"
-            - "traefik.backend=api"
-            - "traefik.frontend.rule=Host:api.local"
-            - "traefik.port=3000"
-            - "traefik.enable=true"
         networks:
             - micros
             - proxy
+        deploy:
+            labels:
+                - "traefik.docker.network=proxy"
+                - "traefik.backend=api"
+                - "traefik.frontend.rule=Host:api.local"
+                - "traefik.port=3000"
+                - "traefik.enable=true"
 
     orchestrator:
         build:
@@ -56,8 +57,6 @@ services:
             AMQP_URI: amqp://rabbitmq
         volumes:
             - ./services/orchestrator/src:/app/src
-        depends_on:
-            - rabbitmq
         networks:
             - micros
 
@@ -78,9 +77,6 @@ services:
             GOOGLE_CLIENT_SECRET: OzxCxTGs8PJedpi4y1VeqdRH
         volumes:
             - ./services/user/src:/app/src
-        depends_on:
-            - rabbitmq
-            - mongodb
         networks:
             - micros
             - db
@@ -101,9 +97,6 @@ services:
             - /var/run/docker.sock:/var/run/docker.sock
             - ./services/container/src:/app/src
             - /srv/daemon-data:/srv/daemon-data
-        depends_on:
-            - rabbitmq
-            - mongodb
         networks:
             - micros
             - db
@@ -121,8 +114,6 @@ services:
             SENDGRID_API_KEY: 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
         volumes:
             - ./services/mailer/src:/app/src
-        depends_on:
-            - rabbitmq
         networks:
             - micros
 
@@ -140,15 +131,16 @@ services:
         hostname: rabbitmq  #The hostname has to be manually specified. Refer to hub.docker.com/_/rabbitmq
         volumes:
             - /srv/utils/rabbitmq:/var/lib/rabbitmq/
-        labels:
-            - "traefik.docker.network=proxy"
-            - "traefik.backend=rabbitmq"
-            - "traefik.frontend.rule=Host:rabbitmq.local"
-            - "traefik.port=15672"
-            - "traefik.enable=true"
         networks:
             - micros
             - proxy
+        deploy:
+            labels:
+                - "traefik.docker.network=proxy"
+                - "traefik.backend=rabbitmq"
+                - "traefik.frontend.rule=Host:rabbitmq.local"
+                - "traefik.port=15672"
+                - "traefik.enable=true"
 
     traefik:
         image: traefik
@@ -160,10 +152,11 @@ services:
             - ./config/traefik/traefik-dev.compose.toml:/etc/traefik/traefik.toml
             - ./config/traefik/traefik.crt:/etc/traefik/traefik.crt
             - ./config/traefik/traefik.key:/etc/traefik/traefik.key
-        labels:
-            - "traefik.backend=traefik"
-            - "traefik.frontend.rule=Host:traefik.local"
-            - "traefik.port=8080"
-            - "traefik.enable=true"
         networks:
             - proxy
+        deploy:
+            labels:
+                - "traefik.backend=traefik"
+                - "traefik.frontend.rule=Host:traefik.local"
+                - "traefik.port=8080"
+                - "traefik.enable=true"

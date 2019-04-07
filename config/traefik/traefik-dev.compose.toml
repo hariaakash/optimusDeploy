@@ -19,13 +19,8 @@ domain = "traefik.local"
 address = ":8080"
 
 [docker]
+endpoint = "unix:///var/run/docker.sock"
 watch = true
 exposedbydefault = false
-
-[traefikLog]
-  filePath = "/var/log/traefik/traefik.log.json"
-  format   = "json"
-
-[accessLog]
-  filePath = "/var/log/traefik/access.log.json"
-  format = "json"
+swarmmode = true
+network = "proxy"
