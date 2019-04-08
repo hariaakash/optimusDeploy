@@ -6,6 +6,7 @@ const projectSchema = new Schema({
 	user: { type: Schema.Types.ObjectId, ref: 'User' },
 	services: [{ type: Schema.Types.ObjectId, ref: 'Service' }],
 	networks: [{ type: Schema.Types.ObjectId, ref: 'Network' }],
+	volumes: [{ type: Schema.Types.ObjectId, ref: 'Volume' }],
 	info: {
 		created_at: { type: Date, default: Date.now },
 	},

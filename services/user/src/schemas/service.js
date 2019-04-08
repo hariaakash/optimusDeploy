@@ -5,6 +5,7 @@ const serviceSchema = new Schema({
 	easyId: { type: String, unique: true, required: true },
 	project: { type: Schema.Types.ObjectId, ref: 'Project' },
 	networks: [{ type: Schema.Types.ObjectId, ref: 'Network' }],
+	volumes: [{ type: Schema.Types.ObjectId, ref: 'Volume' }],
 	info: {
 		port: { type: Number, required: true },
 		domain: [{ type: String }],

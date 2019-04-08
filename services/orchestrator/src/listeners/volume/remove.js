@@ -1,10 +1,8 @@
 const async = require('async');
 
-const Production = process.env.NODE_ENV !== 'development';
-
 const { send, rpcSend, rpcConsume } = require('../../helpers/amqp-wrapper');
 
-const processData = ({ authKey, name, projectEasyId, networkEasyId }, ch) =>
+const processData = ({ authKey, projectEasyId, volumeEasyId }, ch) =>
 	new Promise((resolve) => {
 		async.auto(
 			{
@@ -29,63 +27,87 @@ const processData = ({ authKey, name, projectEasyId, networkEasyId }, ch) =>
 							queue: 'user_project:exists_orchestrator',
 							data: { easyId: projectEasyId },
 						}).then((res) => {
-							if (res.status === 200) cb(null, res.data);
+							if (res.status === 200)
+								if (
+									results.checkAuth.projects.some(
+										(x) => x._id === res.data.projectId
+									)
+								)
+									cb(null, res.data);
+								else
+									cb('checkProjectExists', {
+										status: 404,
+										data: { msg: res.data.msg },
+									});
 							else if (res.status === 404) cb('checkProjectExists', res);
 							else cb('checkProjectExists');
 						});
 					},
 				],
-				checkNetworkExists: [
+				checkVolumeExists: [
 					'checkProjectExists',
 					(results, cb) => {
 						rpcSend({
 							ch,
-							queue: 'user_network:exists_orchestrator',
+							queue: 'user_volume:exists_orchestrator',
 							data: {
-								easyId: networkEasyId,
 								projectId: results.checkProjectExists.projectId,
+								easyId: volumeEasyId,
+							},
+						}).then((res) => {
+							if (res.status === 200) cb(null, res.data);
+							else if (res.status === 404)
+								cb('checkVolumeExists', {
+									status: 404,
+									data: { msg: res.data.msg },
+								});
+							else cb('checkVolumeExists');
+						});
+					},
+				],
+				checkVolumeUsage: [
+					'checkVolumeExists',
+					(results, cb) => {
+						rpcSend({
+							ch,
+							queue: 'user_service:volumeUsage_orchestrator',
+							data: {
+								projectId: results.checkProjectExists.projectId,
+								volumeId: results.checkVolumeExists.volumeId,
 							},
 						}).then((res) => {
 							if (res.status === 404) cb();
 							else if (res.status === 200)
-								cb('checkNetworkExists', {
+								cb('checkVolumeUsage', {
 									status: 404,
 									data: { msg: res.data.msg },
 								});
-							else cb('checkNetworkExists');
+							else cb('checkVolumeUsage');
 						});
 					},
 				],
-				createNetwork: [
-					'checkNetworkExists',
+				removeVolume: [
+					'checkVolumeUsage',
 					(results, cb) => {
-						rpcSend({
+						send({
 							ch,
-							queue: 'user_network:create_orchestrator',
+							queue: 'user_volume:remove_orchestrator',
+							data: { volumeId: results.checkVolumeExists.volumeId },
+						});
+						send({
+							ch,
+							queue: 'container_volume:remove_orchestrator',
 							data: {
-								name,
-								easyId: networkEasyId,
 								projectId: results.checkProjectExists.projectId,
+								volumeId: results.checkVolumeExists.volumeId,
 							},
-						}).then((res) =>
-							res.status === 200 ? cb(null, res.data) : cb('createNetwork')
-						);
-						send({
-							ch,
-							queue: 'container_network:create_orchestrator',
-							data: { name: `${projectEasyId}_${networkEasyId}` },
 						});
-					},
-				],
-				saveReference: [
-					'createNetwork',
-					(results, cb) => {
 						send({
 							ch,
-							queue: 'user_project:networkCreate_orchestrator',
+							queue: 'user_project:volumeRemove_orchestrator',
 							data: {
 								projectId: results.checkProjectExists.projectId,
-								networkId: results.createNetwork.networkId,
+								volumeId: results.checkVolumeExists.volumeId,
 							},
 						});
 						cb();
@@ -98,9 +120,9 @@ const processData = ({ authKey, name, projectEasyId, networkEasyId }, ch) =>
 						[
 							'checkAuth',
 							'checkProjectExists',
-							'checkNetworkExists',
-							'createNetwork',
-							'saveReference',
+							'checkVolumeExists',
+							'checkVolumeUsage',
+							'removeVolume',
 						].includes(err) &&
 						!!results[err]
 					)
@@ -110,8 +132,7 @@ const processData = ({ authKey, name, projectEasyId, networkEasyId }, ch) =>
 					resolve({
 						status: 200,
 						data: {
-							msg: 'Network created successfully.',
-							networkEasyId: Production ? undefined : networkEasyId,
+							msg: 'Volume removed successfully.',
 						},
 					});
 				}
@@ -120,7 +141,7 @@ const processData = ({ authKey, name, projectEasyId, networkEasyId }, ch) =>
 	});
 
 const method = (ch) => {
-	rpcConsume({ ch, queue: 'orchestrator_network:create_api', process: processData });
+	rpcConsume({ ch, queue: 'orchestrator_volume:remove_api', process: processData });
 };
 
 module.exports = method;

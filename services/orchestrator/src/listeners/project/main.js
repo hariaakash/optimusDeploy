@@ -56,6 +56,8 @@ const processData = ({ authKey, projectEasyId }, ch) =>
 						data.services.forEach((x) => delete x._id);
 					if (Object.prototype.hasOwnProperty.call(data, 'networks'))
 						data.networks.forEach((x) => delete x._id);
+					if (Object.prototype.hasOwnProperty.call(data, 'volumes'))
+						data.volumes.forEach((x) => delete x._id);
 					resolve({ status: results.getProject.status, data });
 					if (removeProTrans) {
 						removeProTrans.end();

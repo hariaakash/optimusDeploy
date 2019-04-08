@@ -1,6 +1,6 @@
 const { Schema, model } = require('mongoose');
 
-const networkSchema = new Schema({
+const volumeSchema = new Schema({
 	name: { type: String, required: true },
 	easyId: { type: String, required: true },
 	project: { type: Schema.Types.ObjectId, ref: 'Project' },
@@ -9,4 +9,4 @@ const networkSchema = new Schema({
 	},
 });
 
-module.exports = model('Network', networkSchema);
+module.exports = model('Volume', volumeSchema);

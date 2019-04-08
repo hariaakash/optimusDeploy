@@ -7,7 +7,8 @@ const processData = ({ userId, easyId }) =>
 		Project.findOne({ easyId, user: userId })
 			.populate('services', 'easyId name')
 			.populate('networks', 'easyId name')
-			.select('name easyId services networks info')
+			.populate('volumes', 'easyId name')
+			.select('name easyId services networks volumes info')
 			.then((project) => {
 				if (project) resolve({ status: 200, data: project });
 				else resolve({ status: 404, data: { msg: 'Project not found.' } });
