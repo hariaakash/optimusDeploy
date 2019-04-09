@@ -7,7 +7,11 @@ const processData = ({ projectId, serviceId, accessToken, repo, branch, source }
 		if (source === 'github')
 			githubClone({ projectId, serviceId, accessToken, repo, branch })
 				.then(() => resolve(true))
-				.catch(reject());
+				.catch((err) => {
+					console.log(err);
+					if (err.includes('already exists')) resolve(true);
+					else reject();
+				});
 		else resolve(true);
 	});
 

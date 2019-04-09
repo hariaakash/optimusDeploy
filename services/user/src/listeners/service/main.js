@@ -6,6 +6,7 @@ let select = [
 	'name',
 	'easyId',
 	'networks',
+	'volumes',
 	'info.domain',
 	'info.enablePublic',
 	'info.port',
@@ -18,6 +19,7 @@ const processData = ({ projectId, easyId }) =>
 	new Promise((resolve) => {
 		Service.findOne({ easyId, project: projectId })
 			.populate('networks', 'name easyId')
+			.populate('volumes', 'name easyId')
 			.select(select)
 			.then((service) => {
 				if (service)

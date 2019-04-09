@@ -50,6 +50,12 @@ const update = async ({ name: Name, type, data = {}, next }) => {
 		} else if (type === 'network') {
 			opts.Networks = data.Networks;
 			opts.TaskTemplate.Networks = opts.Networks;
+		} else if (type === 'volume') {
+			data.Mounts.forEach((x) => {
+				x.Source = `${dir}/${x.Source}`;
+				x.Target = x.Target === 'app' ? '/app' : `/mnt/${x.Target}`;
+			});
+			opts.TaskTemplate.ContainerSpec.Mounts = data.Mounts;
 		} else if (type === 'enablePublic') {
 			opts.Labels['traefik.enable'] = `${data.enablePublic}`;
 		} else if (type === 'domain') {

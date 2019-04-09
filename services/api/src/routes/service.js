@@ -9,4 +9,7 @@ router.delete('/', service.remove);
 router.post('/network', service.networkAttach);
 router.delete('/network', service.networkDetach);
 
+router.post('/volume', service.volumeAttach);
+router.delete('/volume', service.volumeDetach);
+
 module.exports = router;

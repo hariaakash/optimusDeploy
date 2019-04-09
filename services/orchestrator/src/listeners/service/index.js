@@ -5,6 +5,9 @@ const remove = require('./remove');
 const networkAttach = require('./networkAttach');
 const networkDetach = require('./networkDetach');
 
+const volumeAttach = require('./volumeAttach');
+const volumeDetach = require('./volumeDetach');
+
 const listeners = (ch) => {
 	main(ch);
 	create(ch);
@@ -12,6 +15,9 @@ const listeners = (ch) => {
 
 	networkAttach(ch);
 	networkDetach(ch);
+
+	volumeAttach(ch);
+	volumeDetach(ch);
 };
 
 module.exports = listeners;

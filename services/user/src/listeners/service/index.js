@@ -12,6 +12,8 @@ const networkAttach = require('./networkAttach');
 const networkDetach = require('./networkDetach');
 
 const volumeUsage = require('./volumeUsage');
+const volumeAttach = require('./volumeAttach');
+const volumeDetach = require('./volumeDetach');
 
 const tasks = (ch) => {
 	main(ch);
@@ -28,6 +30,8 @@ const tasks = (ch) => {
 	networkDetach(ch);
 
 	volumeUsage(ch);
+	volumeAttach(ch);
+	volumeDetach(ch);
 };
 
 module.exports = tasks;
