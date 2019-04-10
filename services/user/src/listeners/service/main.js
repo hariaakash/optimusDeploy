@@ -15,20 +15,25 @@ let select = [
 ];
 select = select.join(' ');
 
-const processData = ({ projectId, easyId }) =>
+const processData = ({ projectId, easyId, all = false }) =>
 	new Promise((resolve) => {
-		Service.findOne({ easyId, project: projectId })
-			.populate('networks', 'name easyId')
-			.populate('volumes', 'name easyId')
-			.select(select)
-			.then((service) => {
-				if (service)
-					resolve({
-						status: 200,
-						data: service,
-					});
-				else resolve({ status: 404, data: { msg: 'Service not found.' } });
-			});
+		if (all)
+			Service.find({ project: projectId })
+				.select(select)
+				.then((services) => resolve({ status: 200, data: services }));
+		else
+			Service.findOne({ easyId, project: projectId })
+				.populate('networks', 'name easyId')
+				.populate('volumes', 'name easyId')
+				.select(select)
+				.then((service) => {
+					if (service)
+						resolve({
+							status: 200,
+							data: service,
+						});
+					else resolve({ status: 404, data: { msg: 'Service not found.' } });
+				});
 	});
 
 const method = (ch) => {

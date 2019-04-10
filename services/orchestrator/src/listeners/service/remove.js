@@ -90,8 +90,7 @@ const processData = ({ authKey, projectEasyId, serviceEasyId }, ch) =>
 							queue: 'user_service:hookRemove_orchestrator',
 							data: {
 								accessTokens: results.checkAuth.conf.social,
-								projectId: results.checkProjectExists.projectId,
-								serviceId: results.checkServiceExists._id,
+								services: [results.checkServiceExists],
 							},
 						});
 						send({

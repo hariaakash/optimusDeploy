@@ -68,8 +68,21 @@ const processData = ({ authKey, projectEasyId }, ch) =>
 							});
 					},
 				],
-				removeProject: [
+				getServices: [
 					'checkProjectExists',
+					(results, cb) => {
+						rpcSend({
+							ch,
+							queue: 'user_service:main_orchestrator',
+							data: { projectId: results.checkProjectExists.projectId, all: true },
+						}).then((res) => {
+							if (res.status === 200) cb(null, res.data);
+							else cb('getServices');
+						});
+					},
+				],
+				removeProject: [
+					'getServices',
 					(results, cb) => {
 						const remProSpan = removeProTrans.startSpan(
 							'AMQP Call: user_project:remove_orchestrator'
@@ -135,7 +148,7 @@ const processData = ({ authKey, projectEasyId }, ch) =>
 							queue: 'user_service:hookRemove_orchestrator',
 							data: {
 								accessTokens: results.checkAuth.conf.social,
-								projectId: results.checkProjectExists.projectId,
+								services: results.getServices,
 							},
 						});
 						const cleanUpNetwork = removeProTrans.startSpan(
@@ -187,6 +200,7 @@ const processData = ({ authKey, projectEasyId }, ch) =>
 						[
 							'checkAuth',
 							'checkProjectExists',
+							'getServices',
 							'removeProject',
 							'cleanupTask',
 						].includes(err) &&

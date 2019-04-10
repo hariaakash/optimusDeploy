@@ -1,15 +1,10 @@
 const async = require('async');
 
-const Service = require('../../schemas/service');
-
 const { Github } = require('../../helpers/social');
 const { assert, consume } = require('../../helpers/amqp-wrapper');
 
-const processData = ({ accessTokens, projectId, serviceId }) =>
+const processData = ({ accessTokens, services }) =>
 	new Promise(async (resolve) => {
-		const queryOpts = { project: projectId };
-		if (serviceId) queryOpts._id = serviceId;
-		const services = await Service.find(queryOpts);
 		async.each(
 			services,
 			(service, cb) => {
