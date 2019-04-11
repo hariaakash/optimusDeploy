@@ -1,7 +1,7 @@
 const apm = require('elastic-apm-node');
 const async = require('async');
 
-const { send, rpcSend, rpcConsume } = require('../../helpers/amqp-wrapper');
+const { rpcSend, rpcConsume } = require('../../helpers/amqp-wrapper');
 
 const processData = ({ authKey, projectEasyId }, ch) =>
 	new Promise((resolve) => {

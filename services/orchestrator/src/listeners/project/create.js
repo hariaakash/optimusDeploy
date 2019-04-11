@@ -59,8 +59,20 @@ const processData = ({ authKey, name, easyId }, ch) =>
 							});
 					},
 				],
-				createProject: [
+				createDomain: [
 					'checkProjectExists',
+					(results, cb) => {
+						rpcSend({
+							ch,
+							queue: 'user_domain:create_orchestrator',
+							data: { easyId },
+						}).then((res) =>
+							res.status === 200 ? cb(null, res.data) : cb('createDomain')
+						);
+					},
+				],
+				createProject: [
+					'createDomain',
 					(results, cb) => {
 						const createProSpan = createProTrans.startSpan(
 							'AMQP Call: user_project:create_orchestrator'
@@ -68,9 +80,16 @@ const processData = ({ authKey, name, easyId }, ch) =>
 						rpcSend({
 							ch,
 							queue: 'user_project:create_orchestrator',
-							data: { name, easyId, userId: results.checkAuth._id },
+							data: {
+								name,
+								easyId,
+								userId: results.checkAuth._id,
+								defaultDomain: results.createDomain,
+							},
 						})
-							.then((res) => (res.status === 200 ? cb(null, res.data) : cb('create')))
+							.then((res) =>
+								res.status === 200 ? cb(null, res.data) : cb('createProject')
+							)
 							.then(() => {
 								if (createProSpan) {
 									createProSpan.end();
@@ -160,6 +179,7 @@ const processData = ({ authKey, name, easyId }, ch) =>
 						[
 							'checkAuth',
 							'checkProjectExists',
+							'createDomain',
 							'createProject',
 							'createDefaultNetwork',
 							'saveReference',

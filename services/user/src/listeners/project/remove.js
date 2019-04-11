@@ -1,5 +1,4 @@
 const Project = require('../../schemas/project');
-const Service = require('../../schemas/service');
 
 const { rpcConsume } = require('../../helpers/amqp-wrapper');
 
@@ -16,6 +15,7 @@ const processData = ({ projectId }) =>
 								msg: 'Project removed.',
 								networks: project.networks.map((x) => ({ easyId: x.easyId })),
 								services: project.services.map((x) => ({ easyId: x.easyId })),
+								defaultDomain: project.info.domains.default,
 							},
 						})
 					);

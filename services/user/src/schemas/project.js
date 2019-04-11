@@ -8,6 +8,10 @@ const projectSchema = new Schema({
 	networks: [{ type: Schema.Types.ObjectId, ref: 'Network' }],
 	volumes: [{ type: Schema.Types.ObjectId, ref: 'Volume' }],
 	info: {
+		domains: {
+			default: { domainIds: [String], domain: String },
+			custom: [String],
+		},
 		created_at: { type: Date, default: Date.now },
 	},
 });

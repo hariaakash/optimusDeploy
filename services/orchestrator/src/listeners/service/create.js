@@ -29,15 +29,11 @@ const processData = (
 					(results, cb) => {
 						rpcSend({
 							ch,
-							queue: 'user_project:exists_orchestrator',
-							data: { easyId: projectEasyId },
+							queue: 'user_project:main_orchestrator',
+							data: { userId: results.checkAuth._id, easyId: projectEasyId },
 						}).then((res) => {
 							if (res.status === 200)
-								if (
-									results.checkAuth.projects.some(
-										(x) => x._id === res.data.projectId
-									)
-								)
+								if (results.checkAuth.projects.some((x) => x._id === res.data._id))
 									cb(null, res.data);
 								else
 									cb('checkProjectExists', {
@@ -78,7 +74,7 @@ const processData = (
 									ch,
 									queue: 'user_network:exists_orchestrator',
 									data: {
-										projectId: results.checkProjectExists.projectId,
+										projectId: results.checkProjectExists._id,
 										easyId: networkEasyId,
 									},
 								}).then((res) => {
@@ -134,7 +130,7 @@ const processData = (
 							data: {
 								name,
 								easyId: serviceEasyId,
-								projectId: results.checkProjectExists.projectId,
+								projectId: results.checkProjectExists._id,
 								networks: results.checkNetworksExists,
 								repo,
 								image,
@@ -153,7 +149,7 @@ const processData = (
 							ch,
 							queue: 'user_project:serviceCreate_orchestrator',
 							data: {
-								projectId: results.checkProjectExists.projectId,
+								projectId: results.checkProjectExists._id,
 								serviceId: results.createService.serviceId,
 							},
 						});
@@ -162,7 +158,7 @@ const processData = (
 							queue: 'user_service:hookCreate_orchestrator',
 							data: {
 								_id: results.checkAuth._id,
-								projectId: results.checkProjectExists.projectId,
+								projectId: results.checkProjectExists._id,
 								easyId: serviceEasyId,
 								repo,
 								accessToken:
@@ -173,7 +169,7 @@ const processData = (
 							ch,
 							queue: 'container_volume:create_orchestrator',
 							data: {
-								projectId: results.checkProjectExists.projectId,
+								projectId: results.checkProjectExists._id,
 								volumeId: results.createService.serviceId,
 							},
 						});
@@ -181,7 +177,7 @@ const processData = (
 							ch,
 							queue: 'container_git:clone_orchestrator',
 							data: {
-								projectId: results.checkProjectExists.projectId,
+								projectId: results.checkProjectExists._id,
 								serviceId: results.createService.serviceId,
 								accessToken:
 									results.checkAuth.conf.social[repo.source].access_token,
@@ -191,7 +187,9 @@ const processData = (
 							},
 						});
 						const pathPrefixStrip = `PathPrefixStrip:/${serviceEasyId}`;
-						const mainDomain = Production ? 'optimuscp.io' : 'local';
+						const mainDomain = Production
+							? results.checkProjectExists.info.domains.default.domain
+							: 'local';
 						send({
 							ch,
 							queue: 'container_service:create_orchestrator',
@@ -201,7 +199,7 @@ const processData = (
 								domain: `${projectEasyId}.${mainDomain};${pathPrefixStrip}`,
 								port,
 								image,
-								projectId: results.checkProjectExists.projectId,
+								projectId: results.checkProjectExists._id,
 								serviceId: results.createService.serviceId,
 								networks: networks.map((x) => `${projectEasyId}_${x}`),
 							},

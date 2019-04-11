@@ -104,6 +104,11 @@ const processData = ({ authKey, projectEasyId }, ch) =>
 				cleanupTask: [
 					'removeProject',
 					(results, cb) => {
+						send({
+							ch,
+							queue: 'user_domain:remove_orchestrator',
+							data: { ...results.removeProject.defaultDomain },
+						});
 						const cleanUpUserDB = removeProTrans.startSpan(
 							'AMQP Call: user_profile:projectRemove_orchestrator'
 						);
