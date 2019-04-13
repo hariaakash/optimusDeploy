@@ -15,6 +15,8 @@ const volumeUsage = require('./volumeUsage');
 const volumeAttach = require('./volumeAttach');
 const volumeDetach = require('./volumeDetach');
 
+const enablePublic = require('./enablePublic');
+
 const tasks = (ch) => {
 	main(ch);
 	exists(ch);
@@ -32,6 +34,8 @@ const tasks = (ch) => {
 	volumeUsage(ch);
 	volumeAttach(ch);
 	volumeDetach(ch);
+
+	enablePublic(ch);
 };
 
 module.exports = tasks;

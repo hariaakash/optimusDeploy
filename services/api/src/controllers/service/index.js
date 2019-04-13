@@ -8,6 +8,8 @@ const networkDetach = require('./networkDetach');
 const volumeAttach = require('./volumeAttach');
 const volumeDetach = require('./volumeDetach');
 
+const enablePublic = require('./enablePublic');
+
 const methods = {
 	main,
 	create,
@@ -18,6 +20,8 @@ const methods = {
 
 	volumeAttach,
 	volumeDetach,
+
+	enablePublic,
 };
 
 module.exports = methods;
