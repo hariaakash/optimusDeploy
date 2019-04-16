@@ -73,6 +73,9 @@ services:
             GITHUB_CLIENT_SECRET: 267225d33106584503b84551d493e77bbdd7b0b8
             GOOGLE_CLIENT_ID: 666163516742-b89cg46pnk6o8p75b9btgp7o03gvv081.apps.googleusercontent.com
             GOOGLE_CLIENT_SECRET: OzxCxTGs8PJedpi4y1VeqdRH
+            CLOUDFLARE_EMAIL: smgdark@gmail.com
+            CLOUDFLARE_APIKEY: aec14d0f6ac75c489d4ad3eea00135fb6f56a
+            MASTER_IPS: 78.46.21.224,
             ELASTIC_APM_SERVICE_NAME: optimus-deploy-user-service
             ELASTIC_APM_SERVER_URL: http://apm-server:8200
         networks:
@@ -105,7 +108,6 @@ services:
             placement:
                 constraints: [node.role == manager]
 
-            
     mailer:
         image: registry.local/optimusdeploy_mailer:dev
         command: npm run dev
