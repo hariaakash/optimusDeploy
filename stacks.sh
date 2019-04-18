@@ -20,6 +20,7 @@ make_dirs() {
     mkdir -p /srv/daemon-data
     mkdir -p /srv/utils
     mkdir -p /srv/utils/registry
+    mkdir -p /srv/utils/consul-leader
     mkdir -p /srv/utils/traefik && touch /srv/utils/traefik/access.json
     mkdir -p /srv/elastic/es && chown 1000:1000 /srv/elastic/es
 }

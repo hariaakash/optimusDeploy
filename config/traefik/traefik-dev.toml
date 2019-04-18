@@ -28,3 +28,6 @@ swarmmode = true
 network = "proxy"
 
 [accessLog]
+
+[consulCatalog]
+endpoint = "consul-leader:8500"
