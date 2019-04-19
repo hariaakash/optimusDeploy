@@ -5,15 +5,23 @@ networks:
     proxy:
         name: proxy
         driver: overlay
+        # external: true
     apps:
         name: apps
         driver: overlay
+        # external: true
     micros:
         name: micros
         driver: overlay
+        # external: true
     db:
         name: db
         driver: overlay
+        # external: true
+    elastic:
+        name: elastic
+        driver: overlay
+        # external: true
 
 services:
 
@@ -103,6 +111,23 @@ services:
         networks:
             - micros
             - db
+
+    analyzer:
+        build:
+            context: ./services/analyzer
+            args:
+                NODE_ENV: development
+        image: optimusdeploy_analyzer:dev
+        command: npm run dev
+        environment:
+            NODE_ENV: development
+            AMQP_URI: amqp://rabbitmq
+        volumes:
+            - /var/run/docker.sock:/var/run/docker.sock
+            - ./services/analyzer/src:/app/src
+        networks:
+            - micros
+            - elastic
             
     mailer:
         build:
@@ -131,7 +156,7 @@ services:
     
     rabbitmq:
         image: rabbitmq:3-management
-        hostname: rabbitmq  #The hostname has to be manually specified. Refer to hub.docker.com/_/rabbitmq
+        hostname: rabbitmq
         volumes:
             - /srv/utils/rabbitmq:/var/lib/rabbitmq/
         networks:
