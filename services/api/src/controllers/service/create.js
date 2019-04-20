@@ -28,8 +28,8 @@ const schema = Joi.object().keys({
 				.regex(/^(?:[a-z0-9]+[-_]?)+$/)
 				.min(6)
 				.max(30)
-				.required()
-		),
+		)
+		.required(),
 	enablePublic: Joi.boolean().required(),
 	port: Joi.number().required(),
 	image: Joi.string()

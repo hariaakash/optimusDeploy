@@ -12,7 +12,7 @@ const schema = Joi.object().keys({
 		.min(4)
 		.max(30)
 		.required(),
-	easyId: Joi.string()
+	projectEasyId: Joi.string()
 		.regex(/^(?:[a-z0-9]+[-]?)+$/)
 		.min(6)
 		.max(30)

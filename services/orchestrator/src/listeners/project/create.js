@@ -5,7 +5,7 @@ const Production = process.env.NODE_ENV !== 'development';
 
 const { send, rpcSend, rpcConsume } = require('../../helpers/amqp-wrapper');
 
-const processData = ({ authKey, name, easyId }, ch) =>
+const processData = ({ authKey, name, projectEasyId: easyId }, ch) =>
 	new Promise((resolve) => {
 		const createProTrans = apm.startTransaction('Orchestration: User: Create-Project');
 		async.auto(

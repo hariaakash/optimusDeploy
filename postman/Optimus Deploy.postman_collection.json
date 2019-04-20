@@ -1,0 +1,1511 @@
+{
+	"info": {
+		"_postman_id": "946007c6-c21f-49bc-abb3-4af142276df6",
+		"name": "Optimus Deploy",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "/user",
+			"item": [
+				{
+					"name": "/user/create",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5981e853-13f6-4273-92d7-8af38215c342",
+								"exec": [
+									"// Test 1",
+									"pm.test(\"response is ok\", () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"// Test 2",
+									"pm.test(\"response must be valid and have a body\", () => {",
+									"    pm.expect(pm.response.text()).to.include(\"success\");",
+									"    let jsonData = pm.response.json();",
+									"    pm.environment.set(\"eToken\", jsonData.eToken);",
+									"});",
+									"",
+									"// Test 3",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"{{email}}\",\n\t\"password\": \"{{password}}\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/user/create",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"user",
+								"create"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/user/verifyEmail",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "5c155d71-df41-479b-84dd-5d6fa0a63b85",
+								"exec": [
+									"// Test 1",
+									"pm.test(\"response is ok\", () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"// Test 2",
+									"pm.test(\"response must be valid and have a body\", () => {",
+									"    pm.expect(pm.response.text()).to.include(\"success\");",
+									"});",
+									"",
+									"// Test 3",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"{{email}}\",\n\t\"token\": \"{{eToken}}\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/user/verifyEmail",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"user",
+								"verifyEmail"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/user/forgotPassword",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "908e2512-a544-4232-8eea-d00e99e58f4a",
+								"exec": [
+									"// Test 1",
+									"pm.test(\"response is ok\", () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"// Test 2",
+									"pm.test(\"response must be valid and have a body\", () => {",
+									"    pm.expect(pm.response.text()).to.include(\"reset\");",
+									"    let jsonData = pm.response.json();",
+									"    pm.environment.set(\"pToken\", jsonData.pToken);",
+									"});",
+									"",
+									"// Test 3",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"{{email}}\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/user/forgotPassword",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"user",
+								"forgotPassword"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/user/updatePassword",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "e0cf7adb-e473-4473-b84b-61037779d149",
+								"exec": [
+									"// Test 1",
+									"pm.test(\"response is ok\", () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"// Test 2",
+									"pm.test(\"response must be valid and have a body\", () => {",
+									"    pm.expect(pm.response.text()).to.include(\"updated\");",
+									"});",
+									"",
+									"// Test 3",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"{{email}}\",\n\t\"pToken\": \"{{pToken}}\",\n\t\"newPassword\": \"{{newPassword}}\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/user/updatePassword",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"user",
+								"updatePassword"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/user/auth",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "4dc39d52-e514-4f45-8cda-e11c413ef347",
+								"exec": [
+									"// Test 1",
+									"pm.test(\"response is ok\", () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"// Test 2",
+									"pm.test(\"response must be valid and have a body\", () => {",
+									"    pm.response.to.be.json;",
+									"    let jsonData = pm.response.json();",
+									"    pm.environment.set(\"authKey\", jsonData.authKey);",
+									"});",
+									"",
+									"// Test 3",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"email\": \"{{email}}\",\n\t\"password\": \"{{newPassword}}\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/user/auth",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"user",
+								"auth"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/user",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "eefaced5-aedb-4805-abfe-e20c6520e744",
+								"exec": [
+									"// Test 1",
+									"pm.test(\"response is ok\", () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"// Test 2",
+									"pm.test(\"response must be valid and have a body\", () => {",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"// Test 3",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "authkey",
+								"value": "{{authKey}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{apiUrl}}/user",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"user"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/user/authGithub",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "4dc39d52-e514-4f45-8cda-e11c413ef347",
+								"exec": [
+									"// Test 1",
+									"pm.test(\"response is ok\", () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"// Test 2",
+									"pm.test(\"response must be valid and have a body\", () => {",
+									"    pm.response.to.be.json;",
+									"    let jsonData = pm.response.json();",
+									"    pm.environment.set(\"authKey\", jsonData.authKey);",
+									"});",
+									"",
+									"// Test 3",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"code\": \"8e21da29903d96093c1b\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/user/authGithub",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"user",
+								"authGithub"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/user/repos",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "eff2333f-9391-43cc-a691-0b23da883b72",
+								"exec": [
+									"// Test 1",
+									"pm.test(\"response is ok\", () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"// Test 2",
+									"pm.test(\"response must be valid and have a body\", () => {",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"// Test 3",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"name": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "authkey",
+								"value": "{{authKey}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": ""
+						},
+						"url": {
+							"raw": "{{apiUrl}}/user/repos?source={{repoSource}}",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"user",
+								"repos"
+							],
+							"query": [
+								{
+									"key": "source",
+									"value": "{{repoSource}}"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "/project",
+			"item": [
+				{
+					"name": "/project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "3ef41936-35cf-4386-b647-a4a67550ca61",
+								"exec": [
+									"// Test 1",
+									"pm.test(\"response is ok\", () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"// Test 2",
+									"pm.test(\"response must be valid and have a body\", () => {",
+									"    pm.expect(pm.response.text()).to.include(\"success\");",
+									"});",
+									"",
+									"// Test 3",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "authkey",
+								"value": "{{authKey}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"{{projectName}}\",\n\t\"projectEasyId\": \"{{projectEasyId}}\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/project",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"project"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f11edcb8-f731-407b-ace7-b94bd8745f6b",
+								"exec": [
+									"// Test 1",
+									"pm.test(\"response is ok\", () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"// Test 2",
+									"pm.test(\"response must be valid and have a body\", () => {",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"// Test 3",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "authkey",
+								"type": "text",
+								"value": "{{authKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"projectEasyId\": \"{{projectEasyId}}\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/project?projectEasyId={{projectEasyId}}",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"project"
+							],
+							"query": [
+								{
+									"key": "projectEasyId",
+									"value": "{{projectEasyId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/project",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "f164d51e-95e0-4db1-a8e7-092779e3bb3f",
+								"exec": [
+									"// Test 1",
+									"pm.test(\"response is ok\", () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"// Test 2",
+									"pm.test(\"response must be valid and have a body\", () => {",
+									"    pm.expect(pm.response.text()).to.include(\"success\");",
+									"});",
+									"",
+									"// Test 3",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "authkey",
+								"type": "text",
+								"value": "{{authKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"projectEasyId\": \"{{projectEasyId}}\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/project",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"project"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "/network",
+			"item": [
+				{
+					"name": "/network",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "18bf4041-1442-4ea9-b47e-cbb7121bf608",
+								"exec": [
+									"// Test 1",
+									"pm.test(\"response is ok\", () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"// Test 2",
+									"pm.test(\"response must be valid and have a body\", () => {",
+									"    pm.expect(pm.response.text()).to.include(\"success\");",
+									"});",
+									"",
+									"// Test 3",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json",
+								"type": "text"
+							},
+							{
+								"key": "authkey",
+								"value": "{{authKey}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"{{networkName}}\",\n\t\"networkEasyId\": \"{{networkEasyId}}\",\n\t\"projectEasyId\": \"{{projectEasyId}}\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/network",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"network"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/network",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "09cae48c-4fd4-407e-94e5-e8cbde807761",
+								"exec": [
+									"// Test 1",
+									"pm.test(\"response is ok\", () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"// Test 2",
+									"pm.test(\"response must be valid and have a body\", () => {",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"// Test 3",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "authkey",
+								"type": "text",
+								"value": "{{authKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"projectEasyId\": \"{{projectEasyId}}\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/network?projectEasyId={{projectEasyId}}&networkEasyId={{networkEasyId}}",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"network"
+							],
+							"query": [
+								{
+									"key": "projectEasyId",
+									"value": "{{projectEasyId}}"
+								},
+								{
+									"key": "networkEasyId",
+									"value": "{{networkEasyId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/network",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "87b1c8ec-f0ec-468d-a218-4e9fcdb1cbcb",
+								"exec": [
+									"// Test 1",
+									"pm.test(\"response is ok\", () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"// Test 2",
+									"pm.test(\"response must be valid and have a body\", () => {",
+									"    pm.expect(pm.response.text()).to.include(\"success\");",
+									"});",
+									"",
+									"// Test 3",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "authkey",
+								"type": "text",
+								"value": "{{authKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"projectEasyId\": \"{{projectEasyId}}\",\n\t\"networkEasyId\": \"{{networkEasyId}}\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/network",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"network"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "/volume",
+			"item": [
+				{
+					"name": "/volume",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "aaee89ae-79a4-4dc2-a01c-660f0f538e35",
+								"exec": [
+									"// Test 1",
+									"pm.test(\"response is ok\", () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"// Test 2",
+									"pm.test(\"response must be valid and have a body\", () => {",
+									"    pm.expect(pm.response.text()).to.include(\"success\");",
+									"});",
+									"",
+									"// Test 3",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "authkey",
+								"type": "text",
+								"value": "{{authKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"{{volumeName}}\",\n\t\"volumeEasyId\": \"{{volumeEasyId}}\",\n\t\"projectEasyId\": \"{{projectEasyId}}\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/volume",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"volume"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/volume",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7301b8ec-156c-4ee9-9e9b-9179df71755a",
+								"exec": [
+									"// Test 1",
+									"pm.test(\"response is ok\", () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"// Test 2",
+									"pm.test(\"response must be valid and have a body\", () => {",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"// Test 3",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "authkey",
+								"type": "text",
+								"value": "{{authKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"projectEasyId\": \"{{projectEasyId}}\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/volume?projectEasyId={{projectEasyId}}&volumeEasyId={{volumeEasyId}}",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"volume"
+							],
+							"query": [
+								{
+									"key": "projectEasyId",
+									"value": "{{projectEasyId}}"
+								},
+								{
+									"key": "volumeEasyId",
+									"value": "{{volumeEasyId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/volume",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "22f98e3d-fc37-482c-aaa7-21fc6f6133f5",
+								"exec": [
+									"// Test 1",
+									"pm.test(\"response is ok\", () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"// Test 2",
+									"pm.test(\"response must be valid and have a body\", () => {",
+									"    pm.expect(pm.response.text()).to.include(\"success\");",
+									"});",
+									"",
+									"// Test 3",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "authkey",
+								"type": "text",
+								"value": "{{authKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"projectEasyId\": \"{{projectEasyId}}\",\n\t\"volumeEasyId\": \"{{volumeEasyId}}\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/volume",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"volume"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "/service",
+			"item": [
+				{
+					"name": "/service",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "aaee89ae-79a4-4dc2-a01c-660f0f538e35",
+								"exec": [
+									"// Test 1",
+									"pm.test(\"response is ok\", () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"// Test 2",
+									"pm.test(\"response must be valid and have a body\", () => {",
+									"    pm.expect(pm.response.text()).to.include(\"success\");",
+									"});",
+									"",
+									"// Test 3",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "authkey",
+								"type": "text",
+								"value": "{{authKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"name\": \"{{serviceName}}\",\n\t\"serviceEasyId\": \"{{serviceEasyId}}\",\n\t\"projectEasyId\": \"{{projectEasyId}}\",\n\t\"enablePublic\": \"{{enablePublic}}\",\n\t\"port\": \"{{servicePort}}\",\n\t\"image\": \"{{serviceImage}}\",\n\t\"networks\": [\"default\"],\n\t\"repo\": {\n\t\t\"source\": \"{{repoSource}}\",\n\t\t\"name\": \"{{repoName}}\",\n\t\t\"branch\": \"{{repoBranch}}\"\n\t}\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/service",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"service"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/service/enablePublic",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "aaee89ae-79a4-4dc2-a01c-660f0f538e35",
+								"exec": [
+									"// Test 1",
+									"pm.test(\"response is ok\", () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"// Test 2",
+									"pm.test(\"response must be valid and have a body\", () => {",
+									"    pm.expect(pm.response.text()).to.include(\"success\");",
+									"});",
+									"",
+									"// Test 3",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "authkey",
+								"type": "text",
+								"value": "{{authKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"serviceEasyId\": \"{{serviceEasyId}}\",\n\t\"projectEasyId\": \"{{projectEasyId}}\",\n\t\"enablePublic\": true\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/service/enablePublic",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"service",
+								"enablePublic"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/service",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "7301b8ec-156c-4ee9-9e9b-9179df71755a",
+								"exec": [
+									"// Test 1",
+									"pm.test(\"response is ok\", () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"// Test 2",
+									"pm.test(\"response must be valid and have a body\", () => {",
+									"    pm.response.to.be.json;",
+									"});",
+									"",
+									"// Test 3",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "authkey",
+								"type": "text",
+								"value": "{{authKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"projectEasyId\": \"{{projectEasyId}}\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/service?projectEasyId={{projectEasyId}}&serviceEasyId={{serviceEasyId}}",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"service"
+							],
+							"query": [
+								{
+									"key": "projectEasyId",
+									"value": "{{projectEasyId}}"
+								},
+								{
+									"key": "serviceEasyId",
+									"value": "{{serviceEasyId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/service/network",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "aaee89ae-79a4-4dc2-a01c-660f0f538e35",
+								"exec": [
+									"// Test 1",
+									"pm.test(\"response is ok\", () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"// Test 2",
+									"pm.test(\"response must be valid and have a body\", () => {",
+									"    pm.expect(pm.response.text()).to.include(\"success\");",
+									"});",
+									"",
+									"// Test 3",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "authkey",
+								"type": "text",
+								"value": "{{authKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"serviceEasyId\": \"{{serviceEasyId}}\",\n\t\"projectEasyId\": \"{{projectEasyId}}\",\n\t\"networkEasyId\": \"{{networkEasyId}}\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/service/network",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"service",
+								"network"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/service/network",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "aaee89ae-79a4-4dc2-a01c-660f0f538e35",
+								"exec": [
+									"// Test 1",
+									"pm.test(\"response is ok\", () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"// Test 2",
+									"pm.test(\"response must be valid and have a body\", () => {",
+									"    pm.expect(pm.response.text()).to.include(\"success\");",
+									"});",
+									"",
+									"// Test 3",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "authkey",
+								"type": "text",
+								"value": "{{authKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"serviceEasyId\": \"{{serviceEasyId}}\",\n\t\"projectEasyId\": \"{{projectEasyId}}\",\n\t\"networkEasyId\": \"{{networkEasyId}}\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/service/network",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"service",
+								"network"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/service/volume",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "aaee89ae-79a4-4dc2-a01c-660f0f538e35",
+								"exec": [
+									"// Test 1",
+									"pm.test(\"response is ok\", () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"// Test 2",
+									"pm.test(\"response must be valid and have a body\", () => {",
+									"    pm.expect(pm.response.text()).to.include(\"success\");",
+									"});",
+									"",
+									"// Test 3",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "authkey",
+								"type": "text",
+								"value": "{{authKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"serviceEasyId\": \"{{serviceEasyId}}\",\n\t\"projectEasyId\": \"{{projectEasyId}}\",\n\t\"volumeEasyId\": \"{{volumeEasyId}}\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/service/volume",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"service",
+								"volume"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/service/volume",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "aaee89ae-79a4-4dc2-a01c-660f0f538e35",
+								"exec": [
+									"// Test 1",
+									"pm.test(\"response is ok\", () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"// Test 2",
+									"pm.test(\"response must be valid and have a body\", () => {",
+									"    pm.expect(pm.response.text()).to.include(\"success\");",
+									"});",
+									"",
+									"// Test 3",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "authkey",
+								"type": "text",
+								"value": "{{authKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"serviceEasyId\": \"{{serviceEasyId}}\",\n\t\"projectEasyId\": \"{{projectEasyId}}\",\n\t\"volumeEasyId\": \"{{volumeEasyId}}\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/service/volume",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"service",
+								"volume"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "/service",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"id": "22f98e3d-fc37-482c-aaa7-21fc6f6133f5",
+								"exec": [
+									"// Test 1",
+									"pm.test(\"response is ok\", () => {",
+									"    pm.response.to.be.ok;",
+									"});",
+									"",
+									"// Test 2",
+									"pm.test(\"response must be valid and have a body\", () => {",
+									"    pm.expect(pm.response.text()).to.include(\"success\");",
+									"});",
+									"",
+									"// Test 3",
+									"pm.test(\"Response time is less than 200ms\", () => {",
+									"    pm.expect(pm.response.responseTime).to.be.below(200);",
+									"});"
+								],
+								"type": "text/javascript"
+							}
+						}
+					],
+					"request": {
+						"method": "DELETE",
+						"header": [
+							{
+								"key": "Content-Type",
+								"type": "text",
+								"value": "application/json"
+							},
+							{
+								"key": "authkey",
+								"type": "text",
+								"value": "{{authKey}}"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n\t\"projectEasyId\": \"{{projectEasyId}}\",\n\t\"serviceEasyId\": \"{{serviceEasyId}}\"\n}"
+						},
+						"url": {
+							"raw": "{{apiUrl}}/service",
+							"host": [
+								"{{apiUrl}}"
+							],
+							"path": [
+								"service"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		}
+	]
+}
