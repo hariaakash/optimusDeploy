@@ -2,7 +2,7 @@ const async = require('async');
 
 const { rpcSend, rpcConsume } = require('../../helpers/amqp-wrapper');
 
-const processData = ({ authKey, projectEasyId, serviceEasyId }, ch) =>
+const processData = ({ authKey, projectEasyId, functionEasyId }, ch) =>
 	new Promise((resolve) => {
 		async.auto(
 			{
@@ -44,20 +44,20 @@ const processData = ({ authKey, projectEasyId, serviceEasyId }, ch) =>
 						});
 					},
 				],
-				getService: [
+				getFunction: [
 					'checkProjectExists',
 					(results, cb) => {
 						rpcSend({
 							ch,
-							queue: 'user_service:main_orchestrator',
+							queue: 'user_function:main_orchestrator',
 							data: {
 								projectId: results.checkProjectExists.projectId,
-								easyId: serviceEasyId,
+								easyId: functionEasyId,
 							},
 						}).then((res) => {
-							if (res.status === 404) cb('getService', res);
+							if (res.status === 404) cb('getFunction', res);
 							else if (res.status === 200) cb(null, res.data);
-							else cb('getService');
+							else cb('getFunction');
 						});
 					},
 				],
@@ -65,25 +65,25 @@ const processData = ({ authKey, projectEasyId, serviceEasyId }, ch) =>
 			(err, results) => {
 				if (err) {
 					if (
-						['checkAuth', 'checkProjectExists', 'getService'].includes(err) &&
+						['checkAuth', 'checkProjectExists', 'getFunction'].includes(err) &&
 						!!results[err]
 					)
 						resolve(results[err]);
 					else resolve({ status: 500, data: { msg: 'Internal Server Error' } });
 				} else {
-					const service = results.getService;
-					delete service._id;
-					if (Object.prototype.hasOwnProperty.call(service.info, 'repo')) {
-						delete service.info.repo.hookId;
-						delete service.info.repo.enabled;
+					const aFunction = results.getFunction;
+					delete aFunction._id;
+					if (Object.prototype.hasOwnProperty.call(aFunction.info, 'repo')) {
+						delete aFunction.info.repo.hookId;
+						delete aFunction.info.repo.enabled;
 					}
-					service.networks = service.networks.map((x) => ({
+					aFunction.networks = aFunction.networks.map((x) => ({
 						name: x.name,
 						easyId: x.easyId,
 					}));
 					resolve({
 						status: 200,
-						data: service,
+						data: aFunction,
 					});
 				}
 			}
@@ -91,7 +91,7 @@ const processData = ({ authKey, projectEasyId, serviceEasyId }, ch) =>
 	});
 
 const method = (ch) => {
-	rpcConsume({ ch, queue: 'orchestrator_service:main_api', process: processData });
+	rpcConsume({ ch, queue: 'orchestrator_function:main_api', process: processData });
 };
 
 module.exports = method;

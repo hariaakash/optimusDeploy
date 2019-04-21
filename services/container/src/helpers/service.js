@@ -18,17 +18,27 @@ const globalConfig = {
 	},
 };
 
-const create = ({ Name, Labels, Image, projectId, serviceId, Networks, next }) =>
+const create = ({
+	aFunction = false,
+	Name,
+	Env = [],
+	Labels,
+	Image,
+	projectId,
+	volumeId,
+	Networks,
+	next,
+}) => {
+	const Target = aFunction ? '/app/function' : '/app';
 	Docker.createService({
 		Name,
 		Labels,
 		Networks,
 		TaskTemplate: {
 			ContainerSpec: {
+				Env,
 				Image,
-				Mounts: [
-					{ Type: 'bind', Source: `${dir}/${projectId}/${serviceId}`, Target: '/app' },
-				],
+				Mounts: [{ Type: 'bind', Source: `${dir}/${projectId}/${volumeId}`, Target }],
 			},
 			...globalConfig.TaskTemplate,
 		},
@@ -38,8 +48,9 @@ const create = ({ Name, Labels, Image, projectId, serviceId, Networks, next }) =
 		.catch((err) =>
 			err.statusCode ? next(err) : next(new Error('Service creation failed.', 500, err))
 		);
+};
 
-const update = async ({ name: Name, type, data = {}, next }) => {
+const update = async ({ aFunction = false, name: Name, type, data = {}, next }) => {
 	try {
 		const service = Docker.getService(Name);
 		let opts = await service.inspect();
@@ -53,7 +64,8 @@ const update = async ({ name: Name, type, data = {}, next }) => {
 		} else if (type === 'volume') {
 			data.Mounts.forEach((x) => {
 				x.Source = `${dir}/${x.Source}`;
-				x.Target = x.Target === 'app' ? '/app' : `/mnt/${x.Target}`;
+				if (aFunction) x.Target = x.Target === 'app' ? '/app' : `/mnt/${x.Target}`;
+				else x.Target = x.Target === 'app' ? '/app/function/' : `/mnt/${x.Target}`;
 			});
 			opts.TaskTemplate.ContainerSpec.Mounts = data.Mounts;
 		} else if (type === 'enablePublic') {

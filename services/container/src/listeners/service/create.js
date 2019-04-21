@@ -35,7 +35,7 @@ const processData = ({ name, enablePublic, domain, port, image, projectId, servi
 			},
 			Image,
 			projectId,
-			serviceId,
+			volumeId: serviceId,
 			Networks: networks.map((Target) => ({ Target })),
 			next: (err, data) => {
 				if (!err) resolve(true);

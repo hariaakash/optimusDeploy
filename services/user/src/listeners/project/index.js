@@ -9,6 +9,8 @@ const volumeCreate = require('./volumeCreate');
 const volumeRemove = require('./volumeRemove');
 const serviceCreate = require('./serviceCreate');
 const serviceRemove = require('./serviceRemove');
+const functionCreate = require('./functionCreate');
+const functionRemove = require('./functionRemove');
 
 const tasks = (ch) => {
 	exists(ch);
@@ -22,6 +24,8 @@ const tasks = (ch) => {
 	volumeRemove(ch);
 	serviceCreate(ch);
 	serviceRemove(ch);
+	functionCreate(ch);
+	functionRemove(ch);
 };
 
 module.exports = tasks;

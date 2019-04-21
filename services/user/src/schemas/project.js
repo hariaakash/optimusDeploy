@@ -5,6 +5,7 @@ const projectSchema = new Schema({
 	easyId: { type: String, unique: true, required: true },
 	user: { type: Schema.Types.ObjectId, ref: 'User' },
 	services: [{ type: Schema.Types.ObjectId, ref: 'Service' }],
+	functions: [{ type: Schema.Types.ObjectId, ref: 'Function' }],
 	networks: [{ type: Schema.Types.ObjectId, ref: 'Network' }],
 	volumes: [{ type: Schema.Types.ObjectId, ref: 'Volume' }],
 	info: {

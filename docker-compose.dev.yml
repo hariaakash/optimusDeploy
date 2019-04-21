@@ -112,38 +112,38 @@ services:
             - micros
             - db
 
-    analyzer:
-        build:
-            context: ./services/analyzer
-            args:
-                NODE_ENV: development
-        image: optimusdeploy_analyzer:dev
-        command: npm run dev
-        environment:
-            NODE_ENV: development
-            AMQP_URI: amqp://rabbitmq
-        volumes:
-            - /var/run/docker.sock:/var/run/docker.sock
-            - ./services/analyzer/src:/app/src
-        networks:
-            - micros
-            - elastic
+    # analyzer:
+    #     build:
+    #         context: ./services/analyzer
+    #         args:
+    #             NODE_ENV: development
+    #     image: optimusdeploy_analyzer:dev
+    #     command: npm run dev
+    #     environment:
+    #         NODE_ENV: development
+    #         AMQP_URI: amqp://rabbitmq
+    #     volumes:
+    #         - /var/run/docker.sock:/var/run/docker.sock
+    #         - ./services/analyzer/src:/app/src
+    #     networks:
+    #         - micros
+    #         - elastic
             
-    mailer:
-        build:
-            context: ./services/mailer
-            args:
-                NODE_ENV: development
-        image: optimusdeploy_mailer:dev
-        command: npm run dev
-        environment:
-            NODE_ENV: development
-            AMQP_URI: amqp://rabbitmq
-            SENDGRID_API_KEY: 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
-        volumes:
-            - ./services/mailer/src:/app/src
-        networks:
-            - micros
+    # mailer:
+    #     build:
+    #         context: ./services/mailer
+    #         args:
+    #             NODE_ENV: development
+    #     image: optimusdeploy_mailer:dev
+    #     command: npm run dev
+    #     environment:
+    #         NODE_ENV: development
+    #         AMQP_URI: amqp://rabbitmq
+    #         SENDGRID_API_KEY: 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
+    #     volumes:
+    #         - ./services/mailer/src:/app/src
+    #     networks:
+    #         - micros
 
     mongodb:
         image: mvertes/alpine-mongo
