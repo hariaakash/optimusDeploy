@@ -62,7 +62,7 @@ const processData = ({ authKey, projectEasyId, volumeEasyId }, ch) =>
 						});
 					},
 				],
-				checkVolumeUsage: [
+				checkVolumeServiceUsage: [
 					'getVolume',
 					(results, cb) => {
 						rpcSend({
@@ -74,7 +74,23 @@ const processData = ({ authKey, projectEasyId, volumeEasyId }, ch) =>
 							},
 						}).then((res) => {
 							if ([404, 200].includes(res.status)) cb(null, res.data);
-							else cb('checkVolumeUsage');
+							else cb('checkVolumeServiceUsage');
+						});
+					},
+				],
+				checkVolumeFunctionUsage: [
+					'getVolume',
+					(results, cb) => {
+						rpcSend({
+							ch,
+							queue: 'user_function:volumeUsage_orchestrator',
+							data: {
+								projectId: results.checkProjectExists.projectId,
+								volumeId: results.getVolume._id,
+							},
+						}).then((res) => {
+							if ([404, 200].includes(res.status)) cb(null, res.data);
+							else cb('checkVolumeFunctionUsage');
 						});
 					},
 				],
@@ -86,7 +102,8 @@ const processData = ({ authKey, projectEasyId, volumeEasyId }, ch) =>
 							'checkAuth',
 							'checkProjectExists',
 							'getVolume',
-							'checkVolumeUsage',
+							'checkVolumeServiceUsage',
+							'checkVolumeFunctionUsage',
 						].includes(err) &&
 						!!results[err]
 					)
@@ -94,8 +111,14 @@ const processData = ({ authKey, projectEasyId, volumeEasyId }, ch) =>
 					else resolve({ status: 500, data: { msg: 'Internal Server Error' } });
 				} else {
 					let services = [];
-					if (results.checkVolumeUsage.services)
-						services = results.checkVolumeUsage.services.map((x) => ({
+					if (results.checkVolumeServiceUsage.services)
+						services = results.checkVolumeServiceUsage.services.map((x) => ({
+							name: x.name,
+							easyId: x.easyId,
+						}));
+					let functions = [];
+					if (results.checkVolumeFunctionUsage.functions)
+						functions = results.checkVolumeFunctionUsage.functions.map((x) => ({
 							name: x.name,
 							easyId: x.easyId,
 						}));
@@ -105,6 +128,7 @@ const processData = ({ authKey, projectEasyId, volumeEasyId }, ch) =>
 							name: results.getVolume.name,
 							easyId: results.getVolume.easyId,
 							services,
+							functions,
 						},
 					});
 				}

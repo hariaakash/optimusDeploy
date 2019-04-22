@@ -62,7 +62,7 @@ const processData = ({ authKey, projectEasyId, networkEasyId }, ch) =>
 						});
 					},
 				],
-				checkNetworkUsage: [
+				checkNetworkServiceUsage: [
 					'getNetwork',
 					(results, cb) => {
 						rpcSend({
@@ -74,7 +74,23 @@ const processData = ({ authKey, projectEasyId, networkEasyId }, ch) =>
 							},
 						}).then((res) => {
 							if ([404, 200].includes(res.status)) cb(null, res.data);
-							else cb('checkNetworkUsage');
+							else cb('checkNetworkServiceUsage');
+						});
+					},
+				],
+				checkNetworkFunctionUsage: [
+					'getNetwork',
+					(results, cb) => {
+						rpcSend({
+							ch,
+							queue: 'user_function:networkUsage_orchestrator',
+							data: {
+								projectId: results.checkProjectExists.projectId,
+								networkId: results.getNetwork._id,
+							},
+						}).then((res) => {
+							if ([404, 200].includes(res.status)) cb(null, res.data);
+							else cb('checkNetworkFunctionUsage');
 						});
 					},
 				],
@@ -86,7 +102,8 @@ const processData = ({ authKey, projectEasyId, networkEasyId }, ch) =>
 							'checkAuth',
 							'checkProjectExists',
 							'getNetwork',
-							'checkNetworkUsage',
+							'checkNetworkServiceUsage',
+							'checkNetworkFunctionUsage',
 						].includes(err) &&
 						!!results[err]
 					)
@@ -94,8 +111,14 @@ const processData = ({ authKey, projectEasyId, networkEasyId }, ch) =>
 					else resolve({ status: 500, data: { msg: 'Internal Server Error' } });
 				} else {
 					let services = [];
-					if (results.checkNetworkUsage.services)
-						services = results.checkNetworkUsage.services.map((x) => ({
+					if (results.checkNetworkServiceUsage.services)
+						services = results.checkNetworkServiceUsage.services.map((x) => ({
+							name: x.name,
+							easyId: x.easyId,
+						}));
+					let functions = [];
+					if (results.checkNetworkFunctionUsage.functions)
+						functions = results.checkNetworkFunctionUsage.functions.map((x) => ({
 							name: x.name,
 							easyId: x.easyId,
 						}));
@@ -105,6 +128,7 @@ const processData = ({ authKey, projectEasyId, networkEasyId }, ch) =>
 							name: results.getNetwork.name,
 							easyId: results.getNetwork.easyId,
 							services,
+							functions,
 						},
 					});
 				}

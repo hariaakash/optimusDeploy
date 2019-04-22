@@ -15,6 +15,7 @@ const processData = ({ userId, easyId }) =>
 	new Promise((resolve) => {
 		Project.findOne({ easyId, user: userId })
 			.populate('services', 'easyId name')
+			.populate('functions', 'easyId name')
 			.populate('networks', 'easyId name')
 			.populate('volumes', 'easyId name')
 			.select(selectOpts)

@@ -4,6 +4,7 @@ const { assert, consume } = require('../../helpers/amqp-wrapper');
 const processData = ({ name, volumes }) =>
 	new Promise((resolve, reject) => {
 		update({
+			aFunction: true,
 			name,
 			type: 'volume',
 			data: {

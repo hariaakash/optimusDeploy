@@ -1,11 +1,28 @@
-const githubClone = require('../../helpers/github').clone;
+const { clone: githubClone, publicClone: githubPublicClone } = require('../../helpers/github');
 
 const { assert, consume } = require('../../helpers/amqp-wrapper');
 
-const processData = ({ projectId, serviceId, accessToken, repo, branch, source }) =>
+const processData = ({
+	aFunction = false,
+	image,
+	projectId,
+	volumeId,
+	accessToken,
+	repo,
+	branch,
+	source,
+}) =>
 	new Promise((resolve, reject) => {
-		if (source === 'github')
-			githubClone({ projectId, serviceId, accessToken, repo, branch })
+		if (aFunction) {
+			githubPublicClone({ projectId, volumeId, image })
+				.then(() => resolve(true))
+				.catch((err) => {
+					console.log(err);
+					if (err.includes('already exists')) resolve(true);
+					else reject();
+				});
+		} else if (source === 'github')
+			githubClone({ projectId, volumeId, accessToken, repo, branch })
 				.then(() => resolve(true))
 				.catch((err) => {
 					console.log(err);

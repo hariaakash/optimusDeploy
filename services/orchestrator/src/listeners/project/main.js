@@ -54,6 +54,8 @@ const processData = ({ authKey, projectEasyId }, ch) =>
 					if (Object.prototype.hasOwnProperty.call(data, '_id')) delete data._id;
 					if (Object.prototype.hasOwnProperty.call(data, 'services'))
 						data.services.forEach((x) => delete x._id);
+					if (Object.prototype.hasOwnProperty.call(data, 'functions'))
+						data.functions.forEach((x) => delete x._id);
 					if (Object.prototype.hasOwnProperty.call(data, 'networks'))
 						data.networks.forEach((x) => delete x._id);
 					if (Object.prototype.hasOwnProperty.call(data, 'volumes'))

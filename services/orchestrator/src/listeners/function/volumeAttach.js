@@ -2,7 +2,7 @@ const async = require('async');
 
 const { send, rpcSend, rpcConsume } = require('../../helpers/amqp-wrapper');
 
-const processData = ({ authKey, projectEasyId, serviceEasyId, volumeEasyId }, ch) =>
+const processData = ({ authKey, projectEasyId, functionEasyId, volumeEasyId }, ch) =>
 	new Promise((resolve) => {
 		async.auto(
 			{
@@ -44,26 +44,26 @@ const processData = ({ authKey, projectEasyId, serviceEasyId, volumeEasyId }, ch
 						});
 					},
 				],
-				checkServiceExists: [
+				checkFunctionExists: [
 					'checkProjectExists',
 					(results, cb) => {
 						rpcSend({
 							ch,
-							queue: 'user_service:main_orchestrator',
+							queue: 'user_function:main_orchestrator',
 							data: {
 								projectId: results.checkProjectExists.projectId,
-								easyId: serviceEasyId,
+								easyId: functionEasyId,
 							},
 						}).then((res) => {
 							if (res.status === 200)
 								if (res.data.volumes.some((x) => x.easyId === volumeEasyId))
-									cb('checkServiceExists', {
+									cb('checkFunctionExists', {
 										status: 403,
-										data: { msg: 'Volume is already attached to service.' },
+										data: { msg: 'Volume is already attached to function.' },
 									});
 								else cb(null, res.data);
-							else if (res.status === 404) cb('checkServiceExists', res);
-							else cb('checkServiceExists');
+							else if (res.status === 404) cb('checkFunctionExists', res);
+							else cb('checkFunctionExists');
 						});
 					},
 				],
@@ -85,14 +85,14 @@ const processData = ({ authKey, projectEasyId, serviceEasyId, volumeEasyId }, ch
 					},
 				],
 				attachVolumeDB: [
-					'checkServiceExists',
+					'checkFunctionExists',
 					'checkVolumeExists',
 					(results, cb) => {
 						rpcSend({
 							ch,
-							queue: 'user_service:volumeAttach_orchestrator',
+							queue: 'user_function:volumeAttach_orchestrator',
 							data: {
-								easyId: serviceEasyId,
+								easyId: functionEasyId,
 								projectId: results.checkProjectExists.projectId,
 								volumeId: results.checkVolumeExists.volumeId,
 							},
@@ -107,21 +107,21 @@ const processData = ({ authKey, projectEasyId, serviceEasyId, volumeEasyId }, ch
 						const volumes = [];
 						const { projectId } = results.checkProjectExists;
 						volumes.push({
-							Source: `${projectId}/${results.checkServiceExists._id}`,
+							Source: `${projectId}/${results.checkFunctionExists._id}`,
 							Target: 'app',
 						});
 						volumes.push({
 							Source: `${projectId}/${results.checkVolumeExists.volumeId}`,
 							Target: volumeEasyId,
 						});
-						results.checkServiceExists.volumes.forEach((x) => {
+						results.checkFunctionExists.volumes.forEach((x) => {
 							volumes.push({ Source: `${projectId}/${x._id}`, Target: x.easyId });
 						});
 						send({
 							ch,
-							queue: 'container_service:volume_orchestrator',
+							queue: 'container_function:volume_orchestrator',
 							data: {
-								name: `${projectEasyId}_${serviceEasyId}`,
+								name: `${projectEasyId}_function_${functionEasyId}`,
 								volumes,
 							},
 						});
@@ -135,7 +135,7 @@ const processData = ({ authKey, projectEasyId, serviceEasyId, volumeEasyId }, ch
 						[
 							'checkAuth',
 							'checkProjectExists',
-							'checkServiceExists',
+							'checkFunctionExists',
 							'checkVolumeExists',
 							'attachVolumeDB',
 							'attachVolume',
@@ -150,7 +150,7 @@ const processData = ({ authKey, projectEasyId, serviceEasyId, volumeEasyId }, ch
 	});
 
 const method = (ch) => {
-	rpcConsume({ ch, queue: 'orchestrator_service:volumeAttach_api', process: processData });
+	rpcConsume({ ch, queue: 'orchestrator_function:volumeAttach_api', process: processData });
 };
 
 module.exports = method;

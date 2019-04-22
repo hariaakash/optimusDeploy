@@ -64,8 +64,8 @@ const update = async ({ aFunction = false, name: Name, type, data = {}, next }) 
 		} else if (type === 'volume') {
 			data.Mounts.forEach((x) => {
 				x.Source = `${dir}/${x.Source}`;
-				if (aFunction) x.Target = x.Target === 'app' ? '/app' : `/mnt/${x.Target}`;
-				else x.Target = x.Target === 'app' ? '/app/function/' : `/mnt/${x.Target}`;
+				if (aFunction) x.Target = x.Target === 'app' ? '/app/function' : `/mnt/${x.Target}`;
+				else x.Target = x.Target === 'app' ? '/app' : `/mnt/${x.Target}`;
 			});
 			opts.TaskTemplate.ContainerSpec.Mounts = data.Mounts;
 		} else if (type === 'enablePublic') {

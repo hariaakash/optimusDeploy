@@ -2,7 +2,7 @@ const async = require('async');
 
 const { send, rpcSend, rpcConsume } = require('../../helpers/amqp-wrapper');
 
-const processData = ({ authKey, projectEasyId, serviceEasyId, networkEasyId }, ch) =>
+const processData = ({ authKey, projectEasyId, functionEasyId, networkEasyId }, ch) =>
 	new Promise((resolve) => {
 		async.auto(
 			{
@@ -44,26 +44,26 @@ const processData = ({ authKey, projectEasyId, serviceEasyId, networkEasyId }, c
 						});
 					},
 				],
-				checkServiceExists: [
+				checkFunctionExists: [
 					'checkProjectExists',
 					(results, cb) => {
 						rpcSend({
 							ch,
-							queue: 'user_service:main_orchestrator',
+							queue: 'user_function:main_orchestrator',
 							data: {
 								projectId: results.checkProjectExists.projectId,
-								easyId: serviceEasyId,
+								easyId: functionEasyId,
 							},
 						}).then((res) => {
 							if (res.status === 200)
 								if (res.data.networks.some((x) => x.easyId === networkEasyId))
-									cb('checkServiceExists', {
+									cb('checkFunctionExists', {
 										status: 403,
-										data: { msg: 'Network is already attached to service.' },
+										data: { msg: 'Network is already attached to function.' },
 									});
 								else cb(null, res.data);
-							else if (res.status === 404) cb('checkServiceExists', res);
-							else cb('checkServiceExists');
+							else if (res.status === 404) cb('checkFunctionExists', res);
+							else cb('checkFunctionExists');
 						});
 					},
 				],
@@ -85,14 +85,14 @@ const processData = ({ authKey, projectEasyId, serviceEasyId, networkEasyId }, c
 					},
 				],
 				attachNetworkDB: [
-					'checkServiceExists',
+					'checkFunctionExists',
 					'checkNetworkExists',
 					(results, cb) => {
 						rpcSend({
 							ch,
-							queue: 'user_service:networkAttach_orchestrator',
+							queue: 'user_function:networkAttach_orchestrator',
 							data: {
-								easyId: serviceEasyId,
+								easyId: functionEasyId,
 								projectId: results.checkProjectExists.projectId,
 								networkId: results.checkNetworkExists.networkId,
 							},
@@ -104,17 +104,17 @@ const processData = ({ authKey, projectEasyId, serviceEasyId, networkEasyId }, c
 				attachNetwork: [
 					'attachNetworkDB',
 					(results, cb) => {
-						const networks = results.checkServiceExists.networks.map(
+						const networks = results.checkFunctionExists.networks.map(
 							(x) => `${projectEasyId}_${x.easyId}`
 						);
 						networks.push(`${projectEasyId}_${networkEasyId}`);
 						send({
 							ch,
-							queue: 'container_service:network_orchestrator',
+							queue: 'container_function:network_orchestrator',
 							data: {
-								name: `${projectEasyId}_${serviceEasyId}`,
+								name: `${projectEasyId}_function_${functionEasyId}`,
 								networks,
-								enablePublic: results.checkServiceExists.info.enablePublic,
+								enablePublic: results.checkFunctionExists.info.enablePublic,
 							},
 						});
 						cb();
@@ -127,7 +127,7 @@ const processData = ({ authKey, projectEasyId, serviceEasyId, networkEasyId }, c
 						[
 							'checkAuth',
 							'checkProjectExists',
-							'checkServiceExists',
+							'checkFunctionExists',
 							'checkNetworkExists',
 							'attachNetworkDB',
 							'attachNetwork',
@@ -142,7 +142,7 @@ const processData = ({ authKey, projectEasyId, serviceEasyId, networkEasyId }, c
 	});
 
 const method = (ch) => {
-	rpcConsume({ ch, queue: 'orchestrator_service:networkAttach_api', process: processData });
+	rpcConsume({ ch, queue: 'orchestrator_function:networkAttach_api', process: processData });
 };
 
 module.exports = method;

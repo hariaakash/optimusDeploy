@@ -12,7 +12,7 @@ const processData = ({ projectId, volumeId }) =>
 						status: 200,
 						data: {
 							services,
-							msg: 'Volume is already attached.',
+							msg: 'Volume is already attached to one or more services.',
 						},
 					});
 				else resolve({ status: 404, data: { msg: 'Volume not attached.' } });

@@ -73,11 +73,11 @@ const processData = ({ authKey, projectEasyId, functionEasyId }, ch) =>
 				} else {
 					const aFunction = results.getFunction;
 					delete aFunction._id;
-					if (Object.prototype.hasOwnProperty.call(aFunction.info, 'repo')) {
-						delete aFunction.info.repo.hookId;
-						delete aFunction.info.repo.enabled;
-					}
 					aFunction.networks = aFunction.networks.map((x) => ({
+						name: x.name,
+						easyId: x.easyId,
+					}));
+					aFunction.volumes = aFunction.volumes.map((x) => ({
 						name: x.name,
 						easyId: x.easyId,
 					}));

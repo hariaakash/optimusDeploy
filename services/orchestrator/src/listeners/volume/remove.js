@@ -65,7 +65,7 @@ const processData = ({ authKey, projectEasyId, volumeEasyId }, ch) =>
 						});
 					},
 				],
-				checkVolumeUsage: [
+				checkVolumeServiceUsage: [
 					'checkVolumeExists',
 					(results, cb) => {
 						rpcSend({
@@ -78,16 +78,38 @@ const processData = ({ authKey, projectEasyId, volumeEasyId }, ch) =>
 						}).then((res) => {
 							if (res.status === 404) cb();
 							else if (res.status === 200)
-								cb('checkVolumeUsage', {
+								cb('checkVolumeServiceUsage', {
 									status: 404,
 									data: { msg: res.data.msg },
 								});
-							else cb('checkVolumeUsage');
+							else cb('checkVolumeServiceUsage');
+						});
+					},
+				],
+				checkVolumeFunctionUsage: [
+					'checkVolumeExists',
+					(results, cb) => {
+						rpcSend({
+							ch,
+							queue: 'user_function:volumeUsage_orchestrator',
+							data: {
+								projectId: results.checkProjectExists.projectId,
+								volumeId: results.checkVolumeExists.volumeId,
+							},
+						}).then((res) => {
+							if (res.status === 404) cb();
+							else if (res.status === 200)
+								cb('checkVolumeFunctionUsage', {
+									status: 404,
+									data: { msg: res.data.msg },
+								});
+							else cb('checkVolumeFunctionUsage');
 						});
 					},
 				],
 				removeVolume: [
-					'checkVolumeUsage',
+					'checkVolumeServiceUsage',
+					'checkVolumeFunctionUsage',
 					(results, cb) => {
 						send({
 							ch,
@@ -121,7 +143,8 @@ const processData = ({ authKey, projectEasyId, volumeEasyId }, ch) =>
 							'checkAuth',
 							'checkProjectExists',
 							'checkVolumeExists',
-							'checkVolumeUsage',
+							'checkVolumeServiceUsage',
+							'checkVolumeFunctionUsage',
 							'removeVolume',
 						].includes(err) &&
 						!!results[err]

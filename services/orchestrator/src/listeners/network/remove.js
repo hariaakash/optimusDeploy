@@ -65,7 +65,7 @@ const processData = ({ authKey, projectEasyId, networkEasyId }, ch) =>
 						});
 					},
 				],
-				checkNetworkUsage: [
+				checkNetworkServiceUsage: [
 					'checkNetworkExists',
 					(results, cb) => {
 						rpcSend({
@@ -78,16 +78,38 @@ const processData = ({ authKey, projectEasyId, networkEasyId }, ch) =>
 						}).then((res) => {
 							if (res.status === 404) cb();
 							else if (res.status === 200)
-								cb('checkNetworkUsage', {
+								cb('checkNetworkServiceUsage', {
 									status: 404,
 									data: { msg: res.data.msg },
 								});
-							else cb('checkNetworkUsage');
+							else cb('checkNetworkServiceUsage');
+						});
+					},
+				],
+				checkNetworkFunctionUsage: [
+					'checkNetworkExists',
+					(results, cb) => {
+						rpcSend({
+							ch,
+							queue: 'user_function:networkUsage_orchestrator',
+							data: {
+								projectId: results.checkProjectExists.projectId,
+								networkId: results.checkNetworkExists.networkId,
+							},
+						}).then((res) => {
+							if (res.status === 404) cb();
+							else if (res.status === 200)
+								cb('checkNetworkFunctionUsage', {
+									status: 404,
+									data: { msg: res.data.msg },
+								});
+							else cb('checkNetworkFunctionUsage');
 						});
 					},
 				],
 				removeNetwork: [
-					'checkNetworkUsage',
+					'checkNetworkServiceUsage',
+					'checkNetworkFunctionUsage',
 					(results, cb) => {
 						send({
 							ch,
@@ -118,7 +140,8 @@ const processData = ({ authKey, projectEasyId, networkEasyId }, ch) =>
 							'checkAuth',
 							'checkProjectExists',
 							'checkNetworkExists',
-							'checkNetworkUsage',
+							'checkNetworkServiceUsage',
+							'checkNetworkFunctionUsage',
 							'removeNetwork',
 						].includes(err) &&
 						!!results[err]

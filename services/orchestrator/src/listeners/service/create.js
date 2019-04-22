@@ -177,8 +177,9 @@ const processData = (
 							ch,
 							queue: 'container_git:clone_orchestrator',
 							data: {
+								aFunction: false,
 								projectId: results.checkProjectExists._id,
-								serviceId: results.createService.serviceId,
+								volumeId: results.createService.serviceId,
 								accessToken:
 									results.checkAuth.conf.social[repo.source].access_token,
 								repo: repo.name,

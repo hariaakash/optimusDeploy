@@ -134,6 +134,16 @@ const processData = (
 								volumeId: results.createFunction.functionId,
 							},
 						});
+						send({
+							ch,
+							queue: 'container_git:clone_orchestrator',
+							data: {
+								aFunction: true,
+								image,
+								projectId: results.checkProjectExists._id,
+								volumeId: results.createFunction.functionId,
+							},
+						});
 						const pathPrefixStrip = `PathPrefixStrip:/function/${functionEasyId}`;
 						const mainDomain = Production
 							? results.checkProjectExists.info.domains.default.domain

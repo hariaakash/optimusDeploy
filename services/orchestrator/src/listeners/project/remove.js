@@ -150,6 +150,11 @@ const processData = ({ authKey, projectEasyId }, ch) =>
 						});
 						send({
 							ch,
+							queue: 'user_function:remove_orchestrator',
+							data: { projectId: results.checkProjectExists.projectId },
+						});
+						send({
+							ch,
 							queue: 'user_service:hookRemove_orchestrator',
 							data: {
 								accessTokens: results.checkAuth.conf.social,
@@ -192,6 +197,15 @@ const processData = ({ authKey, projectEasyId }, ch) =>
 							data: {
 								names: results.removeProject.services.map(
 									(x) => `${projectEasyId}_${x.easyId}`
+								),
+							},
+						});
+						send({
+							ch,
+							queue: 'container_function:remove_orchestrator',
+							data: {
+								names: results.removeProject.functions.map(
+									(x) => `${projectEasyId}_function_${x.easyId}`
 								),
 							},
 						});

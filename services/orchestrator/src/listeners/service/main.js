@@ -81,6 +81,10 @@ const processData = ({ authKey, projectEasyId, serviceEasyId }, ch) =>
 						name: x.name,
 						easyId: x.easyId,
 					}));
+					service.volumes = service.volumes.map((x) => ({
+						name: x.name,
+						easyId: x.easyId,
+					}));
 					resolve({
 						status: 200,
 						data: service,

@@ -12,7 +12,7 @@ const processData = ({ projectId, networkId }) =>
 						status: 200,
 						data: {
 							functions,
-							msg: 'Network is already attached.',
+							msg: 'Network is already attached to one or more functions.',
 						},
 					});
 				else resolve({ status: 404, data: { msg: 'Network not attached.' } });
