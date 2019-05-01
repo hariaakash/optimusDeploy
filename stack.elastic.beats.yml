@@ -27,6 +27,7 @@ services:
         networks:
             - elastic
         deploy:  
+            mode: global
             restart_policy:
                 condition: on-failure
         healthcheck:
@@ -49,6 +50,7 @@ services:
         networks:
             - elastic
         deploy:
+            mode: global
             restart_policy:
                 condition: on-failure
         healthcheck:
@@ -71,6 +73,7 @@ services:
             timeout: 15s
             retries: 5
         deploy:
+            mode: global
             restart_policy:
                 condition: on-failure
 

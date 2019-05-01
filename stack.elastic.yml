@@ -18,14 +18,17 @@ services:
             - /srv/elastic/es:/usr/share/elasticsearch/data
         networks:
             - elastic
+            - proxy
+        ports:
+            - 9200:9200
+        deploy:
+            placement:
+                constraints: [node.role == manager]
         healthcheck:
             test: curl -s https://localhost:9200 >/dev/null; if [[ $$? == 52 ]]; then echo 0; else echo 1; fi
             interval: 30s
             timeout: 10s
             retries: 5
-        deploy:
-            placement:
-                constraints: [node.role == manager]
 
     kibana:
         image: docker.elastic.co/kibana/kibana:6.6.1
