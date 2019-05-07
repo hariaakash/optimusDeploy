@@ -77,7 +77,7 @@ services:
         networks:
             - proxy
         deploy:
-            deploy: replicated
+            mode: replicated
             replicas: 1
             labels:
                 traefik.backend: "consul"
