@@ -33,6 +33,22 @@ const authGithub = ({ code }, ch, trans) =>
 		});
 	});
 
+const authGoogle = ({ code }, ch, trans) =>
+	new Promise((resolve) => {
+		const authSpan = trans.startSpan('AMQP Call: user_profile:authGoogle_orchestrator');
+		rpcSend({
+			ch,
+			queue: 'user_profile:authGoogle_orchestrator',
+			data: { code },
+		}).then((res) => {
+			if (![500].includes(res.status)) resolve(res);
+			else resolve({ status: 500, data: { msg: 'Internal Server Error' } });
+			if (authSpan) {
+				authSpan.end();
+			}
+		});
+	});
+
 const process = ({ email, password, code, authType }, ch) =>
 	new Promise((resolve) => {
 		const authTransaction = apm.startTransaction('Orchestration: User: Authenticaiton');
@@ -46,6 +62,14 @@ const process = ({ email, password, code, authType }, ch) =>
 				});
 		} else if (authType === 'github') {
 			authGithub({ code }, ch, authTransaction)
+				.then(resolve)
+				.then(() => {
+					if (authTransaction) {
+						authTransaction.end();
+					}
+				});
+		} else if (authType === 'google') {
+			authGoogle({ code }, ch, authTransaction)
 				.then(resolve)
 				.then(() => {
 					if (authTransaction) {

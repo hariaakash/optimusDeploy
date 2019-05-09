@@ -11,11 +11,10 @@ const config = {
 		userRepos: 'https://api.github.com/user/repos',
 		repos: 'https://api.github.com/repos',
 	},
+	hookUrl: Production
+		? process.env.GITHUB_HOOKURL
+		: 'https://optimusdeploy.serveo.net/user/hookGithub',
 };
-
-config.hookUrl = Production
-	? process.env.GITHUB_HOOKURL
-	: 'https://optimusdeploy.serveo.net/user/hookGithub';
 
 const info = ({ accessToken }) =>
 	axios({

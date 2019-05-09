@@ -18,6 +18,10 @@ const userSchema = new Schema({
 				access_token: { type: String },
 				enabled: { type: Boolean, default: false },
 			},
+			google: {
+				refresh_token: { type: String },
+				enabled: { type: Boolean, default: false },
+			},
 		},
 	},
 	projects: [{ type: Schema.Types.ObjectId, ref: 'Project' }],
