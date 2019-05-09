@@ -12,13 +12,15 @@ const process = ({ code }) =>
 					data: { authKey, msg: 'Successfully authenticated using github.' },
 				})
 			)
-			.catch((err) =>
-				resolve(
-					err.response.status === 401
-						? { status: 401, data: { msg: 'Github authentication failed.' } }
-						: { status: 500 }
-				)
-			);
+			.catch((err) => {
+				if (err.response)
+					resolve(
+						err.response.status === 401
+							? { status: 401, data: { msg: 'Github authentication failed.' } }
+							: { status: 500 }
+					);
+				else resolve({ status: 500 });
+			});
 	});
 
 const method = (ch) => {
