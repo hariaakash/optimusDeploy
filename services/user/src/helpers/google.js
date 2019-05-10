@@ -8,7 +8,7 @@ const config = {
 		token: 'https://www.googleapis.com/oauth2/v4/token',
 		info: 'https://www.googleapis.com/oauth2/v2/userinfo',
 	},
-	redirect_uri: 'http://localhost:8080/authHook/google',
+	redirect_uri: 'http://localhost:8080/auth/social/google',
 };
 
 const info = ({ tokenType, accessToken }) =>
