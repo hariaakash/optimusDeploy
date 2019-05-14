@@ -4,14 +4,14 @@ const { assert, consume } = require('../../helpers/amqp-wrapper');
 
 sgMail.setApiKey(process.env.SENDGRID_API_KEY);
 
-const processData = ({ email, pToken }) =>
+const processData = ({ email, token }) =>
 	new Promise((resolve, reject) => {
 		sgMail
 			.send({
 				to: email,
 				from: 'no-reply@optimuscp.io',
 				subject: 'Welcome to Optimus Deploy! Verify your email.',
-				html: `Password reset token for the email: ${email} is: <b>${pToken}</b>`,
+				html: `Password reset token for the email: ${email} is: <b>${token}</b>`,
 			})
 			.then(() => resolve(true))
 			.catch((err) => reject());

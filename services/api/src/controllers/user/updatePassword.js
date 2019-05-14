@@ -7,7 +7,7 @@ const schema = Joi.object().keys({
 	email: Joi.string()
 		.email({ minDomainAtoms: 2 })
 		.required(),
-	pToken: Joi.string()
+	token: Joi.string()
 		.length(21)
 		.required(),
 	newPassword: Joi.string()

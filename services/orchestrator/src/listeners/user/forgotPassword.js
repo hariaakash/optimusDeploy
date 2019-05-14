@@ -63,7 +63,7 @@ const processData = ({ email }, ch) =>
 						status: 200,
 						data: {
 							msg: 'Instructions to reset password has been sent to email.',
-							pToken: Production ? undefined : results.forgotPassword.pToken,
+							token: Production ? undefined : results.forgotPassword.token,
 						},
 					});
 					if (forgotTransaction) {

@@ -6,7 +6,7 @@ const Production = process.env.NODE_ENV !== 'development';
 
 const { rpcSend, rpcConsume, send } = require('../../helpers/amqp-wrapper');
 
-const processData = ({ email, pToken, newPassword }, ch) =>
+const processData = ({ email, token, newPassword }, ch) =>
 	new Promise((resolve) => {
 		const updateTransaction = apm.startTransaction('Orchestration: User: UpdatePassword');
 		async.series(
@@ -18,7 +18,7 @@ const processData = ({ email, pToken, newPassword }, ch) =>
 					rpcSend({
 						ch,
 						queue: 'user_profile:updatePassword_orchestrator',
-						data: { email, pToken, newPassword },
+						data: { email, token, newPassword },
 					})
 						.then((res) => {
 							if (res.status === 200) cb();

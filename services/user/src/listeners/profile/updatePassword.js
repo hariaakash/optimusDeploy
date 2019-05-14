@@ -6,10 +6,10 @@ const User = require('../../schemas/user');
 
 const { rpcConsume } = require('../../helpers/amqp-wrapper');
 
-const updatePassword = ({ user, pToken, newPassword }) =>
+const updatePassword = ({ user, token, newPassword }) =>
 	new Promise((resolve) => {
 		if (user) {
-			if (user.conf.pToken === pToken) {
+			if (user.conf.pToken === token) {
 				bcrypt.hash(newPassword, 10).then((hash) => {
 					if (!user.conf.setPassword) user.conf.setPassword = true;
 					user.conf.hashPassword = hash;
@@ -23,14 +23,14 @@ const updatePassword = ({ user, pToken, newPassword }) =>
 		} else resolve({ status: 404, data: { msg: 'User not found. Please Try Again' } });
 	});
 
-const process = ({ email, pToken, newPassword }) =>
+const process = ({ email, token, newPassword }) =>
 	new Promise((resolve) => {
 		const updateTransaction = apm.startTransaction('User-Service: user-update-password');
 		User.findOne({
 			email,
 		})
 			.select('conf.pToken conf.hashPassword')
-			.then((user) => updatePassword({ user, pToken, newPassword }))
+			.then((user) => updatePassword({ user, token, newPassword }))
 			.then(resolve)
 			.then(() => {
 				if (updateTransaction) {
